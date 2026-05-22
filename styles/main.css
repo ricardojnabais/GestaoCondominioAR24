@@ -842,9 +842,43 @@ button { font-family: inherit; }
   font-size: 13.5px;
   color: var(--text);
   border-bottom: 1px dashed var(--border);
+  gap: 12px;
 }
 .dp-row:last-child { border-bottom: none; }
 .dp-row strong { color: var(--text); }
+
+.dp-row-partial {
+  background: rgba(245,158,11,.08);
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--amber);
+  border-bottom: 1px solid var(--amber);
+  margin: 2px 0;
+}
+.dp-row-info { flex: 1; min-width: 0; }
+.dp-month {
+  font-weight: 600;
+  font-size: 13.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dp-tag {
+  display: inline-block;
+  background: var(--amber);
+  color: var(--white);
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  padding: 2px 6px;
+  border-radius: 99px;
+}
+.dp-detail {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
 .dp-totals {
   margin-top: 12px;
   padding-top: 12px;

@@ -243,15 +243,40 @@ async function refreshComputation() {
   const tenant = tenants.find(t => t.id === tenantId);
   const ano = selected[0].split('-')[0];
   const quotaMensal = tenant?.rentByYear?.[ano] || 0;
-  const esperado = quotaMensal * selected.length;
+
+  // Calcular esperado para CADA mês selecionado, descontando o que já foi pago.
+  // Para meses já parcialmente pagos, esperado = falta para completar.
+  // Para meses sem pagamento, esperado = quota inteira.
+  const rowsData = [];
+  let esperado = 0;
+  for (const m of selected) {
+    const jaPago = await receipts.valorPagoNoMes(tenantId, m);
+    const emFalta = Math.max(0, quotaMensal - jaPago);
+    esperado += emFalta;
+    rowsData.push({ mes: m, quotaMensal, jaPago, emFalta });
+  }
 
   // Construir linhas de distribuição
-  const rowsHtml = selected.map(m =>
-    `<div class="dp-row">
-      <span>${formatMonth(m)}</span>
-      <strong>${formatMoney(quotaMensal)}</strong>
-    </div>`
-  ).join('');
+  const rowsHtml = rowsData.map(r => {
+    if (r.jaPago > 0) {
+      // Mês parcialmente pago — mostrar contexto
+      return `
+        <div class="dp-row dp-row-partial">
+          <div class="dp-row-info">
+            <div class="dp-month">${formatMonth(r.mes)} <span class="dp-tag">parcial</span></div>
+            <div class="dp-detail">Já pago ${formatMoney(r.jaPago)} de ${formatMoney(r.quotaMensal)}</div>
+          </div>
+          <strong>${formatMoney(r.emFalta)}</strong>
+        </div>
+      `;
+    }
+    return `
+      <div class="dp-row">
+        <span>${formatMonth(r.mes)}</span>
+        <strong>${formatMoney(r.quotaMensal)}</strong>
+      </div>
+    `;
+  }).join('');
 
   modalEl.querySelector('#rp-distribuicao-rows').innerHTML = rowsHtml;
   modalEl.querySelector('#rp-esperado').textContent = formatMoney(esperado);
