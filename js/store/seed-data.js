@@ -55,13 +55,13 @@ const META_SEED = {
 };
 
 const RUBRICAS_SEED = [
-  { id: 'rub_edp',       nome: 'EDP Eletricidade',  categoria: 'energia',   fixa: false },
-  { id: 'rub_agua',      nome: 'Água',              categoria: 'agua',      fixa: false },
-  { id: 'rub_elevador',  nome: 'Schindler Elevador',categoria: 'manut',     fixa: true  },
-  { id: 'rub_seguros',   nome: 'Allianz Seguros',   categoria: 'seguros',   fixa: true  },
-  { id: 'rub_limpeza',   nome: 'Limpeza',           categoria: 'limpeza',   fixa: true  },
-  { id: 'rub_banco',     nome: 'Despesas Bancárias',categoria: 'banco',     fixa: true  },
-  { id: 'rub_outras',    nome: 'Outras',            categoria: 'diversos',  fixa: false }
+  { id: 'rub_edp',       nome: 'EDP Eletricidade',  categoria: 'energia',   fixa: false, criadaEm: 1577836800000, terminadaEm: null },
+  { id: 'rub_agua',      nome: 'Água',              categoria: 'agua',      fixa: false, criadaEm: 1577836800000, terminadaEm: null },
+  { id: 'rub_elevador',  nome: 'Schindler Elevador',categoria: 'manut',     fixa: true,  criadaEm: 1577836800000, terminadaEm: null },
+  { id: 'rub_seguros',   nome: 'Allianz Seguros',   categoria: 'seguros',   fixa: true,  criadaEm: 1577836800000, terminadaEm: null },
+  { id: 'rub_limpeza',   nome: 'Limpeza',           categoria: 'limpeza',   fixa: true,  criadaEm: 1577836800000, terminadaEm: null },
+  { id: 'rub_banco',     nome: 'Despesas Bancárias',categoria: 'banco',     fixa: true,  criadaEm: 1577836800000, terminadaEm: null },
+  { id: 'rub_outras',    nome: 'Outras',            categoria: 'diversos',  fixa: false, criadaEm: 1577836800000, terminadaEm: null }
 ];
 
 // Recibos de exemplo (subset, ano 2026)

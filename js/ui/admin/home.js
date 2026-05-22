@@ -7,6 +7,7 @@ import * as store from '../../store/local-store.js';
 import * as router from '../router.js';
 import * as saldoBanco from '../../modules/saldo-banco.js';
 import * as modalRP from '../modal-registar-pagamento.js';
+import * as modalND from '../modal-nova-despesa.js';
 import { icon } from '../icons.js';
 import { formatMoney } from '../../utils/format.js';
 
@@ -52,13 +53,13 @@ export async function render(container) {
             <div class="mt-icon-wrap">${icon('ic-receipt', 'mt-icon')}</div>
             <div class="mt-name">Enviar Recibo</div>
           </a>
-          <a class="menu-tile" data-route="admin/despesa-nova">
+          <a class="menu-tile" data-action="nova-despesa">
             <div class="mt-icon-wrap">${icon('ic-payment-out', 'mt-icon')}</div>
             <div class="mt-name">Inserir Pagamento</div>
           </a>
-          <a class="menu-tile" data-route="admin/consultar">
+          <a class="menu-tile" data-route="admin/quotas">
             <div class="mt-icon-wrap">${icon('ic-search-list', 'mt-icon')}</div>
-            <div class="mt-name">Consultar Pagamentos</div>
+            <div class="mt-name">Quotas</div>
           </a>
           <a class="menu-tile" data-route="admin/banco">
             <div class="mt-icon-wrap">${icon('ic-bank', 'mt-icon')}</div>
@@ -68,9 +69,9 @@ export async function render(container) {
             <div class="mt-icon-wrap">${icon('ic-dashboard', 'mt-icon')}</div>
             <div class="mt-name">Análise</div>
           </a>
-          <a class="menu-tile span-2" data-route="admin/config">
+          <a class="menu-tile span-2" data-route="admin/rubricas">
             <div class="mt-icon-wrap">${icon('ic-settings', 'mt-icon')}</div>
-            <div class="mt-name">Definições</div>
+            <div class="mt-name">Definições · Rúbricas</div>
           </a>
         </div>
       </main>
@@ -86,6 +87,12 @@ export async function render(container) {
 
       if (action === 'registar-pagamento') {
         modalRP.open({
+          onSuccess: () => refreshSaldo(container)
+        });
+        return;
+      }
+      if (action === 'nova-despesa') {
+        modalND.open({
           onSuccess: () => refreshSaldo(container)
         });
         return;

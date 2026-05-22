@@ -15,6 +15,11 @@ import { makePlaceholder } from './ui/placeholder.js';
 
 import * as loginPage from './ui/login.js';
 import * as adminHome from './ui/admin/home.js';
+import * as adminRecibos from './ui/admin/recibos.js';
+import * as adminQuotas from './ui/admin/quotas.js';
+import * as adminBanco from './ui/admin/banco.js';
+import * as adminDespesas from './ui/admin/despesas.js';
+import * as adminRubricas from './ui/admin/rubricas.js';
 import * as condominoHome from './ui/condomino/home.js';
 
 // ─── Bootstrap ────────────────────────────────────────────
@@ -37,12 +42,17 @@ async function main() {
   router.register('admin/home', adminHome, { requiresAuth: 'admin' });
   router.register('condomino/home', condominoHome, { requiresAuth: 'condomino' });
 
+  // Rotas reais (Fase 2 + 3a completa)
+  router.register('admin/recibos',      adminRecibos,  { requiresAuth: 'admin' });
+  router.register('admin/quotas',       adminQuotas,   { requiresAuth: 'admin' });
+  router.register('admin/banco',        adminBanco,    { requiresAuth: 'admin' });
+  router.register('admin/despesas',     adminDespesas, { requiresAuth: 'admin' });
+  router.register('admin/rubricas',     adminRubricas, { requiresAuth: 'admin' });
+  router.register('admin/consultar',    adminRecibos,  { requiresAuth: 'admin' });  // alias
+
   // Rotas placeholder (a implementar nas próximas fases)
   router.register('admin/quotas-nova',  makePlaceholder('Inserir Quota', 'Modal · Registar Pagamento'), { requiresAuth: 'admin' });
-  router.register('admin/recibos',      makePlaceholder('Recibos', 'Emitir, consultar e enviar'),       { requiresAuth: 'admin' });
   router.register('admin/despesa-nova', makePlaceholder('Inserir Pagamento', 'Despesa do condomínio'),  { requiresAuth: 'admin' });
-  router.register('admin/consultar',    makePlaceholder('Consultar Pagamentos', 'Histórico'),           { requiresAuth: 'admin' });
-  router.register('admin/banco',        makePlaceholder('Situação Bancária', 'Movimentos'),             { requiresAuth: 'admin' });
   router.register('admin/analise',      makePlaceholder('Análise', 'Gráficos e indicadores'),           { requiresAuth: 'admin' });
   router.register('admin/config',       makePlaceholder('Definições', 'Configurações da app'),          { requiresAuth: 'admin' });
 

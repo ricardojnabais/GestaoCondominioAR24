@@ -41,6 +41,7 @@ export async function open(opts = {}) {
   document.body.style.overflow = 'hidden';
 
   bindEvents();
+  await refreshChipsState();
   refreshComputation();
 }
 
@@ -149,10 +150,14 @@ function bindEvents() {
     if (e.target === modalEl) close();
   });
 
-  modalEl.querySelector('#rp-tenant').addEventListener('change', refreshComputation);
+  modalEl.querySelector('#rp-tenant').addEventListener('change', async () => {
+    await refreshChipsState();
+    refreshComputation();
+  });
 
   modalEl.querySelectorAll('.chip-month').forEach(chip => {
     chip.addEventListener('click', () => {
+      if (chip.classList.contains('disabled')) return;  // não selecionar pagos
       chip.classList.toggle('selected');
       refreshComputation();
     });
@@ -161,6 +166,54 @@ function bindEvents() {
   modalEl.querySelector('#rp-valor').addEventListener('input', refreshComputation);
 
   modalEl.querySelector('#rp-submit').addEventListener('click', submit);
+}
+
+// ─── Estado dos chips (pagos / parciais / livres) ────────
+
+/**
+ * Atualiza o estado visual dos chips de meses consoante o que já está pago
+ * pelo condómino selecionado.
+ *
+ * - Pago integralmente: chip a cinzento, não-selecionável, com tooltip
+ * - Pago parcialmente: chip com indicador (ainda selecionável para completar)
+ * - Não pago: chip normal, selecionável
+ */
+async function refreshChipsState() {
+  const tenantId = modalEl.querySelector('#rp-tenant').value;
+  const chips = modalEl.querySelectorAll('.chip-month');
+
+  // Sem condómino selecionado: limpar estado
+  if (!tenantId) {
+    chips.forEach(c => {
+      c.classList.remove('disabled', 'partial');
+      c.removeAttribute('title');
+    });
+    return;
+  }
+
+  const tenant = tenants.find(t => t.id === tenantId);
+
+  for (const chip of chips) {
+    const month = chip.dataset.month;
+    const ano = month.split('-')[0];
+    const quotaMensal = tenant?.rentByYear?.[ano] || 0;
+    const pago = await receipts.valorPagoNoMes(tenantId, month);
+
+    chip.classList.remove('disabled', 'partial');
+
+    if (pago > 0 && pago >= quotaMensal) {
+      // Pago integralmente — bloquear
+      chip.classList.add('disabled');
+      chip.classList.remove('selected');  // se estava selecionado, limpar
+      chip.title = `Já pago: ${formatMoney(pago)}`;
+    } else if (pago > 0) {
+      // Pago parcialmente — alertar mas permitir
+      chip.classList.add('partial');
+      chip.title = `Pago parcial: ${formatMoney(pago)} de ${formatMoney(quotaMensal)} esperado`;
+    } else {
+      chip.removeAttribute('title');
+    }
+  }
 }
 
 // ─── Cálculos em tempo real ──────────────────────────────
