@@ -70,6 +70,19 @@ if (document.readyState === 'loading') {
   main();
 }
 
+// ─── Registar Service Worker (PWA installable) ───────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then((reg) => {
+        console.log('[app] Service Worker registado, scope:', reg.scope);
+      })
+      .catch((err) => {
+        console.warn('[app] Service Worker não registou:', err);
+      });
+  });
+}
+
 // Error handler global
 window.addEventListener('error', (e) => {
   console.error('[app] erro global:', e.error || e.message);
