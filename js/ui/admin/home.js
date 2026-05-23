@@ -6,6 +6,7 @@ import * as auth from '../../auth/local-auth.js';
 import * as store from '../../store/local-store.js';
 import * as router from '../router.js';
 import * as saldoBanco from '../../modules/saldo-banco.js';
+import * as analise from '../../modules/analise.js';
 import * as comunicacoes from '../../modules/comunicacoes.js';
 import * as modalRP from '../modal-registar-pagamento.js';
 import * as modalND from '../modal-nova-despesa.js';
@@ -40,11 +41,9 @@ export async function render(container) {
             <div class="home-hello">Olá,</div>
             <div class="home-name">${operatorName}</div>
           </div>
-          <div class="home-snap">
-            <div class="snap-lbl">Saldo Bancário</div>
-            <div class="snap-val" id="saldo-snap">…</div>
-          </div>
         </div>
+
+        <div class="home-kpis" id="home-kpis"><div class="kpi-loader">…</div></div>
 
         <div class="menu-tiles">
           <a class="menu-tile" data-action="registar-pagamento">
@@ -132,7 +131,38 @@ export async function render(container) {
 
 async function refreshSaldo(container) {
   const year = new Date().getFullYear().toString();
-  const { saldo } = await saldoBanco.calcularSaldo(year);
-  const el = container.querySelector('#saldo-snap');
-  if (el) el.textContent = formatMoney(saldo);
+  const kpis = await analise.kpisYTD(year);
+  const el = container.querySelector('#home-kpis');
+  if (!el) return;
+
+  const taxaCls = kpis.taxaCobrancaYTD >= 90 ? 'kpi-green'
+                : kpis.taxaCobrancaYTD >= 70 ? 'kpi-amber'
+                : 'kpi-red';
+  const atrasoCls = kpis.condominosEmAtraso > 0 ? 'kpi-red' : 'kpi-green';
+
+  el.innerHTML = `
+    <a class="kpi-card kpi-primary" data-route="admin/banco">
+      <div class="kpi-lbl">Saldo Bancário</div>
+      <div class="kpi-val">${formatMoney(kpis.saldoBancarioAtual_centimos)}</div>
+      <div class="kpi-sub">Atual</div>
+    </a>
+    <a class="kpi-card ${taxaCls}" data-route="admin/quotas">
+      <div class="kpi-lbl">Cobrança YTD</div>
+      <div class="kpi-val">${kpis.taxaCobrancaYTD}%</div>
+      <div class="kpi-sub">${formatMoney(kpis.recebidoYTD_centimos)} / ${formatMoney(kpis.esperadoYTD_centimos)}</div>
+    </a>
+    <a class="kpi-card ${atrasoCls}" data-route="admin/quotas">
+      <div class="kpi-lbl">Em Atraso</div>
+      <div class="kpi-val">${kpis.condominosEmAtraso}<span class="kpi-of">/${kpis.totalCondominos}</span></div>
+      <div class="kpi-sub">${formatMoney(kpis.totalEmAtraso_centimos)} em falta</div>
+    </a>
+  `;
+
+  // Rebind cliques nos KPIs (são <a> com data-route)
+  el.querySelectorAll('[data-route]').forEach(node => {
+    node.addEventListener('click', (e) => {
+      e.preventDefault();
+      router.navigate(node.dataset.route);
+    });
+  });
 }

@@ -2257,3 +2257,234 @@ button { font-family: inherit; }
   font-size: 13px;
   margin: 8px 0;
 }
+
+/* ==========================================================================
+   KPI CARDS · home admin + página análise
+   ========================================================================== */
+.home-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.kpi-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all .15s;
+  display: block;
+}
+.kpi-card:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+.kpi-lbl {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.kpi-val {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.4px;
+  line-height: 1.1;
+}
+.kpi-of { font-size: 14px; color: var(--text-muted); font-weight: 600; margin-left: 2px; }
+.kpi-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  font-variant-numeric: tabular-nums;
+}
+.kpi-primary { background: linear-gradient(135deg, var(--blue-50), var(--white)); border-color: var(--blue-tint); }
+.kpi-primary .kpi-val { color: var(--primary); }
+.kpi-green { background: linear-gradient(135deg, var(--green-light), var(--white)); border-color: var(--green); }
+.kpi-green .kpi-val { color: #047857; }
+.kpi-amber { background: linear-gradient(135deg, var(--amber-light), var(--white)); border-color: var(--amber); }
+.kpi-amber .kpi-val { color: #92400E; }
+.kpi-red { background: linear-gradient(135deg, var(--red-light), var(--white)); border-color: var(--red); }
+.kpi-red .kpi-val { color: #B91C1C; }
+.kpi-loader { padding: 20px; text-align: center; color: var(--text-muted); }
+
+/* ==========================================================================
+   DASHBOARD · secções e grids
+   ========================================================================== */
+.dashboard-section {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow-sm);
+}
+.dashboard-section h3 {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--primary);
+  margin: 0 0 14px 0;
+}
+.dashboard-grid-2 {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 18px;
+  margin-bottom: 18px;
+}
+.dashboard-grid-2 .dashboard-section { margin-bottom: 0; }
+
+@media (max-width: 800px) {
+  .dashboard-grid-2 { grid-template-columns: 1fr; }
+}
+
+/* Charts · SVG */
+.chart-svg {
+  width: 100%;
+  height: auto;
+  max-height: 280px;
+  display: block;
+}
+.chart-legend {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 8px;
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+.cl-item { display: inline-flex; align-items: center; gap: 5px; }
+.cl-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  display: inline-block;
+}
+.chart-empty {
+  padding: 50px 20px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-style: italic;
+}
+
+/* Donut chart */
+.donut-wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+}
+.donut-svg { max-height: 280px; }
+.donut-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+}
+.dl-item {
+  display: grid;
+  grid-template-columns: 14px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 4px 0;
+}
+.dl-dot { width: 12px; height: 12px; border-radius: 3px; }
+.dl-name { color: var(--text); font-weight: 500; }
+.dl-val { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--text); }
+.dl-pct { color: var(--text-muted); font-size: 11px; margin-left: 4px; }
+
+@media (max-width: 600px) {
+  .donut-wrap { grid-template-columns: 1fr; }
+}
+
+/* Top atrasos · lista */
+.atrasos-list { display: flex; flex-direction: column; gap: 10px; }
+.atraso-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--border);
+}
+.atraso-row:last-child { border-bottom: none; }
+.ar-info { min-width: 0; }
+.ar-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ar-bar {
+  height: 6px;
+  background: var(--gray-100);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+.ar-bar-fill { height: 100%; background: var(--red); }
+.ar-stats { font-size: 11px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.ar-falta {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--red);
+  font-variant-numeric: tabular-nums;
+}
+.empty-state {
+  padding: 30px 20px;
+  text-align: center;
+  color: var(--green);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* Planos mini-cards no dashboard */
+.planos-mini { display: flex; flex-direction: column; gap: 12px; }
+.plano-mini {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  background: var(--gray-50);
+}
+.pm-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+.pm-head strong { color: var(--text); }
+.pm-head span { font-variant-numeric: tabular-nums; color: var(--primary); font-weight: 700; }
+.pm-stats {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Botão Excel · uniforme */
+.btn[id="btn-excel"] { font-size: 13px; }
+.ano-select {
+  padding: 8px 12px;
+  background: var(--white);
+  border: 1.5px solid var(--border-strong);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 600;
+}

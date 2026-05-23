@@ -21,6 +21,7 @@ import * as adminBanco from './ui/admin/banco.js';
 import * as adminDespesas from './ui/admin/despesas.js';
 import * as adminRubricas from './ui/admin/rubricas.js';
 import * as adminPlanos from './ui/admin/planos.js';
+import * as adminAnalise from './ui/admin/analise.js';
 import * as adminComunicacoes from './ui/admin/comunicacoes.js';
 import * as adminUtilizadores from './ui/admin/utilizadores.js';
 import * as condominoHome from './ui/condomino/home.js';
@@ -53,6 +54,7 @@ async function main() {
   router.register('admin/despesas',        adminDespesas,        { requiresAuth: 'admin' });
   router.register('admin/rubricas',        adminRubricas,        { requiresAuth: 'admin' });
   router.register('admin/planos',          adminPlanos,          { requiresAuth: 'admin' });
+  router.register('admin/analise',         adminAnalise,         { requiresAuth: 'admin' });
   router.register('admin/comunicacoes',    adminComunicacoes,    { requiresAuth: 'admin' });
   router.register('admin/utilizadores',    adminUtilizadores,    { requiresAuth: 'admin' });
   router.register('admin/consultar',       adminRecibos,         { requiresAuth: 'admin' });  // alias
@@ -62,7 +64,6 @@ async function main() {
   // Rotas placeholder (a implementar nas próximas fases)
   router.register('admin/quotas-nova',  makePlaceholder('Inserir Quota', 'Modal · Registar Pagamento'), { requiresAuth: 'admin' });
   router.register('admin/despesa-nova', makePlaceholder('Inserir Pagamento', 'Despesa do condomínio'),  { requiresAuth: 'admin' });
-  router.register('admin/analise',      makePlaceholder('Análise', 'Gráficos e indicadores'),           { requiresAuth: 'admin' });
   router.register('admin/config',       makePlaceholder('Definições', 'Configurações da app'),          { requiresAuth: 'admin' });
 
   // 5. Rota inicial
