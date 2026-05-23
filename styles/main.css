@@ -1920,3 +1920,65 @@ button { font-family: inherit; }
   .radio-title { font-size: 13px; }
   .radio-sub { font-size: 11.5px; }
 }
+
+/* ==========================================================================
+   UTILIZADORES · lista
+   ========================================================================== */
+.users-list { display: flex; flex-direction: column; gap: 8px; }
+.user-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  gap: 14px;
+}
+.user-info { flex: 1; min-width: 0; }
+.user-line1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+.user-line1 strong { color: var(--text); font-size: 14px; }
+.user-name { color: var(--text-muted); font-size: 13px; }
+.user-line2 {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.user-email { color: var(--text); font-weight: 500; }
+
+.user-status {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .3px;
+  text-transform: uppercase;
+}
+.user-status-ativa       { background: var(--green-light); color: #047857; }
+.user-status-pwd-reset   { background: var(--amber-light); color: #92400E; }
+.user-status-desativada  { background: var(--red-light);   color: #B91C1C; }
+.user-status-sem-conta   { background: var(--gray-100);    color: var(--text-muted); }
+.user-status-no-email    { background: var(--red-light);   color: #B91C1C; }
+
+.user-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+.user-actions .btn { font-size: 11.5px; padding: 6px 12px; }
+
+@media (max-width: 540px) {
+  .user-item { flex-direction: column; align-items: stretch; }
+  .user-actions { justify-content: flex-start; }
+}

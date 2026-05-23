@@ -113,6 +113,27 @@ export async function seedIfEmpty() {
   await store.setDoc('users', { id: '__init', created: Date.now() });
   await store.deleteDoc('users', '__init');
 
+  // ─── Criar utilizadores para os condóminos com email ───
+  // Password inicial = NIF (8 dígitos). Admin pode repor depois.
+  // Os tenants sem email (ex: cond_01 João Vaz) ficam sem conta · admin
+  // tem de adicionar email primeiro.
+  for (const t of TENANTS_SEED) {
+    if (!t.email) continue;
+    await store.setDoc('users', {
+      id: `user_${t.id}`,
+      email: t.email.trim().toLowerCase(),
+      password: t.nif,                    // ⚠ password inicial igual ao NIF
+      passwordPrecisaReset: true,          // flag para forçar mudança no primeiro login
+      tenantId: t.id,
+      tenantName: t.name,
+      fraction: t.fraction,
+      criadoEm: Date.now(),
+      criadoPor: 'seed',
+      disabled: false,
+      lastLogin: null
+    });
+  }
+
   console.log('[seed] Concluído.');
   return true;
 }
