@@ -1982,3 +1982,278 @@ button { font-family: inherit; }
   .user-item { flex-direction: column; align-items: stretch; }
   .user-actions { justify-content: flex-start; }
 }
+
+/* ==========================================================================
+   PLANOS DE PAGAMENTO · lista (cards)
+   ========================================================================== */
+.planos-list { display: flex; flex-direction: column; gap: 10px; }
+
+.plano-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.plano-card:hover { border-color: var(--primary); box-shadow: var(--shadow-sm); }
+
+.pc-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.pc-info { flex: 1; min-width: 0; }
+.pc-nome { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.pc-meta { font-size: 12px; color: var(--text-muted); line-height: 1.45; }
+
+.pc-progress { display: flex; flex-direction: column; gap: 6px; }
+.pp-bar {
+  height: 8px;
+  background: var(--gray-100);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.pp-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--blue-light));
+  transition: width .3s;
+}
+.pc-progress-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.pc-progress-info strong { color: var(--text); }
+.pc-atraso {
+  font-size: 11.5px;
+  color: var(--red);
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   MODAL NOVO PLANO · preview
+   ========================================================================== */
+.modal-lg { max-width: 760px; }
+
+.plan-preview {
+  background: var(--gray-50);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  margin-top: 14px;
+}
+.pp-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--primary);
+  margin-bottom: 10px;
+}
+.pp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+}
+.pp-table th {
+  background: var(--white);
+  text-align: left;
+  padding: 8px 10px;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: .3px;
+  color: var(--primary);
+  border-bottom: 1.5px solid var(--border-strong);
+}
+.pp-table th.num { text-align: right; }
+.pp-table td {
+  padding: 8px 10px;
+  border-bottom: 1px dashed var(--border);
+}
+.pp-table td.num { text-align: right; }
+.pp-tenant-frac { font-size: 12.5px; font-weight: 700; color: var(--text); }
+.pp-tenant-name { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+.pp-input {
+  width: 100px;
+  padding: 5px 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  font-family: var(--font);
+  font-size: 12.5px;
+  text-align: right;
+}
+.pp-input:focus { outline: none; border-color: var(--primary); }
+
+.pp-footer {
+  margin-top: 12px;
+  border-top: 1.5px solid var(--border);
+  padding-top: 10px;
+}
+.pp-foot-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  padding: 3px 0;
+}
+.pp-foot-line.warn { color: var(--red); }
+.pp-warn {
+  background: var(--red-light);
+  color: #B91C1C;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 11.5px;
+  margin-top: 8px;
+  font-weight: 600;
+}
+.pp-hint {
+  background: var(--amber-light);
+  color: #92400E;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 11px;
+  margin-top: 8px;
+}
+
+/* ==========================================================================
+   MODAL DETALHE PLANO · tabela de prestações
+   ========================================================================== */
+.modal-xl { max-width: 1100px; }
+
+.plan-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.pig-item {
+  background: var(--gray-50);
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+.pig-lbl {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+  color: var(--text-muted);
+}
+.pig-val {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  margin-top: 2px;
+}
+
+.plan-progress {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+.plan-progress .pp-stats {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+.plan-progress .pp-stats strong { color: var(--text); }
+.pp-stats-money { font-variant-numeric: tabular-nums; }
+.pp-warn-atraso {
+  margin-top: 8px;
+  background: var(--red-light);
+  color: #B91C1C;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.plan-desc {
+  background: var(--blue-50);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--text);
+  margin-bottom: 16px;
+  font-style: italic;
+}
+
+.ppt-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.ppt-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+}
+.ppt-table th, .ppt-table td { padding: 7px 6px; text-align: center; border-bottom: 1px solid var(--border); }
+.ppt-table thead th { background: var(--gray-50); font-weight: 700; font-size: 10.5px; color: var(--primary); }
+.ppt-h .ppt-y { font-size: 9px; color: var(--text-dim); font-weight: 600; }
+
+.ppt-tenant {
+  text-align: left !important;
+  padding-left: 12px !important;
+  background: var(--white);
+  border-right: 1.5px solid var(--border-strong);
+  position: sticky;
+  left: 0;
+  z-index: 2;
+}
+.ppt-tenant-h { text-align: left !important; padding-left: 12px !important; min-width: 160px; }
+.ppt-frac { font-size: 12.5px; font-weight: 700; color: var(--text); }
+.ppt-name { font-size: 10.5px; color: var(--text-muted); }
+
+.ppt-total, .ppt-total-h {
+  background: var(--blue-50);
+  border-left: 1.5px solid var(--border-strong);
+  text-align: right !important;
+  padding-right: 12px !important;
+}
+.ppt-total strong { color: var(--text); font-size: 12.5px; }
+.ppt-of { font-size: 9.5px; color: var(--text-dim); }
+
+.ppt-cell { font-weight: 600; border-radius: 3px; }
+.ppt-pendente   { background: var(--gray-50);              color: var(--text-dim); }
+.ppt-paga       { background: rgba(16,185,129,.14);        color: #047857; }
+.ppt-em_atraso  { background: rgba(239,68,68,.14);         color: #B91C1C; }
+.ppt-cancelada  { background: var(--gray-100);             color: var(--text-dim); text-decoration: line-through; }
+
+.ppt-legend { display: flex; gap: 14px; padding: 12px 4px; flex-wrap: wrap; font-size: 11.5px; }
+.ppt-legend .dot.ppt-paga      { background: rgba(16,185,129,.4); }
+.ppt-legend .dot.ppt-pendente  { background: var(--gray-100); }
+.ppt-legend .dot.ppt-em_atraso { background: rgba(239,68,68,.4); }
+.ppt-legend .dot.ppt-cancelada { background: var(--gray-300); }
+
+/* Chip de prestação no modal Registar Pagamento */
+.chip-prest {
+  flex-direction: column;
+  height: auto !important;
+  padding: 8px 10px !important;
+  min-height: 50px;
+}
+
+@media (max-width: 540px) {
+  .plan-info-grid { grid-template-columns: 1fr 1fr; }
+  .pc-meta { font-size: 11.5px; }
+}
+
+.error-msg {
+  background: var(--red-light);
+  color: #B91C1C;
+  padding: 12px;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 13px;
+  margin: 8px 0;
+}

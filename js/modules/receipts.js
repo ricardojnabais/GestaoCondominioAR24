@@ -27,7 +27,7 @@ import { todayISO } from '../utils/format.js';
  * @param {string} [data.data] - data ISO (default: hoje)
  * @param {string} [data.descricao] - texto livre
  * @param {string} [data.planoId] - se for prestação de plano
- * @param {string} [data.prestacaoId] - se for prestação específica
+ * @param {Array<string>} [data.prestacoesIds] - ids das prestações pagas (se tipo=prestacao)
  * @returns {Promise<Object>} - documento gravado
  */
 export async function emitir(data) {
@@ -38,6 +38,9 @@ export async function emitir(data) {
   if (!data.mesReferencia || data.mesReferencia.length === 0) {
     throw new Error('Indique pelo menos um mês de referência.');
   }
+  if (data.tipo === 'prestacao' && (!data.planoId || !data.prestacoesIds || data.prestacoesIds.length === 0)) {
+    throw new Error('Para prestações: plano e prestações são obrigatórios.');
+  }
 
   const dataRecibo = data.data || todayISO();
   const ano = dataRecibo.split('-')[0];
@@ -45,14 +48,19 @@ export async function emitir(data) {
   // Atribuir número sequencial
   const { numero, formatado } = await numeracao.nextReceiptNumber(ano);
 
-  // Validar que o tenant existe
   const tenant = await store.getDoc('tenants', data.tenantId);
   if (!tenant) throw new Error(`Condómino "${data.tenantId}" não existe.`);
 
   // Descrição inteligente se não fornecida
   let descricao = data.descricao;
   if (!descricao) {
-    descricao = autoDescricao(data.tipo, data.mesReferencia);
+    if (data.tipo === 'prestacao') {
+      const plano = await store.getDoc('planos', data.planoId);
+      const numLabel = data.prestacoesIds.length === 1 ? '1 prestação' : `${data.prestacoesIds.length} prestações`;
+      descricao = `${numLabel} · ${plano?.nome || 'Plano'}`;
+    } else {
+      descricao = autoDescricao(data.tipo, data.mesReferencia);
+    }
   }
 
   const doc = {
@@ -70,13 +78,31 @@ export async function emitir(data) {
     descricao,
     tipo: data.tipo,
     planoId: data.planoId || null,
-    prestacaoId: data.prestacaoId || null,
+    prestacoesIds: data.prestacoesIds || null,
     cancelado: false,
     estornoDe: null,
     createdAt: Date.now()
   };
 
   const saved = await store.setDoc('receipts', doc);
+
+  // Se for de prestações, marcar cada uma como paga
+  if (data.tipo === 'prestacao' && data.prestacoesIds) {
+    for (const prestId of data.prestacoesIds) {
+      try {
+        const p = await store.getDoc('prestacoes', prestId);
+        if (p && p.estado !== 'paga' && p.estado !== 'cancelada') {
+          p.estado = 'paga';
+          p.reciboId = saved.id;
+          p.pagoEm = Date.now();
+          await store.setDoc('prestacoes', p);
+        }
+      } catch (e) {
+        console.warn(`Falhou marcar prestação ${prestId} como paga:`, e);
+      }
+    }
+  }
+
   return saved;
 }
 
@@ -138,6 +164,26 @@ export async function cancelar(receiptId, motivo) {
   original.canceladoEm = Date.now();
   original.motivoCancelamento = motivo || 'Cancelado pelo administrador';
   await store.setDoc('receipts', original);
+
+  // Se era recibo de prestações, reverter o estado das prestações
+  if (original.tipo === 'prestacao' && original.prestacoesIds) {
+    for (const prestId of original.prestacoesIds) {
+      try {
+        const p = await store.getDoc('prestacoes', prestId);
+        if (p && p.estado === 'paga' && p.reciboId === receiptId) {
+          // Voltar a pendente ou em_atraso baseado na data
+          const { currentMonthRef } = await import('../utils/format.js');
+          const mesAtual = currentMonthRef();
+          p.estado = (p.mesReferencia && p.mesReferencia < mesAtual) ? 'em_atraso' : 'pendente';
+          p.reciboId = null;
+          p.pagoEm = null;
+          await store.setDoc('prestacoes', p);
+        }
+      } catch (e) {
+        console.warn(`Falhou desmarcar prestação ${prestId}:`, e);
+      }
+    }
+  }
 
   // Criar estorno
   const ano = original.data.split('-')[0];

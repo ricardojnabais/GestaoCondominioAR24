@@ -20,6 +20,7 @@ import * as adminQuotas from './ui/admin/quotas.js';
 import * as adminBanco from './ui/admin/banco.js';
 import * as adminDespesas from './ui/admin/despesas.js';
 import * as adminRubricas from './ui/admin/rubricas.js';
+import * as adminPlanos from './ui/admin/planos.js';
 import * as adminComunicacoes from './ui/admin/comunicacoes.js';
 import * as adminUtilizadores from './ui/admin/utilizadores.js';
 import * as condominoHome from './ui/condomino/home.js';
@@ -51,6 +52,7 @@ async function main() {
   router.register('admin/banco',           adminBanco,           { requiresAuth: 'admin' });
   router.register('admin/despesas',        adminDespesas,        { requiresAuth: 'admin' });
   router.register('admin/rubricas',        adminRubricas,        { requiresAuth: 'admin' });
+  router.register('admin/planos',          adminPlanos,          { requiresAuth: 'admin' });
   router.register('admin/comunicacoes',    adminComunicacoes,    { requiresAuth: 'admin' });
   router.register('admin/utilizadores',    adminUtilizadores,    { requiresAuth: 'admin' });
   router.register('admin/consultar',       adminRecibos,         { requiresAuth: 'admin' });  // alias
