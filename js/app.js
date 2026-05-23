@@ -20,7 +20,9 @@ import * as adminQuotas from './ui/admin/quotas.js';
 import * as adminBanco from './ui/admin/banco.js';
 import * as adminDespesas from './ui/admin/despesas.js';
 import * as adminRubricas from './ui/admin/rubricas.js';
+import * as adminComunicacoes from './ui/admin/comunicacoes.js';
 import * as condominoHome from './ui/condomino/home.js';
+import * as condominoComunicacoes from './ui/condomino/comunicacoes.js';
 
 // ─── Bootstrap ────────────────────────────────────────────
 
@@ -42,13 +44,16 @@ async function main() {
   router.register('admin/home', adminHome, { requiresAuth: 'admin' });
   router.register('condomino/home', condominoHome, { requiresAuth: 'condomino' });
 
-  // Rotas reais (Fase 2 + 3a completa)
-  router.register('admin/recibos',      adminRecibos,  { requiresAuth: 'admin' });
-  router.register('admin/quotas',       adminQuotas,   { requiresAuth: 'admin' });
-  router.register('admin/banco',        adminBanco,    { requiresAuth: 'admin' });
-  router.register('admin/despesas',     adminDespesas, { requiresAuth: 'admin' });
-  router.register('admin/rubricas',     adminRubricas, { requiresAuth: 'admin' });
-  router.register('admin/consultar',    adminRecibos,  { requiresAuth: 'admin' });  // alias
+  // Rotas reais (Fase 2 + 3a + 4 · comunicações)
+  router.register('admin/recibos',         adminRecibos,         { requiresAuth: 'admin' });
+  router.register('admin/quotas',          adminQuotas,          { requiresAuth: 'admin' });
+  router.register('admin/banco',           adminBanco,           { requiresAuth: 'admin' });
+  router.register('admin/despesas',        adminDespesas,        { requiresAuth: 'admin' });
+  router.register('admin/rubricas',        adminRubricas,        { requiresAuth: 'admin' });
+  router.register('admin/comunicacoes',    adminComunicacoes,    { requiresAuth: 'admin' });
+  router.register('admin/consultar',       adminRecibos,         { requiresAuth: 'admin' });  // alias
+
+  router.register('condomino/comunicacoes', condominoComunicacoes, { requiresAuth: 'condomino' });
 
   // Rotas placeholder (a implementar nas próximas fases)
   router.register('admin/quotas-nova',  makePlaceholder('Inserir Quota', 'Modal · Registar Pagamento'), { requiresAuth: 'admin' });

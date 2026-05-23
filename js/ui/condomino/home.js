@@ -1,11 +1,18 @@
 /**
  * Página: Menu Principal · Condómino
+ *
+ * Mostra:
+ *  - Saudação e dados da fração
+ *  - Tile "Fale com a Administração" com badge de não lidas
+ *  - (Mais tiles serão adicionados na Fase 5)
  */
 
 import * as auth from '../../auth/local-auth.js';
 import * as store from '../../store/local-store.js';
 import * as router from '../router.js';
+import * as comunicacoes from '../../modules/comunicacoes.js';
 import { icon } from '../icons.js';
+import { formatMoney } from '../../utils/format.js';
 
 export async function render(container) {
   const session = auth.getSession();
@@ -13,9 +20,11 @@ export async function render(container) {
   const fraction = session?.fraction || '';
   const tenantId = session?.tenantId;
 
-  // Calcular estado pessoal
   const tenant = tenantId ? await store.getDoc('tenants', tenantId) : null;
   const quotaMensal = tenant?.rentByYear?.['2026'] || 0;
+
+  // Contagem de comunicações não lidas
+  const naoLidas = tenantId ? await comunicacoes.contagemNaoLidasCondomino(tenantId) : 0;
 
   container.innerHTML = `
     <div class="app">
@@ -47,12 +56,34 @@ export async function render(container) {
           </div>
         </div>
 
-        <div class="placeholder">
-          <h3>Versão de teste em construção</h3>
-          <p>
-            Login do condómino está a funcionar.<br>
-            Quota mensal: <strong>${(quotaMensal/100).toFixed(2)} €</strong><br>
-            Permilagem: <strong>${tenant?.permilage || 0}‰</strong>
+        <div class="menu-grid">
+          <a class="menu-tile span-2" data-route="condomino/comunicacoes">
+            <div class="mt-icon-wrap">
+              ${icon('ic-payment-out', 'mt-icon')}
+              ${naoLidas > 0 ? `<span class="mt-badge">${naoLidas}</span>` : ''}
+            </div>
+            <div class="mt-name">Fale com a Administração</div>
+          </a>
+        </div>
+
+        <div class="info-card">
+          <div class="info-row">
+            <span class="info-lbl">Quota mensal</span>
+            <span class="info-val">${formatMoney(quotaMensal)}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-lbl">Permilagem</span>
+            <span class="info-val">${tenant?.permilage || 0}‰</span>
+          </div>
+          <div class="info-row">
+            <span class="info-lbl">Email</span>
+            <span class="info-val">${tenant?.email || '—'}</span>
+          </div>
+        </div>
+
+        <div class="placeholder" style="margin-top:18px">
+          <p style="font-size:13px;color:var(--text-muted)">
+            Restantes secções (estado de quotas, situação bancária, recibos) serão disponibilizadas na Fase 5.
           </p>
           <button class="btn-cta" id="logout-cta">Terminar Sessão</button>
         </div>
@@ -63,4 +94,12 @@ export async function render(container) {
   const doLogout = () => { auth.logout(); router.navigate('login'); };
   container.querySelector('#logout-btn').addEventListener('click', doLogout);
   container.querySelector('#logout-cta').addEventListener('click', doLogout);
+
+  // Navegação por data-route
+  container.querySelectorAll('[data-route]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      router.navigate(el.dataset.route);
+    });
+  });
 }

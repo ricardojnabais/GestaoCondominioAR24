@@ -1592,3 +1592,331 @@ button { font-family: inherit; }
 @media (max-width: 540px) {
   .quotas-table .saldo-col { min-width: 60px; padding-right: 6px !important; padding-left: 6px !important; }
 }
+
+/* ==========================================================================
+   COMUNICAÇÕES · lista
+   ========================================================================== */
+.com-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.com-item {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  align-items: center;
+  cursor: pointer;
+  transition: all .15s;
+}
+.com-item:hover { border-color: var(--primary); box-shadow: var(--shadow-sm); }
+.com-item.unread {
+  background: linear-gradient(90deg, var(--blue-50) 0%, var(--white) 50%);
+  border-color: var(--blue-tint);
+}
+.com-tipo {
+  font-size: 22px;
+  text-align: center;
+  width: 38px; height: 38px;
+  background: var(--gray-50);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.com-body { min-width: 0; }
+.com-line1 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 3px;
+}
+.com-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--primary);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.com-assunto {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.com-item.unread .com-assunto { font-weight: 700; }
+.com-resp {
+  font-size: 11px;
+  background: var(--blue-50);
+  color: var(--primary);
+  padding: 2px 7px;
+  border-radius: 99px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.com-line2 {
+  font-size: 12px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.dot-sep { color: var(--text-dim); }
+.com-dest { color: var(--text); font-weight: 500; }
+.com-badges { flex-shrink: 0; }
+
+/* Badges de estado · também usados no modal detalhe */
+.th-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
+.th-badge-aberto    { background: var(--red-light);   color: #B91C1C; }
+.th-badge-em_curso  { background: var(--amber-light); color: #92400E; }
+.th-badge-completo  { background: var(--green-light); color: #047857; }
+
+/* ==========================================================================
+   COMUNICAÇÕES · modal thread
+   ========================================================================== */
+.modal-thread .th-tipo {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+
+.th-meta {
+  background: var(--gray-50);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.th-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+}
+.th-meta-lbl {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+  color: var(--text-muted);
+  min-width: 50px;
+}
+.th-meta-val { color: var(--text); font-weight: 500; }
+
+.th-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+  max-height: 50vh;
+  overflow-y: auto;
+  padding: 4px;
+}
+.th-bubble {
+  max-width: 88%;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+.th-bubble-me {
+  align-self: flex-end;
+  background: var(--blue-50);
+  border: 1px solid var(--blue-tint);
+}
+.th-bubble-them {
+  align-self: flex-start;
+  background: var(--white);
+  border: 1px solid var(--border-strong);
+}
+.th-bubble-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  margin-bottom: 4px;
+  gap: 12px;
+  color: var(--text-muted);
+}
+.th-bubble-meta strong { color: var(--text); font-weight: 600; }
+.th-bubble-text {
+  color: var(--text);
+  word-wrap: break-word;
+}
+
+.th-reply {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1.5px solid var(--border);
+}
+.th-reply textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 13.5px;
+  resize: vertical;
+  color: var(--text);
+}
+.th-reply textarea:focus { outline: none; border-color: var(--primary); }
+.th-reply .btn { align-self: flex-end; }
+
+.th-closed-msg {
+  background: var(--gray-50);
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 12.5px;
+  text-align: center;
+  margin-top: 12px;
+}
+
+/* ==========================================================================
+   COMUNICAÇÕES · modais nova (Admin + Condómino) · radio buttons
+   ========================================================================== */
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.radio-option {
+  display: flex;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all .15s;
+  align-items: flex-start;
+  background: var(--white);
+}
+.radio-option:hover { border-color: var(--blue-tint); background: var(--blue-50); }
+.radio-option input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.radio-option input[type="radio"]:checked + .radio-content .radio-title {
+  color: var(--primary);
+}
+.radio-option:has(input:checked) {
+  border-color: var(--primary);
+  background: var(--blue-50);
+  box-shadow: 0 0 0 2px rgba(30,84,199,.1);
+}
+.radio-content { flex: 1; }
+.radio-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+.radio-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.modal textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 13.5px;
+  resize: vertical;
+  color: var(--text);
+}
+.modal textarea:focus { outline: none; border-color: var(--primary); }
+
+/* ==========================================================================
+   BADGE no menu tile (notificações não lidas)
+   ========================================================================== */
+.mt-icon-wrap { position: relative; }
+.mt-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 22px;
+  height: 22px;
+  background: var(--red);
+  color: var(--white);
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+  box-shadow: 0 2px 6px rgba(239,68,68,.4);
+  border: 2px solid var(--white);
+}
+
+/* ==========================================================================
+   Card de informação genérico (condómino home)
+   ========================================================================== */
+.info-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin-top: 18px;
+  box-shadow: var(--shadow-sm);
+}
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 0;
+  border-bottom: 1px dashed var(--border);
+}
+.info-row:last-child { border-bottom: none; }
+.info-lbl {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: .3px;
+}
+.info-val {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Mobile */
+@media (max-width: 540px) {
+  .com-item { grid-template-columns: 36px 1fr auto; padding: 12px 12px; }
+  .com-tipo { width: 32px; height: 32px; font-size: 18px; }
+  .com-line2 { font-size: 11px; }
+  .th-bubble { max-width: 95%; font-size: 13px; }
+  .radio-option { padding: 10px 12px; }
+  .radio-title { font-size: 13px; }
+  .radio-sub { font-size: 11.5px; }
+}

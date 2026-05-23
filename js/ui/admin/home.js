@@ -6,6 +6,7 @@ import * as auth from '../../auth/local-auth.js';
 import * as store from '../../store/local-store.js';
 import * as router from '../router.js';
 import * as saldoBanco from '../../modules/saldo-banco.js';
+import * as comunicacoes from '../../modules/comunicacoes.js';
 import * as modalRP from '../modal-registar-pagamento.js';
 import * as modalND from '../modal-nova-despesa.js';
 import { icon } from '../icons.js';
@@ -14,6 +15,7 @@ import { formatMoney } from '../../utils/format.js';
 export async function render(container) {
   const session = auth.getSession();
   const operatorName = session?.operatorName || 'Operador';
+  const naoLidas = await comunicacoes.contagemNaoLidasAdmin();
 
   container.innerHTML = `
     <div class="app">
@@ -68,6 +70,13 @@ export async function render(container) {
           <a class="menu-tile" data-route="admin/analise">
             <div class="mt-icon-wrap">${icon('ic-dashboard', 'mt-icon')}</div>
             <div class="mt-name">Análise</div>
+          </a>
+          <a class="menu-tile span-2" data-route="admin/comunicacoes">
+            <div class="mt-icon-wrap">
+              ${icon('ic-receipt', 'mt-icon')}
+              ${naoLidas > 0 ? `<span class="mt-badge">${naoLidas}</span>` : ''}
+            </div>
+            <div class="mt-name">Enviar Comunicação${naoLidas > 0 ? ` · ${naoLidas} nova${naoLidas > 1 ? 's' : ''}` : ''}</div>
           </a>
           <a class="menu-tile span-2" data-route="admin/rubricas">
             <div class="mt-icon-wrap">${icon('ic-settings', 'mt-icon')}</div>
