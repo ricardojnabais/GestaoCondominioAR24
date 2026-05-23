@@ -21,7 +21,9 @@ import { todayISO } from '../utils/format.js';
  * @param {string} data.tenantId - obrigatório
  * @param {string} data.tipo - 'quota' | 'prestacao' | 'outro'
  * @param {Array<string>} data.mesReferencia - meses abrangidos (YYYY-MM)
- * @param {number} data.valor_centimos - total em cêntimos
+ * @param {number} data.valor_centimos - dinheiro recebido em mão
+ * @param {number} [data.excesso_centimos] - quanto deste valor é excesso (vai para saldo)
+ * @param {number} [data.saldoUsado_centimos] - quanto saldo prévio foi usado para acertar
  * @param {string} [data.data] - data ISO (default: hoje)
  * @param {string} [data.descricao] - texto livre
  * @param {string} [data.planoId] - se for prestação de plano
@@ -62,6 +64,8 @@ export async function emitir(data) {
     fraction: tenant.fraction,
     data: dataRecibo,
     valor_centimos: data.valor_centimos,
+    excesso_centimos: data.excesso_centimos || 0,
+    saldoUsado_centimos: data.saldoUsado_centimos || 0,
     mesReferencia: [...data.mesReferencia].sort(),
     descricao,
     tipo: data.tipo,
@@ -192,19 +196,45 @@ export async function recibosDeCondominoNoMes(tenantId, mesRef) {
 }
 
 /**
+ * Calcula quanto deste recibo foi efetivamente aplicado às quotas.
+ * quotaCoberta = valor_centimos + saldoUsado − excesso
+ *
+ * Note: valor_centimos é dinheiro real recebido. Excesso vai para o
+ * saldo do condómino. SaldoUsado vem do saldo prévio e é aplicado à quota.
+ */
+function quotaCobertaPorRecibo(recibo) {
+  return (recibo.valor_centimos || 0)
+       + (recibo.saldoUsado_centimos || 0)
+       - (recibo.excesso_centimos || 0);
+}
+
+/**
  * Total pago por um condómino num mês específico.
- * Soma todos os recibos onde esse mês aparece em mesReferencia.
  *
- * IMPORTANTE: se um recibo cobre múltiplos meses (ex: pagamento anual),
- * o valor é DIVIDIDO proporcionalmente entre os meses para apresentação
- * na tabela de quotas. Mas a soma total continua certa.
+ * Para a tabela de quotas. Soma todos os recibos onde esse mês aparece em
+ * mesReferencia, dividindo proporcionalmente a quotaCoberta entre os meses
+ * do recibo (no caso de pagamentos múltiplos).
  *
- * Ex: recibo de 216€ por Jan-Jun (6 meses) = 36€ atribuído a cada mês.
+ * Ex: recibo de 216€ (quotaCoberta) por Jan-Jun (6 meses) → 36€ atribuído a cada mês.
  */
 export async function valorPagoNoMes(tenantId, mesRef) {
   const recs = await recibosDeCondominoNoMes(tenantId, mesRef);
   return recs.reduce((sum, r) => {
     const meses = (r.mesReferencia || []).length || 1;
-    return sum + Math.round(r.valor_centimos / meses);
+    return sum + Math.round(quotaCobertaPorRecibo(r) / meses);
   }, 0);
+}
+
+/**
+ * Calcula o saldo a favor de um condómino (saldo do balde).
+ *   saldo = Σ(excesso) − Σ(saldoUsado) sobre recibos válidos
+ * Valor positivo = condómino tem saldo a favor (créditos).
+ * @returns {Promise<number>} - cêntimos
+ */
+export async function saldoCondomino(tenantId) {
+  const all = await listar({ tenantId });
+  const validos = all.filter(r => !r.cancelado && !r.estornoDe);
+  return validos.reduce((s, r) =>
+    s + (r.excesso_centimos || 0) - (r.saldoUsado_centimos || 0)
+  , 0);
 }

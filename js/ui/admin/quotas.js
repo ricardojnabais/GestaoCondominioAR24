@@ -104,6 +104,8 @@ async function renderTable() {
 
   // Calcular células
   const rows = [];
+  let totalSaldosGlobal = 0;
+
   for (const t of tenants) {
     const quotaMensal = t.rentByYear?.[ano] || 0;
     const cells = [];
@@ -126,10 +128,15 @@ async function renderTable() {
       }
       cells.push({ pago, quotaMensal, cls, m, isPast });
     }
-    rows.push({ tenant: t, cells, totalPago, totalEsperado });
+
+    // Saldo a favor (excesso − saldoUsado)
+    const saldoFavor = await receipts.saldoCondomino(t.id);
+    totalSaldosGlobal += saldoFavor;
+
+    rows.push({ tenant: t, cells, totalPago, totalEsperado, saldoFavor });
   }
 
-  // Totais por mês (sum de todas as células)
+  // Totais por mês
   const monthTotals = months.map((_, i) =>
     rows.reduce((sum, r) => sum + r.cells[i].pago, 0)
   );
@@ -147,6 +154,7 @@ async function renderTable() {
           return `<th class="${cls}">${MESES_SHORT[i]}</th>`;
         }).join('')}
         <th class="num total-col">Total</th>
+        <th class="num saldo-col">Saldo</th>
       </tr>
     </thead>
   `;
@@ -169,6 +177,9 @@ async function renderTable() {
         <strong>${formatMoney(r.totalPago)}</strong>
         ${r.totalPago < r.totalEsperado ? `<div class="missing">−${formatMoney(r.totalEsperado - r.totalPago)}</div>` : ''}
       </td>
+      <td class="num saldo-col ${r.saldoFavor > 0 ? 'has-saldo' : ''}">
+        ${r.saldoFavor > 0 ? `<strong>+${formatMoney(r.saldoFavor)}</strong>` : '—'}
+      </td>
     </tr>
   `).join('');
 
@@ -176,11 +187,14 @@ async function renderTable() {
     <tfoot>
       <tr>
         <td class="sticky-col"><strong>TOTAL</strong></td>
-        ${monthTotals.map((tot, i) => `
+        ${monthTotals.map((tot) => `
           <td class="num"><strong>${tot > 0 ? formatMoney(tot, false) : '—'}</strong></td>
         `).join('')}
         <td class="num total-col">
           <strong>${formatMoney(monthTotals.reduce((a, b) => a + b, 0))}</strong>
+        </td>
+        <td class="num saldo-col">
+          ${totalSaldosGlobal > 0 ? `<strong>+${formatMoney(totalSaldosGlobal)}</strong>` : '—'}
         </td>
       </tr>
     </tfoot>
@@ -201,6 +215,10 @@ async function renderTable() {
         <div class="qs-val ${monthExpected.reduce((a, b) => a + b, 0) - monthTotals.reduce((a, b) => a + b, 0) > 0 ? 'neg' : 'pos'}">
           ${formatMoney(monthExpected.reduce((a, b) => a + b, 0) - monthTotals.reduce((a, b) => a + b, 0))}
         </div>
+      </div>
+      <div class="qs-stat">
+        <div class="qs-lbl">Saldos a favor</div>
+        <div class="qs-val ${totalSaldosGlobal > 0 ? 'pos' : ''}">${formatMoney(totalSaldosGlobal)}</div>
       </div>
     </div>
     <div class="table-wrap quotas-table-wrap">

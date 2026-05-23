@@ -1,15 +1,12 @@
 /**
  * Modal: Registar Pagamento (de Quota).
  *
- * Permite ao admin registar um pagamento de quota dum condómino.
  * Suporta:
  *   - Mês único (pagamento mensal normal)
  *   - Múltiplos meses (pagamento semestral, anual, regularização de atrasos)
- *
- * Mostra em tempo real:
- *   - Quotas esperadas para os meses selecionados
- *   - Diferença entre valor inserido e valor esperado
- *   - Aviso se houver discrepância
+ *   - Pagamento parcial (de mês parcialmente pago, completar valor em falta)
+ *   - Pagamento em excesso (gera saldo a favor)
+ *   - Usar saldo prévio (checkbox · acerta valor com balde do condómino)
  */
 
 import * as store from '../store/local-store.js';
@@ -19,14 +16,8 @@ import { todayISO, formatMoney, parseMoney, formatMonth, monthsOfYear } from '..
 let modalEl = null;
 let tenants = [];
 let onSuccessCallback = null;
+let saldoTenantAtual = 0;  // cêntimos · saldo do condómino selecionado
 
-/**
- * Abre o modal.
- * @param {Object} [opts]
- * @param {string} [opts.tenantId] - pré-selecionar condómino
- * @param {string} [opts.mesRef] - pré-selecionar mês (YYYY-MM)
- * @param {Function} [opts.onSuccess] - callback após gravar
- */
 export async function open(opts = {}) {
   tenants = await store.listDocs('tenants');
   tenants.sort((a, b) => (a.fraction || '').localeCompare(b.fraction || ''));
@@ -42,24 +33,19 @@ export async function open(opts = {}) {
 
   bindEvents();
   await refreshChipsState();
+  await refreshSaldoCard();
   refreshComputation();
 }
 
 export function close() {
-  if (modalEl) {
-    modalEl.remove();
-    modalEl = null;
-  }
+  if (modalEl) { modalEl.remove(); modalEl = null; }
   document.body.style.overflow = '';
 }
-
-// ─── HTML ─────────────────────────────────────────────────
 
 function buildHTML(opts) {
   const today = todayISO();
   const year = today.split('-')[0];
   const months = monthsOfYear(year);
-  const currentMonth = today.slice(0, 7);
 
   const tenantOptions = tenants.map(t => {
     const selected = t.id === opts.tenantId ? 'selected' : '';
@@ -89,6 +75,15 @@ function buildHTML(opts) {
           </select>
         </div>
 
+        <!-- Card saldo a favor (aparece quando condómino tem saldo > 0) -->
+        <div id="rp-saldo-card" class="saldo-card" style="display:none">
+          <div class="saldo-card-ic">€</div>
+          <div class="saldo-card-info">
+            <div class="saldo-card-lbl">Saldo a favor</div>
+            <div class="saldo-card-val" id="rp-saldo-val">0,00 €</div>
+          </div>
+        </div>
+
         <div class="field-row">
           <div class="field">
             <label>Data do Pagamento</label>
@@ -115,13 +110,24 @@ function buildHTML(opts) {
           <input type="text" id="rp-valor" placeholder="0,00" inputmode="decimal">
         </div>
 
-        <!-- Painel de distribuição automática -->
+        <!-- Checkbox usar saldo (aparece quando há saldo e falta dinheiro) -->
+        <div id="rp-usar-saldo-wrap" class="usar-saldo-wrap" style="display:none">
+          <label class="checkbox-label">
+            <input type="checkbox" id="rp-usar-saldo">
+            <span>Usar saldo a favor (<strong id="rp-usar-saldo-val">0,00 €</strong>) para acertar</span>
+          </label>
+        </div>
+
+        <!-- Painel de distribuição -->
         <div id="rp-distribuicao" class="distribuicao-panel" style="display:none">
           <div class="dp-title">Distribuição</div>
           <div id="rp-distribuicao-rows"></div>
           <div class="dp-totals">
             <div><span>Esperado</span> <strong id="rp-esperado">0,00 €</strong></div>
             <div><span>Inserido</span> <strong id="rp-inserido">0,00 €</strong></div>
+            <div id="rp-saldo-aplicado-row" style="display:none">
+              <span>+ Saldo aplicado</span> <strong id="rp-saldo-aplicado">0,00 €</strong>
+            </div>
             <div class="dp-diff"><span>Diferença</span> <strong id="rp-diff">0,00 €</strong></div>
           </div>
           <div id="rp-aviso" class="dp-aviso" style="display:none"></div>
@@ -141,48 +147,34 @@ function buildHTML(opts) {
   `;
 }
 
-// ─── Events ──────────────────────────────────────────────
-
 function bindEvents() {
   modalEl.querySelector('#rp-close').addEventListener('click', close);
   modalEl.querySelector('#rp-cancel').addEventListener('click', close);
-  modalEl.addEventListener('click', (e) => {
-    if (e.target === modalEl) close();
-  });
+  modalEl.addEventListener('click', (e) => { if (e.target === modalEl) close(); });
 
   modalEl.querySelector('#rp-tenant').addEventListener('change', async () => {
     await refreshChipsState();
+    await refreshSaldoCard();
     refreshComputation();
   });
 
   modalEl.querySelectorAll('.chip-month').forEach(chip => {
     chip.addEventListener('click', () => {
-      if (chip.classList.contains('disabled')) return;  // não selecionar pagos
+      if (chip.classList.contains('disabled')) return;
       chip.classList.toggle('selected');
       refreshComputation();
     });
   });
 
   modalEl.querySelector('#rp-valor').addEventListener('input', refreshComputation);
-
+  modalEl.querySelector('#rp-usar-saldo').addEventListener('change', refreshComputation);
   modalEl.querySelector('#rp-submit').addEventListener('click', submit);
 }
 
-// ─── Estado dos chips (pagos / parciais / livres) ────────
-
-/**
- * Atualiza o estado visual dos chips de meses consoante o que já está pago
- * pelo condómino selecionado.
- *
- * - Pago integralmente: chip a cinzento, não-selecionável, com tooltip
- * - Pago parcialmente: chip com indicador (ainda selecionável para completar)
- * - Não pago: chip normal, selecionável
- */
 async function refreshChipsState() {
   const tenantId = modalEl.querySelector('#rp-tenant').value;
   const chips = modalEl.querySelectorAll('.chip-month');
 
-  // Sem condómino selecionado: limpar estado
   if (!tenantId) {
     chips.forEach(c => {
       c.classList.remove('disabled', 'partial');
@@ -202,12 +194,10 @@ async function refreshChipsState() {
     chip.classList.remove('disabled', 'partial');
 
     if (pago > 0 && pago >= quotaMensal) {
-      // Pago integralmente — bloquear
       chip.classList.add('disabled');
-      chip.classList.remove('selected');  // se estava selecionado, limpar
+      chip.classList.remove('selected');
       chip.title = `Já pago: ${formatMoney(pago)}`;
     } else if (pago > 0) {
-      // Pago parcialmente — alertar mas permitir
       chip.classList.add('partial');
       chip.title = `Pago parcial: ${formatMoney(pago)} de ${formatMoney(quotaMensal)} esperado`;
     } else {
@@ -216,7 +206,29 @@ async function refreshChipsState() {
   }
 }
 
-// ─── Cálculos em tempo real ──────────────────────────────
+async function refreshSaldoCard() {
+  const tenantId = modalEl.querySelector('#rp-tenant').value;
+  const card = modalEl.querySelector('#rp-saldo-card');
+  const usarWrap = modalEl.querySelector('#rp-usar-saldo-wrap');
+
+  if (!tenantId) {
+    saldoTenantAtual = 0;
+    card.style.display = 'none';
+    usarWrap.style.display = 'none';
+    return;
+  }
+
+  saldoTenantAtual = await receipts.saldoCondomino(tenantId);
+
+  if (saldoTenantAtual > 0) {
+    modalEl.querySelector('#rp-saldo-val').textContent = formatMoney(saldoTenantAtual);
+    modalEl.querySelector('#rp-usar-saldo-val').textContent = formatMoney(saldoTenantAtual);
+    card.style.display = 'flex';
+  } else {
+    card.style.display = 'none';
+    usarWrap.style.display = 'none';
+  }
+}
 
 function getSelectedMonths() {
   return Array.from(modalEl.querySelectorAll('.chip-month.selected'))
@@ -227,16 +239,17 @@ function getSelectedMonths() {
 async function refreshComputation() {
   const tenantId = modalEl.querySelector('#rp-tenant').value;
   const selected = getSelectedMonths();
-  const valorStr = modalEl.querySelector('#rp-valor').value;
-  const valor = parseMoney(valorStr) || 0;
+  const valor = parseMoney(modalEl.querySelector('#rp-valor').value) || 0;
+  const usarSaldo = modalEl.querySelector('#rp-usar-saldo').checked;
 
   const panel = modalEl.querySelector('#rp-distribuicao');
   const submit = modalEl.querySelector('#rp-submit');
+  const usarWrap = modalEl.querySelector('#rp-usar-saldo-wrap');
 
-  // Validações
   if (!tenantId || selected.length === 0) {
     panel.style.display = 'none';
     submit.disabled = true;
+    usarWrap.style.display = 'none';
     return;
   }
 
@@ -244,9 +257,7 @@ async function refreshComputation() {
   const ano = selected[0].split('-')[0];
   const quotaMensal = tenant?.rentByYear?.[ano] || 0;
 
-  // Calcular esperado para CADA mês selecionado, descontando o que já foi pago.
-  // Para meses já parcialmente pagos, esperado = falta para completar.
-  // Para meses sem pagamento, esperado = quota inteira.
+  // Esperado para CADA mês (descontando o que já foi pago)
   const rowsData = [];
   let esperado = 0;
   for (const m of selected) {
@@ -256,10 +267,32 @@ async function refreshComputation() {
     rowsData.push({ mes: m, quotaMensal, jaPago, emFalta });
   }
 
+  // Calcular saldoUsado (se aplicável)
+  let saldoUsado = 0;
+  let excesso = 0;
+  let diff = valor - esperado;
+
+  if (diff > 0) {
+    // Pagou mais do que esperado · gera saldo a favor
+    excesso = diff;
+    saldoUsado = 0;
+  } else if (diff < 0 && usarSaldo && saldoTenantAtual > 0) {
+    // Pagou menos · usar do saldo para acertar (até ao que tem disponível)
+    saldoUsado = Math.min(saldoTenantAtual, -diff);
+    excesso = 0;
+    diff = diff + saldoUsado;  // pode ainda ficar negativo se saldo insuficiente
+  }
+
+  // Mostrar/esconder o checkbox de usar saldo
+  if (saldoTenantAtual > 0 && (valor < esperado)) {
+    usarWrap.style.display = 'block';
+  } else {
+    usarWrap.style.display = 'none';
+  }
+
   // Construir linhas de distribuição
   const rowsHtml = rowsData.map(r => {
     if (r.jaPago > 0) {
-      // Mês parcialmente pago — mostrar contexto
       return `
         <div class="dp-row dp-row-partial">
           <div class="dp-row-info">
@@ -282,36 +315,49 @@ async function refreshComputation() {
   modalEl.querySelector('#rp-esperado').textContent = formatMoney(esperado);
   modalEl.querySelector('#rp-inserido').textContent = formatMoney(valor);
 
-  const diff = valor - esperado;
+  // Linha de saldo aplicado
+  const saldoRow = modalEl.querySelector('#rp-saldo-aplicado-row');
+  if (saldoUsado > 0) {
+    saldoRow.style.display = 'flex';
+    modalEl.querySelector('#rp-saldo-aplicado').textContent = formatMoney(saldoUsado);
+  } else {
+    saldoRow.style.display = 'none';
+  }
+
   const diffEl = modalEl.querySelector('#rp-diff');
   diffEl.textContent = formatMoney(diff);
   diffEl.className = diff === 0 ? 'ok' : (diff > 0 ? 'pos' : 'neg');
 
-  // Aviso quando há discrepância
+  // Aviso
   const aviso = modalEl.querySelector('#rp-aviso');
-  if (valor > 0 && diff !== 0) {
+  if (valor > 0) {
     aviso.style.display = 'block';
-    aviso.className = 'dp-aviso warn';
-    if (diff > 0) {
-      aviso.innerHTML = `⚠ Valor inserido é <strong>${formatMoney(diff)}</strong> superior ao esperado. Confirma com o condómino antes de emitir.`;
+    if (diff === 0 && excesso === 0 && saldoUsado === 0) {
+      aviso.className = 'dp-aviso ok';
+      aviso.innerHTML = `✓ Valor confere com o esperado para ${selected.length} ${selected.length === 1 ? 'mês' : 'meses'}.`;
+    } else if (diff === 0 && saldoUsado > 0) {
+      aviso.className = 'dp-aviso ok';
+      aviso.innerHTML = `✓ Acertado com ${formatMoney(saldoUsado)} de saldo. Saldo final: ${formatMoney(saldoTenantAtual - saldoUsado)}.`;
+    } else if (excesso > 0) {
+      aviso.className = 'dp-aviso warn';
+      aviso.innerHTML = `⚠ Excesso de <strong>${formatMoney(excesso)}</strong> · ficará disponível como saldo a favor. Saldo final: <strong>${formatMoney(saldoTenantAtual + excesso)}</strong>.`;
+    } else if (diff < 0) {
+      aviso.className = 'dp-aviso warn';
+      aviso.innerHTML = `⚠ Valor em falta: <strong>${formatMoney(-diff)}</strong>. Recibo será emitido pelo valor recebido (mês fica parcial).`;
     } else {
-      aviso.innerHTML = `⚠ Valor em falta: <strong>${formatMoney(-diff)}</strong>. Recibo só será emitido pelo valor recebido.`;
+      aviso.style.display = 'none';
     }
-  } else if (valor > 0 && diff === 0) {
-    aviso.style.display = 'block';
-    aviso.className = 'dp-aviso ok';
-    aviso.innerHTML = `✓ Valor confere com o esperado para ${selected.length} ${selected.length === 1 ? 'mês' : 'meses'}.`;
   } else {
     aviso.style.display = 'none';
   }
 
   panel.style.display = 'block';
-
-  // Habilitar submit
   submit.disabled = !(tenantId && selected.length > 0 && valor > 0);
-}
 
-// ─── Submit ──────────────────────────────────────────────
+  // Guardar valores computados no elemento para o submit
+  modalEl.dataset.excesso = excesso;
+  modalEl.dataset.saldoUsado = saldoUsado;
+}
 
 async function submit() {
   const tenantId = modalEl.querySelector('#rp-tenant').value;
@@ -321,6 +367,9 @@ async function submit() {
   const valor = parseMoney(modalEl.querySelector('#rp-valor').value);
   const descricao = modalEl.querySelector('#rp-descricao').value.trim();
 
+  const excesso = parseInt(modalEl.dataset.excesso || '0', 10);
+  const saldoUsado = parseInt(modalEl.dataset.saldoUsado || '0', 10);
+
   try {
     const recibo = await receipts.emitir({
       tenantId,
@@ -328,11 +377,16 @@ async function submit() {
       data,
       mesReferencia: selected,
       valor_centimos: valor,
+      excesso_centimos: excesso,
+      saldoUsado_centimos: saldoUsado,
       descricao: descricao || undefined
     });
 
     close();
-    alert(`Recibo ${recibo.recibo_numero} emitido com sucesso.\nValor: ${formatMoney(recibo.valor_centimos)}.`);
+    let msg = `Recibo ${recibo.recibo_numero} emitido.\nValor recebido: ${formatMoney(recibo.valor_centimos)}.`;
+    if (saldoUsado > 0) msg += `\nSaldo usado: ${formatMoney(saldoUsado)}.`;
+    if (excesso > 0) msg += `\nExcesso (saldo a favor): ${formatMoney(excesso)}.`;
+    alert(msg);
     if (onSuccessCallback) onSuccessCallback(recibo);
   } catch (e) {
     alert('Erro: ' + e.message);
