@@ -74,12 +74,16 @@ export async function render(container) {
             <div class="mt-icon-wrap">${icon('ic-dashboard', 'mt-icon')}</div>
             <div class="mt-name">Análise</div>
           </a>
+          <a class="menu-tile" data-route="admin/orcamento">
+            <div class="mt-icon-wrap">${icon('ic-quota-in', 'mt-icon')}</div>
+            <div class="mt-name">Orçamento</div>
+          </a>
           <a class="menu-tile span-2" data-route="admin/comunicacoes">
             <div class="mt-icon-wrap">
               ${icon('ic-receipt', 'mt-icon')}
               ${naoLidas > 0 ? `<span class="mt-badge">${naoLidas}</span>` : ''}
             </div>
-            <div class="mt-name">Enviar Comunicação${naoLidas > 0 ? ` · ${naoLidas} nova${naoLidas > 1 ? 's' : ''}` : ''}</div>
+            <div class="mt-name">Comunicações${naoLidas > 0 ? ` · ${naoLidas}` : ''}</div>
           </a>
           <a class="menu-tile span-2" data-route="admin/definicoes">
             <div class="mt-icon-wrap">${icon('ic-settings', 'mt-icon')}</div>

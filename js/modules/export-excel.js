@@ -16,6 +16,7 @@ import * as store from '../store/local-store.js';
 import * as receipts from './receipts.js';
 import * as analise from './analise.js';
 import * as planos from './planos.js';
+import * as orcamento from './orcamento.js';
 import * as saldoBanco from './saldo-banco.js';
 import { monthsOfYear, currentMonthRef } from '../utils/format.js';
 
@@ -57,6 +58,9 @@ export async function exportarAno(ano) {
 
   // ─── Folha · Planos ──────────────────────────────────────
   await addFolhaPlanos(XLSX, wb, ano);
+
+  // ─── Folha · Orçamento ───────────────────────────────────
+  await addFolhaOrcamento(XLSX, wb, ano);
 
   // Escrever ficheiro
   const filename = `Condominio_AR24_${ano}.xlsx`;
@@ -326,4 +330,64 @@ async function addFolhaPlanos(XLSX, wb, ano) {
     { wch: 12 }, { wch: 16 }, { wch: 14 }
   ];
   XLSX.utils.book_append_sheet(wb, ws, 'Planos');
+}
+
+async function addFolhaOrcamento(XLSX, wb, ano) {
+  const orc = await orcamento.obterAtivo(ano);
+  if (!orc) {
+    const ws = XLSX.utils.aoa_to_sheet([['Sem orçamento criado para ' + ano]]);
+    XLSX.utils.book_append_sheet(wb, ws, 'Orçamento');
+    return;
+  }
+
+  const totais = orcamento.calcularTotais(orc);
+  const execucao = await orcamento.execucaoPorRubrica(ano);
+  const sumario = await orcamento.execucaoSumario(ano);
+
+  const rows = [
+    [`ORÇAMENTO ${ano} · v${orc.versao} · ${orc.estado.toUpperCase()}`],
+    orc.aprovadoEm ? [`Aprovado em ${new Date(orc.aprovadoEm).toLocaleString('pt-PT')} por ${orc.aprovadoPor || ''}`] : ['Em rascunho'],
+    [],
+    ['Linha', 'Orçado (€)', 'Realizado (€)', 'Diferença (€)'],
+    ['Saldo Inicial',          toEur(totais.saldoInicial),  '',                                  ''],
+    ['Receitas Previstas',     toEur(totais.receitasTotal), toEur(sumario?.receitas.realizado || 0),  toEur((sumario?.receitas.realizado || 0) - totais.receitasTotal)],
+    ['Despesas Previstas',     toEur(totais.despesasTotal), toEur(sumario?.despesas.realizado || 0),  toEur(totais.despesasTotal - (sumario?.despesas.realizado || 0))],
+    ['Fundo de Reserva',       toEur(totais.fundoReserva),  '',                                  ''],
+    ['Resultado',              toEur(totais.resultadoEsperado), toEur(sumario?.resultadoReal || 0), toEur((sumario?.resultadoReal || 0) - totais.resultadoEsperado)],
+    [],
+    ['RECEITAS PREVISTAS · detalhe'],
+    ['Descrição', 'Orçado (€)']
+  ];
+
+  (orc.receitasPrevistas || []).forEach(r => {
+    rows.push([r.descricao, toEur(r.valor_centimos)]);
+  });
+
+  rows.push([]);
+  rows.push(['DESPESAS · Execução por Rúbrica']);
+  rows.push(['Rúbrica', 'Orçado (€)', 'Realizado (€)', '%', 'Diferença (€)', 'Estado']);
+
+  execucao.forEach(e => {
+    const pct = e.percentagem === null ? '' : e.percentagem;
+    rows.push([
+      e.nome,
+      toEur(e.orcado_centimos),
+      toEur(e.realizado_centimos),
+      pct,
+      toEur(e.diferenca_centimos),
+      e.status
+    ]);
+  });
+
+  if (orc.observacoes) {
+    rows.push([]);
+    rows.push(['OBSERVAÇÕES']);
+    rows.push([orc.observacoes]);
+  }
+
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols'] = [
+    { wch: 32 }, { wch: 14 }, { wch: 14 }, { wch: 8 }, { wch: 14 }, { wch: 16 }
+  ];
+  XLSX.utils.book_append_sheet(wb, ws, 'Orçamento');
 }

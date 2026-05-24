@@ -5,6 +5,7 @@
  */
 
 import * as analise from '../../modules/analise.js';
+import * as orcamento from '../../modules/orcamento.js';
 import * as exportExcel from '../../modules/export-excel.js';
 import * as router from '../router.js';
 import * as charts from '../charts.js';
@@ -87,13 +88,15 @@ async function renderDashboard() {
   const dashEl = containerRef.querySelector('#dashboard');
   dashEl.innerHTML = `<div class="placeholder"><p>A calcular indicadores...</p></div>`;
 
-  const [kpis, mensais, despRubricas, evolSaldo, atrasos, planos] = await Promise.all([
+  const [kpis, mensais, despRubricas, evolSaldo, atrasos, planos, orcSumario, orcExecucao] = await Promise.all([
     analise.kpisYTD(state.ano),
     analise.movimentosMensais(state.ano),
     analise.despesasPorRubrica(state.ano),
     analise.evolucaoSaldo(state.ano),
     analise.topAtrasos(state.ano, 5),
-    analise.estadoPlanos()
+    analise.estadoPlanos(),
+    orcamento.execucaoSumario(state.ano),
+    orcamento.execucaoPorRubrica(state.ano)
   ]);
 
   // KPIs principais
@@ -178,8 +181,12 @@ async function renderDashboard() {
     </div>
   `;
 
+  // Execução do orçamento (só aparece se houver orçamento aprovado)
+  const orcamentoHtml = renderExecucaoOrcamento(orcSumario, orcExecucao);
+
   dashEl.innerHTML = `
     ${kpisHtml}
+    ${orcamentoHtml}
     ${grRecDespHtml}
     <div class="dashboard-grid-2">
       ${grRubricasHtml}
@@ -188,6 +195,90 @@ async function renderDashboard() {
     ${grSaldoHtml}
     ${planosHtml}
   `;
+}
+
+function renderExecucaoOrcamento(sumario, execucao) {
+  if (!sumario || sumario.estado !== 'aprovado') return '';
+
+  const pctRec = sumario.receitas.pct;
+  const pctDesp = sumario.despesas.pct;
+
+  return `
+    <div class="dashboard-section orc-exec-section">
+      <h3>Execução do Orçamento · v${sumario.versao}</h3>
+      <div class="orc-exec-summary">
+        <div class="orc-exec-card">
+          <div class="oec-lbl">Receitas</div>
+          <div class="oec-val">${formatMoney(sumario.receitas.realizado)}</div>
+          <div class="oec-sub">de ${formatMoney(sumario.receitas.orcado)} orçados${pctRec !== null ? ` · ${pctRec}%` : ''}</div>
+          ${renderExecBar(sumario.receitas.realizado, sumario.receitas.orcado, 'inv')}
+        </div>
+        <div class="orc-exec-card">
+          <div class="oec-lbl">Despesas</div>
+          <div class="oec-val">${formatMoney(sumario.despesas.realizado)}</div>
+          <div class="oec-sub">de ${formatMoney(sumario.despesas.orcado)} orçados${pctDesp !== null ? ` · ${pctDesp}%` : ''}</div>
+          ${renderExecBar(sumario.despesas.realizado, sumario.despesas.orcado)}
+        </div>
+        <div class="orc-exec-card ${sumario.resultadoReal >= 0 ? 'oec-positive' : 'oec-negative'}">
+          <div class="oec-lbl">Resultado YTD</div>
+          <div class="oec-val">${formatMoney(sumario.resultadoReal)}</div>
+          <div class="oec-sub">Esperado: ${formatMoney(sumario.resultadoEsperado)}</div>
+        </div>
+      </div>
+
+      ${execucao.length > 0 ? `
+        <h4 style="margin:18px 0 8px 0;font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px">Execução por rúbrica</h4>
+        <div class="orc-exec-rubricas">
+          ${execucao.map(renderRubricaExecBar).join('')}
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+function renderExecBar(realizado, orcado, modo) {
+  if (orcado === 0) return '';
+  const pct = Math.min(realizado / orcado * 100, 150);
+  // modo='inv' (receitas): mais é melhor → verde/azul
+  // default (despesas): mais é pior → verde→âmbar→vermelho
+  let cls = 'eb-ok';
+  if (modo === 'inv') {
+    cls = pct >= 100 ? 'eb-ok' : pct >= 80 ? 'eb-amber' : 'eb-amber-light';
+  } else {
+    cls = pct > 100 ? 'eb-red' : pct >= 80 ? 'eb-amber' : 'eb-ok';
+  }
+  return `<div class="exec-bar"><div class="exec-bar-fill ${cls}" style="width:${Math.min(pct, 100)}%"></div>${pct > 100 ? `<div class="exec-bar-over" style="width:${Math.min((pct - 100) * 0.5, 50)}%"></div>` : ''}</div>`;
+}
+
+function renderRubricaExecBar(item) {
+  const pct = item.percentagem;
+  const statusCls = `rub-${item.status}`;
+  const pctText = pct === null
+    ? (item.realizado_centimos > 0 ? '· FORA do orçamento' : '· sem orçamento')
+    : `${pct}%`;
+  return `
+    <div class="rub-exec-row ${statusCls}">
+      <div class="rer-info">
+        <span class="rer-name">${escapeHtml(item.nome)}</span>
+        <span class="rer-pct">${pctText}</span>
+      </div>
+      <div class="rer-bar">
+        <div class="rer-bar-fill" style="width:${Math.min(pct || 0, 100)}%"></div>
+        ${pct > 100 ? `<div class="rer-bar-over" style="width:${Math.min((pct - 100) * 0.5, 50)}%"></div>` : ''}
+      </div>
+      <div class="rer-stats">
+        <span>${formatMoney(item.realizado_centimos)} de ${formatMoney(item.orcado_centimos)}</span>
+        <span class="${item.diferenca_centimos < 0 ? 'rer-over' : 'rer-under'}">
+          ${item.diferenca_centimos < 0 ? '+' : ''}${formatMoney(-item.diferenca_centimos)}
+        </span>
+      </div>
+    </div>
+  `;
+}
+
+function escapeHtml(s) {
+  return String(s || '')
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 function buildAtrasoRow(a) {
