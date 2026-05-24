@@ -8,6 +8,8 @@
 
 import * as store from '../store/local-store.js';
 import * as receipts from '../modules/receipts.js';
+import * as exportPdf from '../modules/export-pdf.js';
+import * as auth from '../auth/local-auth.js';
 import { formatMoney, formatDate, formatDateLong, formatMonth } from '../utils/format.js';
 
 let modalEl = null;
@@ -128,8 +130,24 @@ function bindEvents(recibo) {
   modalEl.querySelector('#dr-cancel-btn').addEventListener('click', close);
   modalEl.addEventListener('click', (e) => { if (e.target === modalEl) close(); });
 
-  modalEl.querySelector('#dr-pdf-btn').addEventListener('click', () => {
-    alert('Geração de PDF será implementada na próxima fase (jsPDF).');
+  modalEl.querySelector('#dr-pdf-btn').addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    btn.disabled = true;
+    btn.textContent = '⏳ A gerar...';
+    try {
+      const session = auth.getSession();
+      const filename = await exportPdf.gerarReciboPDF(recibo.id, session?.operatorName);
+      btn.textContent = '✓ Descarregado';
+      setTimeout(() => {
+        btn.textContent = '📄 PDF';
+        btn.disabled = false;
+      }, 1800);
+      if (onUpdateCallback) onUpdateCallback();
+    } catch (err) {
+      alert('Erro a gerar PDF: ' + err.message);
+      btn.textContent = '📄 PDF';
+      btn.disabled = false;
+    }
   });
 
   const estornarBtn = modalEl.querySelector('#dr-estornar-btn');

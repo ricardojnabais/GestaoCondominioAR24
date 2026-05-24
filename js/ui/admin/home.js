@@ -81,13 +81,9 @@ export async function render(container) {
             </div>
             <div class="mt-name">Enviar Comunicação${naoLidas > 0 ? ` · ${naoLidas} nova${naoLidas > 1 ? 's' : ''}` : ''}</div>
           </a>
-          <a class="menu-tile" data-route="admin/utilizadores">
+          <a class="menu-tile span-2" data-route="admin/definicoes">
             <div class="mt-icon-wrap">${icon('ic-settings', 'mt-icon')}</div>
-            <div class="mt-name">Utilizadores</div>
-          </a>
-          <a class="menu-tile" data-route="admin/rubricas">
-            <div class="mt-icon-wrap">${icon('ic-settings', 'mt-icon')}</div>
-            <div class="mt-name">Rúbricas</div>
+            <div class="mt-name">Definições</div>
           </a>
         </div>
       </main>
