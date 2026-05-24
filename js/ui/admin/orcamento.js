@@ -14,6 +14,7 @@
 import * as orcamento from '../../modules/orcamento.js';
 import * as rubricas from '../../modules/rubricas.js';
 import * as store from '../../store/local-store.js';
+import * as exportExcel from '../../modules/export-excel.js';
 import * as auth from '../../auth/local-auth.js';
 import * as router from '../router.js';
 import { icon } from '../icons.js';
@@ -49,10 +50,11 @@ export async function render(container) {
               <div class="breadcrumb">Previsão Anual</div>
               <h1>Orçamento</h1>
             </div>
-            <div style="margin-left:auto">
+            <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
               <select id="f-ano" class="ano-select">
                 ${anos.map(a => `<option value="${a}" ${state.ano === a ? 'selected' : ''}>${a}</option>`).join('')}
               </select>
+              <button class="btn primary" id="btn-excel-orc" style="display:none">📊 Exportar Excel</button>
             </div>
           </div>
         </div>
@@ -71,12 +73,33 @@ export async function render(container) {
     state.ano = e.target.value;
     renderBody();
   });
+  container.querySelector('#btn-excel-orc').addEventListener('click', exportarExcel);
+}
+
+async function exportarExcel() {
+  const btn = containerRef.querySelector('#btn-excel-orc');
+  btn.disabled = true;
+  const original = btn.textContent;
+  btn.textContent = 'A gerar...';
+  try {
+    await exportExcel.exportarOrcamentoAno(state.ano);
+    btn.textContent = '✓ Descarregado';
+    setTimeout(() => { btn.textContent = original; btn.disabled = false; }, 1800);
+  } catch (e) {
+    alert('Erro: ' + e.message);
+    btn.textContent = original;
+    btn.disabled = false;
+  }
 }
 
 async function renderBody() {
   const bodyEl = containerRef.querySelector('#orc-body');
   state.orcamento = await orcamento.obterAtivo(state.ano);
   const historico = await orcamento.historicoVersoes(state.ano);
+
+  // Botão Excel só aparece quando existe orçamento (rascunho ou aprovado)
+  const btnExcel = containerRef.querySelector('#btn-excel-orc');
+  if (btnExcel) btnExcel.style.display = state.orcamento ? '' : 'none';
 
   if (!state.orcamento) {
     const anoAnt = String(parseInt(state.ano, 10) - 1);

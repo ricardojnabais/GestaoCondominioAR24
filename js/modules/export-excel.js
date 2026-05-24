@@ -332,6 +332,22 @@ async function addFolhaPlanos(XLSX, wb, ano) {
   XLSX.utils.book_append_sheet(wb, ws, 'Planos');
 }
 
+/**
+ * Exporta APENAS a folha de Orçamento (workbook só com essa folha).
+ * Útil para enviar à assembleia ou contabilidade sem os outros dados.
+ */
+export async function exportarOrcamentoAno(ano) {
+  if (!window.XLSX) {
+    throw new Error('SheetJS não está disponível.');
+  }
+  const XLSX = window.XLSX;
+  const wb = XLSX.utils.book_new();
+  await addFolhaOrcamento(XLSX, wb, ano);
+  const filename = `Orcamento_AR24_${ano}.xlsx`;
+  XLSX.writeFile(wb, filename);
+  return filename;
+}
+
 async function addFolhaOrcamento(XLSX, wb, ano) {
   const orc = await orcamento.obterAtivo(ano);
   if (!orc) {

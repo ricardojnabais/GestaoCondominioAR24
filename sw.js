@@ -15,7 +15,7 @@
  * mais lentos.
  */
 
-const CACHE_VERSION = 'ar24-v0.7.1';
+const CACHE_VERSION = 'ar24-v0.7.2';
 const ASSETS_TO_PRECACHE = [
   './',
   './index.html',
