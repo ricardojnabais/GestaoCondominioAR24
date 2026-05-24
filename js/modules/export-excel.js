@@ -343,41 +343,70 @@ async function addFolhaOrcamento(XLSX, wb, ano) {
   const totais = orcamento.calcularTotais(orc);
   const execucao = await orcamento.execucaoPorRubrica(ano);
   const sumario = await orcamento.execucaoSumario(ano);
+  const tenants = await store.listDocs('tenants');
+  const anoAnt = String(parseInt(ano, 10) - 1);
 
   const rows = [
     [`ORÇAMENTO ${ano} · v${orc.versao} · ${orc.estado.toUpperCase()}`],
     orc.aprovadoEm ? [`Aprovado em ${new Date(orc.aprovadoEm).toLocaleString('pt-PT')} por ${orc.aprovadoPor || ''}`] : ['Em rascunho'],
     [],
+    ['RESUMO'],
     ['Linha', 'Orçado (€)', 'Realizado (€)', 'Diferença (€)'],
-    ['Saldo Inicial',          toEur(totais.saldoInicial),  '',                                  ''],
-    ['Receitas Previstas',     toEur(totais.receitasTotal), toEur(sumario?.receitas.realizado || 0),  toEur((sumario?.receitas.realizado || 0) - totais.receitasTotal)],
-    ['Despesas Previstas',     toEur(totais.despesasTotal), toEur(sumario?.despesas.realizado || 0),  toEur(totais.despesasTotal - (sumario?.despesas.realizado || 0))],
-    ['Fundo de Reserva',       toEur(totais.fundoReserva),  '',                                  ''],
-    ['Resultado',              toEur(totais.resultadoEsperado), toEur(sumario?.resultadoReal || 0), toEur((sumario?.resultadoReal || 0) - totais.resultadoEsperado)],
+    ['Saldo Inicial Transitado', toEur(totais.saldoInicial), '', ''],
+    ['Quotas (anual)',           toEur(totais.valorAnualQuotas), '', ''],
+    ['Outras Receitas',          toEur(totais.outrasReceitas), '', ''],
+    ['Total Receitas',           toEur(totais.receitasTotal), toEur(sumario?.receitas.realizado || 0), toEur((sumario?.receitas.realizado || 0) - totais.receitasTotal)],
+    ['Despesas por Rúbrica',     toEur(totais.despesasPorRub), '', ''],
+    ['Despesas Manuais',         toEur(totais.despesasManuais), '', ''],
+    ['Total Despesas',           toEur(totais.despesasTotal), toEur(sumario?.despesas.realizado || 0), toEur(totais.despesasTotal - (sumario?.despesas.realizado || 0))],
+    ['Fundo de Reserva',         toEur(totais.fundoReserva), '', ''],
+    ['Resultado Esperado',       toEur(totais.resultadoEsperado), toEur(sumario?.resultadoReal || 0), toEur((sumario?.resultadoReal || 0) - totais.resultadoEsperado)],
     [],
-    ['RECEITAS PREVISTAS · detalhe'],
-    ['Descrição', 'Orçado (€)']
+    [`QUOTAS POR FRAÇÃO · incremento ${orc.quotas?.incrementoPct || 0}% · arredondamento ${orc.quotas?.arredondamento || 'inteiro'}`],
+    ['Fração', 'Condómino', 'Permilagem', `Mensal ${anoAnt}`, `Mensal ${ano}`, `Anual ${ano}`]
   ];
 
-  (orc.receitasPrevistas || []).forEach(r => {
-    rows.push([r.descricao, toEur(r.valor_centimos)]);
-  });
+  const sortedTenants = [...tenants].sort((a, b) => (a.fraction || '').localeCompare(b.fraction || ''));
+  const quotasAnt = orc.quotas?.quotasMensaisAnoAnt || {};
+  const quotasNov = orc.quotas?.quotasMensaisPorTenant || {};
+  for (const t of sortedTenants) {
+    const ant = quotasAnt[t.id] || 0;
+    const nov = quotasNov[t.id] || 0;
+    rows.push([
+      t.fraction, t.name, t.permilage || 0,
+      toEur(ant), toEur(nov), toEur(nov * 12)
+    ]);
+  }
+  rows.push(['', '', 'TOTAL', toEur(Object.values(quotasAnt).reduce((s, v) => s + v, 0)),
+    toEur(totais.totalMensalQuotas), toEur(totais.valorAnualQuotas)]);
+
+  if ((orc.outrasReceitas || []).length > 0) {
+    rows.push([]);
+    rows.push(['OUTRAS RECEITAS']);
+    rows.push(['Descrição', 'Valor (€)']);
+    orc.outrasReceitas.forEach(r => rows.push([r.descricao, toEur(r.valor_centimos)]));
+  }
 
   rows.push([]);
   rows.push(['DESPESAS · Execução por Rúbrica']);
   rows.push(['Rúbrica', 'Orçado (€)', 'Realizado (€)', '%', 'Diferença (€)', 'Estado']);
-
   execucao.forEach(e => {
-    const pct = e.percentagem === null ? '' : e.percentagem;
     rows.push([
       e.nome,
       toEur(e.orcado_centimos),
       toEur(e.realizado_centimos),
-      pct,
+      e.percentagem === null ? '' : e.percentagem,
       toEur(e.diferenca_centimos),
       e.status
     ]);
   });
+
+  if ((orc.despesas?.manuais || []).length > 0) {
+    rows.push([]);
+    rows.push(['DESPESAS MANUAIS']);
+    rows.push(['Descrição', 'Valor Orçado (€)']);
+    orc.despesas.manuais.forEach(m => rows.push([m.descricao, toEur(m.valor_centimos)]));
+  }
 
   if (orc.observacoes) {
     rows.push([]);
@@ -386,8 +415,6 @@ async function addFolhaOrcamento(XLSX, wb, ano) {
   }
 
   const ws = XLSX.utils.aoa_to_sheet(rows);
-  ws['!cols'] = [
-    { wch: 32 }, { wch: 14 }, { wch: 14 }, { wch: 8 }, { wch: 14 }, { wch: 16 }
-  ];
+  ws['!cols'] = [{ wch: 30 }, { wch: 22 }, { wch: 12 }, { wch: 12 }, { wch: 14 }, { wch: 16 }];
   XLSX.utils.book_append_sheet(wb, ws, 'Orçamento');
 }
