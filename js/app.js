@@ -28,6 +28,9 @@ import * as adminDefinicoesDados from './ui/admin/definicoes-condominio.js';
 import * as adminComunicacoes from './ui/admin/comunicacoes.js';
 import * as adminUtilizadores from './ui/admin/utilizadores.js';
 import * as condominoHome from './ui/condomino/home.js';
+import * as condominoRecibos from './ui/condomino/recibos.js';
+import * as condominoConta from './ui/condomino/conta.js';
+import * as condominoContas from './ui/condomino/contas-condominio.js';
 import * as condominoComunicacoes from './ui/condomino/comunicacoes.js';
 
 // ─── Bootstrap ────────────────────────────────────────────
@@ -48,7 +51,10 @@ async function main() {
   // 4. Registar rotas
   router.register('login', loginPage);
   router.register('admin/home', adminHome, { requiresAuth: 'admin' });
-  router.register('condomino/home', condominoHome, { requiresAuth: 'condomino' });
+  router.register('condomino/home',         condominoHome,         { requiresAuth: 'condomino' });
+  router.register('condomino/recibos',      condominoRecibos,      { requiresAuth: 'condomino' });
+  router.register('condomino/conta',        condominoConta,        { requiresAuth: 'condomino' });
+  router.register('condomino/contas',       condominoContas,       { requiresAuth: 'condomino' });
 
   // Rotas reais (Fase 2 + 3a + 4 · comunicações)
   router.register('admin/recibos',         adminRecibos,         { requiresAuth: 'admin' });

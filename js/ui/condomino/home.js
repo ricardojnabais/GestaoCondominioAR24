@@ -1,30 +1,67 @@
 /**
- * Página: Menu Principal · Condómino
+ * Portal do Condómino · Home
  *
- * Mostra:
- *  - Saudação e dados da fração
- *  - Tile "Fale com a Administração" com badge de não lidas
- *  - (Mais tiles serão adicionados na Fase 5)
+ * KPIs pessoais (saldo, situação YTD, próxima quota)
+ * + tiles para: Recibos · A Minha Conta · Comunicações · Contas do Condomínio
  */
 
 import * as auth from '../../auth/local-auth.js';
 import * as store from '../../store/local-store.js';
 import * as router from '../router.js';
+import * as receipts from '../../modules/receipts.js';
 import * as comunicacoes from '../../modules/comunicacoes.js';
 import { icon } from '../icons.js';
-import { formatMoney } from '../../utils/format.js';
+import { formatMoney, currentMonthRef, monthsOfYear } from '../../utils/format.js';
 
 export async function render(container) {
   const session = auth.getSession();
   const tenantName = session?.tenantName || '';
   const fraction = session?.fraction || '';
   const tenantId = session?.tenantId;
+  if (!tenantId) {
+    container.innerHTML = '<div class="placeholder"><p>Sessão inválida.</p></div>';
+    return;
+  }
 
-  const tenant = tenantId ? await store.getDoc('tenants', tenantId) : null;
-  const quotaMensal = tenant?.rentByYear?.['2026'] || 0;
+  const tenant = await store.getDoc('tenants', tenantId);
+  const ano = new Date().getFullYear().toString();
+  const quotaMensal = tenant?.rentByYear?.[ano] || 0;
+  const naoLidas = await comunicacoes.contagemNaoLidasCondomino(tenantId);
 
-  // Contagem de comunicações não lidas
-  const naoLidas = tenantId ? await comunicacoes.contagemNaoLidasCondomino(tenantId) : 0;
+  // KPIs pessoais
+  const saldo = await receipts.saldoCondomino(tenantId);
+  const currMes = currentMonthRef();
+  const meses = monthsOfYear(ano).filter(m => m <= currMes);
+  let pagoYTD = 0, esperadoYTD = 0;
+  for (const m of meses) {
+    pagoYTD += await receipts.valorPagoNoMes(tenantId, m);
+    esperadoYTD += quotaMensal;
+  }
+  const emFalta = Math.max(0, esperadoYTD - pagoYTD);
+  let statusLabel, statusCls, statusVal;
+  if (saldo > 0) {
+    statusLabel = 'Saldo a favor';
+    statusCls = 'kpi-green';
+    statusVal = formatMoney(saldo);
+  } else if (emFalta > 0) {
+    statusLabel = 'Em atraso';
+    statusCls = 'kpi-red';
+    statusVal = '−' + formatMoney(emFalta);
+  } else {
+    statusLabel = 'Quotas em dia';
+    statusCls = 'kpi-green';
+    statusVal = '✓';
+  }
+
+  // Pago no mês corrente?
+  const pagoMesAtual = await receipts.valorPagoNoMes(tenantId, currMes);
+  const mesAtualNome = nomeMes(parseInt(currMes.split('-')[1], 10));
+  const mesAtualLabel = pagoMesAtual >= quotaMensal
+    ? '✓ Paga'
+    : (pagoMesAtual > 0 ? 'Parcial' : 'Em aberto');
+  const mesAtualCls = pagoMesAtual >= quotaMensal ? 'kpi-green'
+                    : pagoMesAtual > 0 ? 'kpi-amber'
+                    : 'kpi-red';
 
   container.innerHTML = `
     <div class="app">
@@ -32,14 +69,14 @@ export async function render(container) {
         <div class="brand">
           <div class="brand-mark">${icon('logo-mark', 'brand-mark-svg')}</div>
           <div class="brand-text">
-            <div class="name">Condomínio AR24</div>
-            <div class="sub">Vista do Condómino</div>
+            <div class="name">Portal do Condómino</div>
+            <div class="sub">Av. Amália Rodrigues · 24</div>
           </div>
         </div>
         <div class="header-actions">
           <div class="header-user">
-            <div class="hu-name">${tenantName}</div>
-            <div class="hu-frac">${fraction}</div>
+            <div class="hu-name">${escapeHtml(tenantName)}</div>
+            <div class="hu-frac">${escapeHtml(fraction)}</div>
           </div>
           <button class="btn-hamburger" id="logout-btn" title="Sair">
             <span class="hl"></span><span class="hl"></span><span class="hl"></span>
@@ -51,41 +88,49 @@ export async function render(container) {
         <div class="home-header">
           <div class="home-greeting">
             <div class="home-hello">Olá,</div>
-            <div class="home-name">${tenantName}</div>
-            <div class="home-frac">${fraction}</div>
+            <div class="home-name">${escapeHtml(tenantName)}</div>
+            <div class="home-frac">${escapeHtml(fraction)}</div>
           </div>
         </div>
 
-        <div class="menu-grid">
-          <a class="menu-tile span-2" data-route="condomino/comunicacoes">
+        <div class="home-kpis">
+          <div class="kpi-card kpi-primary">
+            <div class="kpi-lbl">Quota Mensal</div>
+            <div class="kpi-val">${formatMoney(quotaMensal)}</div>
+            <div class="kpi-sub">${tenant?.permilage || 0}‰ permilagem</div>
+          </div>
+          <div class="kpi-card ${statusCls}">
+            <div class="kpi-lbl">${statusLabel}</div>
+            <div class="kpi-val">${statusVal}</div>
+            <div class="kpi-sub">${pagoYTD > 0 ? formatMoney(pagoYTD) + ' pagos em ' + ano : 'Sem pagamentos em ' + ano}</div>
+          </div>
+          <div class="kpi-card ${mesAtualCls}">
+            <div class="kpi-lbl">${mesAtualNome}</div>
+            <div class="kpi-val">${mesAtualLabel}</div>
+            <div class="kpi-sub">${pagoMesAtual > 0 ? formatMoney(pagoMesAtual) + ' pago' : 'sem registo'}</div>
+          </div>
+        </div>
+
+        <div class="menu-tiles">
+          <a class="menu-tile" data-route="condomino/recibos">
+            <div class="mt-icon-wrap">${icon('ic-receipt', 'mt-icon')}</div>
+            <div class="mt-name">Os Meus Recibos</div>
+          </a>
+          <a class="menu-tile" data-route="condomino/conta">
+            <div class="mt-icon-wrap">${icon('ic-quota-in', 'mt-icon')}</div>
+            <div class="mt-name">A Minha Conta</div>
+          </a>
+          <a class="menu-tile" data-route="condomino/comunicacoes">
             <div class="mt-icon-wrap">
               ${icon('ic-payment-out', 'mt-icon')}
               ${naoLidas > 0 ? `<span class="mt-badge">${naoLidas}</span>` : ''}
             </div>
-            <div class="mt-name">Fale com a Administração</div>
+            <div class="mt-name">Comunicações${naoLidas > 0 ? ` · ${naoLidas}` : ''}</div>
           </a>
-        </div>
-
-        <div class="info-card">
-          <div class="info-row">
-            <span class="info-lbl">Quota mensal</span>
-            <span class="info-val">${formatMoney(quotaMensal)}</span>
-          </div>
-          <div class="info-row">
-            <span class="info-lbl">Permilagem</span>
-            <span class="info-val">${tenant?.permilage || 0}‰</span>
-          </div>
-          <div class="info-row">
-            <span class="info-lbl">Email</span>
-            <span class="info-val">${tenant?.email || '—'}</span>
-          </div>
-        </div>
-
-        <div class="placeholder" style="margin-top:18px">
-          <p style="font-size:13px;color:var(--text-muted)">
-            Restantes secções (estado de quotas, situação bancária, recibos) serão disponibilizadas na Fase 5.
-          </p>
-          <button class="btn-cta" id="logout-cta">Terminar Sessão</button>
+          <a class="menu-tile" data-route="condomino/contas">
+            <div class="mt-icon-wrap">${icon('ic-bank', 'mt-icon')}</div>
+            <div class="mt-name">Contas do Condomínio</div>
+          </a>
         </div>
       </main>
     </div>
@@ -93,13 +138,19 @@ export async function render(container) {
 
   const doLogout = () => { auth.logout(); router.navigate('login'); };
   container.querySelector('#logout-btn').addEventListener('click', doLogout);
-  container.querySelector('#logout-cta').addEventListener('click', doLogout);
 
-  // Navegação por data-route
   container.querySelectorAll('[data-route]').forEach(el => {
     el.addEventListener('click', (e) => {
       e.preventDefault();
       router.navigate(el.dataset.route);
     });
   });
+}
+
+function nomeMes(m) {
+  return ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'][m - 1];
+}
+
+function escapeHtml(s) {
+  return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
