@@ -13,11 +13,6 @@
     },
     "config": {
       "saldoInicial": {
-        "2021": 160736,
-        "2022": 0,
-        "2023": 0,
-        "2024": 242660,
-        "2025": 0,
         "2026": 321478
       },
       "saldoConhecido": {
@@ -26,8 +21,78 @@
         "contaPoupanca_centimos": 70434,
         "total_centimos": 822612,
         "notas": "BPI Net Empresas · posição integrada · ponto de ancoragem inicial",
-        "registadoEm": 1779744179095
+        "registadoEm": 1779744663212
       }
+    },
+    "planoSchindler": {
+      "inicio": "2025-12-01",
+      "fim": "2026-11-30",
+      "fornecedor": "Schindler",
+      "descricao": "Plano de pagamento faseado para reparação do elevador",
+      "totalPrevisto_centimos": 602326,
+      "rubricaId": "rub_plano_schindler",
+      "prestacoes": [
+        {
+          "data": "2025-12-01",
+          "valor_centimos": 62326,
+          "descricao": "Entrada (10%)"
+        },
+        {
+          "data": "2026-01-01",
+          "valor_centimos": 45000,
+          "descricao": "Prestação 1 / 12"
+        },
+        {
+          "data": "2026-02-01",
+          "valor_centimos": 45000,
+          "descricao": "Prestação 2 / 12"
+        },
+        {
+          "data": "2026-03-01",
+          "valor_centimos": 45000,
+          "descricao": "Prestação 3 / 12"
+        },
+        {
+          "data": "2026-04-01",
+          "valor_centimos": 45000,
+          "descricao": "Prestação 4 / 12"
+        },
+        {
+          "data": "2026-05-01",
+          "valor_centimos": 45000,
+          "descricao": "Prestação 5 / 12"
+        },
+        {
+          "data": "2026-06-01",
+          "valor_centimos": 45000,
+          "descricao": "Prestação 6 / 12"
+        },
+        {
+          "data": "2026-07-01",
+          "valor_centimos": 45000,
+          "descricao": "Prestação 7 / 12"
+        },
+        {
+          "data": "2026-08-01",
+          "valor_centimos": 45000,
+          "descricao": "Prestação 8 / 12"
+        },
+        {
+          "data": "2026-09-01",
+          "valor_centimos": 45000,
+          "descricao": "Prestação 9 / 12"
+        },
+        {
+          "data": "2026-10-01",
+          "valor_centimos": 45000,
+          "descricao": "Prestação 10 / 12"
+        },
+        {
+          "data": "2026-11-01",
+          "valor_centimos": 45000,
+          "descricao": "Prestação 11 / 12"
+        }
+      ]
     }
   },
   "tenants": [
@@ -36,7 +101,7 @@
       "name": "João Vaz",
       "fraction": "R/C Esquerdo",
       "permilage": 79,
-      "nif": "",
+      "nif": "129465380",
       "email": "joaovaz@example.com",
       "isAdmin": false,
       "rentByYear": {
@@ -53,7 +118,7 @@
       "name": "Filipe Solha",
       "fraction": "R/C Direito",
       "permilage": 91,
-      "nif": "",
+      "nif": "219481342",
       "email": "filipesolha@gmail.com",
       "isAdmin": true,
       "rentByYear": {
@@ -70,7 +135,7 @@
       "name": "Leonel Venâncio",
       "fraction": "1.º Esquerdo",
       "permilage": 119,
-      "nif": "",
+      "nif": "209959746",
       "email": "leonelvenancio@example.com",
       "isAdmin": false,
       "rentByYear": {
@@ -87,7 +152,7 @@
       "name": "Sílvia Gonçalves",
       "fraction": "1.º Direito",
       "permilage": 87,
-      "nif": "",
+      "nif": "195084381",
       "email": "silviagoncalves@example.com",
       "isAdmin": false,
       "rentByYear": {
@@ -101,7 +166,7 @@
     },
     {
       "id": "cond_05",
-      "name": "Ricardo Nabais Cordeiro",
+      "name": "Ricardo Cordeiro",
       "fraction": "2.º Esquerdo",
       "permilage": 121,
       "nif": "214490041",
@@ -121,7 +186,7 @@
       "name": "António Figueiredo",
       "fraction": "2.º Direito",
       "permilage": 88,
-      "nif": "",
+      "nif": "101744137",
       "email": "antoniofigueiredo@example.com",
       "isAdmin": false,
       "rentByYear": {
@@ -135,11 +200,11 @@
     },
     {
       "id": "cond_07",
-      "name": "Nuno P. Silva",
+      "name": "Nuno Silva",
       "fraction": "3.º Esquerdo",
       "permilage": 115,
-      "nif": "",
-      "email": "nunopsilva@example.com",
+      "nif": "195611004",
+      "email": "nunosilva@example.com",
       "isAdmin": false,
       "rentByYear": {
         "2021": 4100,
@@ -155,7 +220,7 @@
       "name": "Lurdes Serafim",
       "fraction": "3.º Direito",
       "permilage": 88,
-      "nif": "",
+      "nif": "127143980",
       "email": "lurdesserafim@example.com",
       "isAdmin": false,
       "rentByYear": {
@@ -169,10 +234,10 @@
     },
     {
       "id": "cond_09",
-      "name": "J. C. Monteiro",
+      "name": "José Carlos Monteiro",
       "fraction": "4.º Esquerdo",
       "permilage": 125,
-      "nif": "",
+      "nif": "182258637",
       "email": "jcmonteiro@example.com",
       "isAdmin": false,
       "rentByYear": {
@@ -189,7 +254,7 @@
       "name": "Vitor Barata",
       "fraction": "4.º Direito",
       "permilage": 87,
-      "nif": "",
+      "nif": "178132730",
       "email": "vitorbarata@example.com",
       "isAdmin": false,
       "rentByYear": {
@@ -18633,7 +18698,7 @@
       "estado": "aprovado",
       "criadoEm": 1764547200000.0,
       "aprovadoEm": 1765756800000.0,
-      "aprovadoPor": "Ricardo Nabais Cordeiro",
+      "aprovadoPor": "Ricardo Cordeiro",
       "arredondamento_centimos": 100,
       "incrementoPercentual": 0,
       "quotas": [
@@ -18771,7 +18836,7 @@
   ],
   "comunicacoes": [],
   "__importInfo": {
-    "geradoEm": "2026-05-25T21:22:59.095918",
+    "geradoEm": "2026-05-25T21:31:03.212281",
     "origem": "Backup Excel Condomínio AR24 v3.0",
     "periodo": "2021-2026",
     "contagens": {

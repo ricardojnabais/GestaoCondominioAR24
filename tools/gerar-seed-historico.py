@@ -35,34 +35,34 @@ COL_TO_TENANT = {
 # Tenants completos (com rentByYear de cada ano)
 TENANTS = [
     {'id': 'cond_01', 'name': 'João Vaz',           'fraction': 'R/C Esquerdo', 'permilage': 79,
-     'nif': '',          'email': 'joaovaz@example.com',          'isAdmin': False,
+     'nif': '129465380', 'email': 'joaovaz@example.com',          'isAdmin': False,
      'rentByYear': {'2021': 2800, '2022': 2800, '2023': 3200, '2024': 3200, '2025': 3200, '2026': 3200}},
     {'id': 'cond_02', 'name': 'Filipe Solha',       'fraction': 'R/C Direito',  'permilage': 91,
-     'nif': '',          'email': 'filipesolha@gmail.com',         'isAdmin': True,
+     'nif': '219481342', 'email': 'filipesolha@gmail.com',         'isAdmin': True,
      'rentByYear': {'2021': 3200, '2022': 3200, '2023': 3700, '2024': 3700, '2025': 3700, '2026': 3700}},
     {'id': 'cond_03', 'name': 'Leonel Venâncio',    'fraction': '1.º Esquerdo', 'permilage': 119,
-     'nif': '',          'email': 'leonelvenancio@example.com',    'isAdmin': False,
+     'nif': '209959746', 'email': 'leonelvenancio@example.com',    'isAdmin': False,
      'rentByYear': {'2021': 4200, '2022': 4200, '2023': 4800, '2024': 4800, '2025': 4800, '2026': 4800}},
     {'id': 'cond_04', 'name': 'Sílvia Gonçalves',   'fraction': '1.º Direito',  'permilage': 87,
-     'nif': '',          'email': 'silviagoncalves@example.com',   'isAdmin': False,
+     'nif': '195084381', 'email': 'silviagoncalves@example.com',   'isAdmin': False,
      'rentByYear': {'2021': 3100, '2022': 3100, '2023': 3600, '2024': 3600, '2025': 3600, '2026': 3600}},
-    {'id': 'cond_05', 'name': 'Ricardo Nabais Cordeiro', 'fraction': '2.º Esquerdo', 'permilage': 121,
+    {'id': 'cond_05', 'name': 'Ricardo Cordeiro',   'fraction': '2.º Esquerdo', 'permilage': 121,
      'nif': '214490041', 'email': 'ricardojnabais@gmail.com',      'isAdmin': True,
      'rentByYear': {'2021': 4300, '2022': 4300, '2023': 4900, '2024': 4900, '2025': 4900, '2026': 4900}},
     {'id': 'cond_06', 'name': 'António Figueiredo', 'fraction': '2.º Direito',  'permilage': 88,
-     'nif': '',          'email': 'antoniofigueiredo@example.com', 'isAdmin': False,
+     'nif': '101744137', 'email': 'antoniofigueiredo@example.com', 'isAdmin': False,
      'rentByYear': {'2021': 3100, '2022': 3100, '2023': 3600, '2024': 3600, '2025': 3600, '2026': 3600}},
-    {'id': 'cond_07', 'name': 'Nuno P. Silva',      'fraction': '3.º Esquerdo', 'permilage': 115,
-     'nif': '',          'email': 'nunopsilva@example.com',        'isAdmin': False,
+    {'id': 'cond_07', 'name': 'Nuno Silva',         'fraction': '3.º Esquerdo', 'permilage': 115,
+     'nif': '195611004', 'email': 'nunosilva@example.com',         'isAdmin': False,
      'rentByYear': {'2021': 4100, '2022': 4100, '2023': 4700, '2024': 4700, '2025': 4700, '2026': 4700}},
     {'id': 'cond_08', 'name': 'Lurdes Serafim',     'fraction': '3.º Direito',  'permilage': 88,
-     'nif': '',          'email': 'lurdesserafim@example.com',     'isAdmin': False,
+     'nif': '127143980', 'email': 'lurdesserafim@example.com',     'isAdmin': False,
      'rentByYear': {'2021': 3100, '2022': 3100, '2023': 3600, '2024': 3600, '2025': 3600, '2026': 3600}},
-    {'id': 'cond_09', 'name': 'J. C. Monteiro',     'fraction': '4.º Esquerdo', 'permilage': 125,
-     'nif': '',          'email': 'jcmonteiro@example.com',        'isAdmin': False,
+    {'id': 'cond_09', 'name': 'José Carlos Monteiro','fraction': '4.º Esquerdo', 'permilage': 125,
+     'nif': '182258637', 'email': 'jcmonteiro@example.com',        'isAdmin': False,
      'rentByYear': {'2021': 4400, '2022': 4400, '2023': 5100, '2024': 5100, '2025': 5100, '2026': 5100}},
     {'id': 'cond_10', 'name': 'Vitor Barata',       'fraction': '4.º Direito',  'permilage': 87,
-     'nif': '',          'email': 'vitorbarata@example.com',       'isAdmin': False,
+     'nif': '178132730', 'email': 'vitorbarata@example.com',       'isAdmin': False,
      'rentByYear': {'2021': 3100, '2022': 3100, '2023': 3600, '2024': 3600, '2025': 3600, '2026': 3600}},
 ]
 
@@ -412,7 +412,7 @@ orcamento_2026 = {
     'estado': 'aprovado',
     'criadoEm': datetime(2025, 12, 1).timestamp() * 1000,
     'aprovadoEm': datetime(2025, 12, 15).timestamp() * 1000,
-    'aprovadoPor': 'Ricardo Nabais Cordeiro',
+    'aprovadoPor': 'Ricardo Cordeiro',
     'arredondamento_centimos': 100,
     'incrementoPercentual': 0,
     'quotas': [
@@ -462,11 +462,6 @@ meta = {
     'config': {
         # Saldo inicial de cada ano (em cêntimos) · base do cálculo
         'saldoInicial': {
-            '2021': 160736,   # CO 903.28 + Poup 704.08
-            '2022': 0,         # não usado · cumulativo já reflete
-            '2023': 0,
-            '2024': 242660,    # CO 1722.26 + Poup 704.34
-            '2025': 0,
             '2026': 321478,    # CO 2510.44 + Poup 704.34 (01-Jan-2026)
         },
         # Saldo real observado · ancoragem para detectar descalibração
@@ -478,6 +473,30 @@ meta = {
             'notas': 'BPI Net Empresas · posição integrada · ponto de ancoragem inicial',
             'registadoEm': int(datetime.now().timestamp() * 1000),
         },
+    },
+    # Plano Schindler · pagamentos faseados do condomínio à Schindler
+    # Saídas previstas a partir do plano original (Dez 2025 - Nov 2026)
+    'planoSchindler': {
+        'inicio': '2025-12-01',
+        'fim': '2026-11-30',
+        'fornecedor': 'Schindler',
+        'descricao': 'Plano de pagamento faseado para reparação do elevador',
+        'totalPrevisto_centimos': 602326,
+        'rubricaId': 'rub_plano_schindler',
+        'prestacoes': [
+            {'data': '2025-12-01', 'valor_centimos': 62326, 'descricao': 'Entrada (10%)'},
+            {'data': '2026-01-01', 'valor_centimos': 45000, 'descricao': 'Prestação 1 / 12'},
+            {'data': '2026-02-01', 'valor_centimos': 45000, 'descricao': 'Prestação 2 / 12'},
+            {'data': '2026-03-01', 'valor_centimos': 45000, 'descricao': 'Prestação 3 / 12'},
+            {'data': '2026-04-01', 'valor_centimos': 45000, 'descricao': 'Prestação 4 / 12'},
+            {'data': '2026-05-01', 'valor_centimos': 45000, 'descricao': 'Prestação 5 / 12'},
+            {'data': '2026-06-01', 'valor_centimos': 45000, 'descricao': 'Prestação 6 / 12'},
+            {'data': '2026-07-01', 'valor_centimos': 45000, 'descricao': 'Prestação 7 / 12'},
+            {'data': '2026-08-01', 'valor_centimos': 45000, 'descricao': 'Prestação 8 / 12'},
+            {'data': '2026-09-01', 'valor_centimos': 45000, 'descricao': 'Prestação 9 / 12'},
+            {'data': '2026-10-01', 'valor_centimos': 45000, 'descricao': 'Prestação 10 / 12'},
+            {'data': '2026-11-01', 'valor_centimos': 45000, 'descricao': 'Prestação 11 / 12'},
+        ],
     },
 }
 
