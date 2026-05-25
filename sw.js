@@ -1,88 +1,112 @@
 /**
- * Service Worker · Gestão do Condomínio AR24
+ * Conversão de número para extenso em PT-PT.
  *
- * Função principal: tornar a app "instalável" como PWA no Chrome desktop
- * e mobile (Android), permitindo gravar com ícone próprio.
+ * Suporta até milhões. Para valores monetários separados em euros e cêntimos.
  *
- * Estratégia de cache: NETWORK-FIRST com fallback para cache.
- *   → online: vai sempre buscar a versão mais recente à rede
- *   → offline: usa o que tiver em cache (a app continua a funcionar
- *     porque os dados estão em localStorage)
- *
- * Esta estratégia é deliberadamente "fraca" porque a app está em
- * desenvolvimento ativo: queremos que as atualizações sejam sempre
- * vistas imediatamente, mesmo à custa de carregamentos um pouco
- * mais lentos.
+ * Exemplos:
+ *   4900  → "quarenta e nove euros"
+ *   4950  → "quarenta e nove euros e cinquenta cêntimos"
+ *   100   → "um euro"
+ *   12345 → "cento e vinte e três euros e quarenta e cinco cêntimos"
  */
 
-const CACHE_VERSION = 'ar24-v0.9.0';
-const ASSETS_TO_PRECACHE = [
-  './',
-  './index.html',
-  './manifest.json',
-  './styles/main.css',
-  './vendor/exceljs.min.js',
-  './vendor/jspdf.umd.min.js',
-  './assets/icon-192.png',
-  './assets/icon-512.png',
-  './assets/apple-touch-icon.png',
-  './assets/favicon-32.png'
-];
+const UNI = ['', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove'];
+const TEENS = ['dez', 'onze', 'doze', 'treze', 'catorze', 'quinze', 'dezasseis', 'dezassete', 'dezoito', 'dezanove'];
+const DEZ = ['', 'dez', 'vinte', 'trinta', 'quarenta', 'cinquenta', 'sessenta', 'setenta', 'oitenta', 'noventa'];
+const CENT = ['', 'cento', 'duzentos', 'trezentos', 'quatrocentos', 'quinhentos', 'seiscentos', 'setecentos', 'oitocentos', 'novecentos'];
 
-// ─── Install · pré-cache de assets essenciais ───────────────
-self.addEventListener('install', (event) => {
-  console.log('[SW] install', CACHE_VERSION);
-  event.waitUntil(
-    caches.open(CACHE_VERSION).then((cache) => {
-      return cache.addAll(ASSETS_TO_PRECACHE).catch((err) => {
-        // Não bloquear o install se algum asset falhar
-        console.warn('[SW] precache parcial:', err);
-      });
-    })
-  );
-  self.skipWaiting();
-});
+/** Converte 0-999 para extenso. */
+function tresDigitos(n, isolated = true) {
+  if (n === 0) return '';
+  if (n === 100 && isolated) return 'cem';
 
-// ─── Activate · limpar caches antigos ───────────────────────
-self.addEventListener('activate', (event) => {
-  console.log('[SW] activate', CACHE_VERSION);
-  event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
-        keys.filter((k) => k !== CACHE_VERSION).map((k) => caches.delete(k))
-      )
-    ).then(() => self.clients.claim())
-  );
-});
+  const c = Math.floor(n / 100);
+  const dezena = Math.floor((n % 100) / 10);
+  const u = n % 10;
 
-// ─── Fetch · network-first ──────────────────────────────────
-self.addEventListener('fetch', (event) => {
-  // Ignorar requests cross-origin (fonts.googleapis, etc.)
-  if (!event.request.url.startsWith(self.location.origin)) return;
-  // Ignorar requests não-GET
-  if (event.request.method !== 'GET') return;
+  const parts = [];
+  if (c > 0) parts.push(CENT[c]);
 
-  event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        // Sucesso: atualiza cache em background
-        const responseClone = response.clone();
-        caches.open(CACHE_VERSION).then((cache) => {
-          cache.put(event.request, responseClone);
-        }).catch(() => {});
-        return response;
-      })
-      .catch(() => {
-        // Falha (offline): tenta a cache
-        return caches.match(event.request).then((cached) => {
-          if (cached) return cached;
-          // Se for navegação e nada em cache, devolve o index.html
-          if (event.request.mode === 'navigate') {
-            return caches.match('./index.html');
-          }
-          // Caso contrário, falha
-          return new Response('Offline', { status: 503 });
-        });
-      })
-  );
-});
+  if (dezena === 1) {
+    parts.push(TEENS[u]);
+  } else {
+    if (dezena > 1) parts.push(DEZ[dezena]);
+    if (u > 0) parts.push(UNI[u]);
+  }
+
+  return parts.join(' e ');
+}
+
+/** Converte qualquer inteiro positivo para extenso. */
+function inteiroPorExtenso(n) {
+  if (n === 0) return 'zero';
+  if (n < 0) return 'menos ' + inteiroPorExtenso(-n);
+
+  const milhoes = Math.floor(n / 1_000_000);
+  const milhares = Math.floor((n % 1_000_000) / 1000);
+  const resto = n % 1000;
+
+  const parts = [];
+
+  if (milhoes > 0) {
+    parts.push((milhoes === 1 ? 'um milhão' : tresDigitos(milhoes, false) + ' milhões'));
+  }
+
+  if (milhares > 0) {
+    if (milhares === 1) parts.push('mil');
+    else parts.push(tresDigitos(milhares, false) + ' mil');
+  }
+
+  if (resto > 0) {
+    parts.push(tresDigitos(resto));
+  }
+
+  // Conector "e" entre o último bloco e o anterior se aplicável
+  // Regra simplificada: usar " e " quando há transição de milhares para centenas baixas,
+  // caso contrário usar espaço.
+  if (parts.length === 1) return parts[0];
+
+  // Para o caso comum (milhares + resto), usar " e " se resto < 100 ou resto é múltiplo de 100
+  if (parts.length === 2 && milhares > 0 && resto > 0) {
+    if (resto < 100 || resto % 100 === 0) {
+      return parts.join(' e ');
+    }
+    return parts.join(' ');
+  }
+
+  return parts.join(' ');
+}
+
+/**
+ * Valor em cêntimos para extenso ("X euros e Y cêntimos").
+ */
+export function valorPorExtenso(centimos) {
+  centimos = Math.round(Math.abs(centimos));
+  const euros = Math.floor(centimos / 100);
+  const cents = centimos % 100;
+
+  const parts = [];
+
+  if (euros === 0 && cents === 0) return 'zero euros';
+
+  if (euros > 0) {
+    if (euros === 1) parts.push('um euro');
+    else parts.push(inteiroPorExtenso(euros) + ' euros');
+  }
+
+  if (cents > 0) {
+    if (cents === 1) parts.push('um cêntimo');
+    else parts.push(inteiroPorExtenso(cents) + ' cêntimos');
+  }
+
+  return parts.join(' e ');
+}
+
+/** Data ISO para extenso em PT (ex: "3 de Maio de 2026"). */
+export function dataPorExtenso(iso) {
+  if (!iso) return '';
+  const MESES = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+  const [y, m, d] = iso.split('-').map(Number);
+  return `${d} de ${MESES[m - 1]} de ${y}`;
+}
