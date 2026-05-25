@@ -131,6 +131,10 @@ export async function render(container) {
             <div class="mt-icon-wrap">${icon('ic-bank', 'mt-icon')}</div>
             <div class="mt-name">Contas do Condomínio</div>
           </a>
+          <a class="menu-tile span-2" data-route="condomino/dados">
+            <div class="mt-icon-wrap">${icon('ic-settings', 'mt-icon')}</div>
+            <div class="mt-name">Os Meus Dados</div>
+          </a>
         </div>
       </main>
     </div>

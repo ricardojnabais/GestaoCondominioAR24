@@ -32,6 +32,9 @@ import * as condominoRecibos from './ui/condomino/recibos.js';
 import * as condominoConta from './ui/condomino/conta.js';
 import * as condominoContas from './ui/condomino/contas-condominio.js';
 import * as condominoComunicacoes from './ui/condomino/comunicacoes.js';
+import * as condominoDados from './ui/condomino/dados.js';
+import * as drawer from './ui/drawer.js';
+import * as authMod from './auth/local-auth.js';
 
 // ─── Bootstrap ────────────────────────────────────────────
 
@@ -55,6 +58,7 @@ async function main() {
   router.register('condomino/recibos',      condominoRecibos,      { requiresAuth: 'condomino' });
   router.register('condomino/conta',        condominoConta,        { requiresAuth: 'condomino' });
   router.register('condomino/contas',       condominoContas,       { requiresAuth: 'condomino' });
+  router.register('condomino/dados',        condominoDados,        { requiresAuth: 'condomino' });
 
   // Rotas reais (Fase 2 + 3a + 4 · comunicações)
   router.register('admin/recibos',         adminRecibos,         { requiresAuth: 'admin' });
@@ -93,6 +97,19 @@ async function main() {
       router.navigate('login');
     }
   });
+
+  // 7. Interceção global do botão hamburger · abre o drawer
+  // (substitui o comportamento antigo de "voltar à home")
+  document.body.addEventListener('click', (e) => {
+    const btn = e.target.closest('.btn-hamburger');
+    if (!btn) return;
+    const session = authMod.getSession();
+    if (!session) return;
+    // Cancelar handlers locais que possam estar a tentar navegar
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    drawer.open(session.role);
+  }, true);  // capture phase · corre antes dos handlers locais
 }
 
 // Arrancar quando DOM estiver pronto
