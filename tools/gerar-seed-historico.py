@@ -17,19 +17,20 @@ wb = openpyxl.load_workbook(EXCEL, data_only=True)
 # MAPEAMENTOS
 # ──────────────────────────────────────────────────────────
 
-# Coluna no Excel (1-based) → tenantId
-# Excel: A=R/C DTO, B=R/C ESQ, C=1º DTO, D=1º ESQ, E=2º DTO, F=2º ESQ, G=3º DTO, H=3º ESQ, I=4º DTO, J=4º ESQ
+# Coluna no Excel (0-based) → tenantId
+# Excel: posição 0 = label "Fracções"
+#        posição 1 = R/C.Dto, 2 = R/C.Esq, 3 = 1º Dto, ...
 COL_TO_TENANT = {
-    2: 'cond_02',   # R/C Dto - Filipe Solha (91‰) - ADMIN
-    3: 'cond_01',   # R/C Esq - João Vaz (79‰)
-    4: 'cond_04',   # 1º Dto - Sílvia Gonçalves (87‰) ⚠ em atraso
-    5: 'cond_03',   # 1º Esq - Leonel Venâncio (119‰)
-    6: 'cond_06',   # 2º Dto - António Figueiredo (88‰)
-    7: 'cond_05',   # 2º Esq - Ricardo N. Cordeiro (121‰) - ADMIN
-    8: 'cond_08',   # 3º Dto - Lurdes Serafim (88‰)
-    9: 'cond_07',   # 3º Esq - Nuno P. Silva (115‰)
-    10: 'cond_10',  # 4º Dto - Vitor Barata (87‰)
-    11: 'cond_09',  # 4º Esq - J.C. Monteiro (125‰)
+    1: 'cond_02',   # R/C Dto - Filipe Solha (91‰) - ADMIN
+    2: 'cond_01',   # R/C Esq - João Vaz (79‰)
+    3: 'cond_04',   # 1º Dto - Sílvia Gonçalves (87‰) ⚠ em atraso
+    4: 'cond_03',   # 1º Esq - Leonel Venâncio (119‰)
+    5: 'cond_06',   # 2º Dto - António Figueiredo (88‰)
+    6: 'cond_05',   # 2º Esq - Ricardo Cordeiro (121‰)
+    7: 'cond_08',   # 3º Dto - Lurdes Serafim (88‰)
+    8: 'cond_07',   # 3º Esq - Nuno Silva (115‰)
+    9: 'cond_10',   # 4º Dto - Vitor Barata (87‰)
+    10: 'cond_09',  # 4º Esq - José Carlos Monteiro (125‰)
 }
 
 # Tenants completos (com rentByYear de cada ano)
@@ -363,7 +364,7 @@ planos.append(plano_elev_2025)
 quotas_total_elev2025 = {
     'cond_02': 49469,   # 494.69 €
     'cond_01': 42946,
-    'cond_04': 47295,   # Sílvia · em atraso 190.95€
+    'cond_04': 47295,   # Sílvia · em atraso 190.95€ (Excel)
     'cond_03': 64690,
     'cond_06': 47838,
     'cond_05': 65778,
@@ -373,30 +374,45 @@ quotas_total_elev2025 = {
     'cond_09': 67952,
 }
 
-# Mensal = total/8 (~mensal)
-# Para Sílvia (cond_04): total = 472.95€, pago = 472.95 - 190.95 = 282€ (vou marcar prestações 1-4 como pagas, 5-8 em atraso)
+# Para a Sílvia, falta exata = 190.95€ (Excel "Exercicio 2025")
+# Pago = total - falta = 472.95 - 190.95 = 282 €
+# Modelar: 4 primeiras prestações pagas a 70.50€ (= 282/4)
+#          4 últimas pendentes a 47.74€ (= 190.95/4 com ajuste 0.01)
+FALTA_SILVIA = 19095  # cêntimos
+PAGO_SILVIA  = 28200  # cêntimos
+
 elev2025_datas = [(2025,m) for m in range(4,12)]  # Abr-Nov 2025
 for tenant_id, total_cent in quotas_total_elev2025.items():
-    valor_mensal = round(total_cent / 8)
     is_silvia = tenant_id == 'cond_04'
-    pago_acumulado = 0
-    pago_total_silvia = 28200 if is_silvia else total_cent  # Sílvia pagou 282€ ; outros pagaram tudo
+
+    if is_silvia:
+        # 4 primeiras pagas (somam 282€) · 4 últimas pendentes (somam 190.95€)
+        valores_prest = [
+            7050, 7050, 7050, 7050,                       # 4 × 70.50 = 282.00
+            4774, 4774, 4774, 4773,                       # 4 × ≈47.74 = 190.95
+        ]
+        estados = ['pago']*4 + ['pendente']*4
+    else:
+        # 8 prestações iguais · todas pagas
+        valor_mensal = round(total_cent / 8)
+        # Última absorve o residual
+        ultima = total_cent - valor_mensal * 7
+        valores_prest = [valor_mensal]*7 + [ultima]
+        estados = ['pago']*8
+
     for i, (ano, mes) in enumerate(elev2025_datas):
         prest = {
             'id': f'prest_elev2025_{tenant_id}_{i+1}',
             'planoId': 'plano_elev_2025',
             'tenantId': tenant_id,
             'numero': i+1,
-            'valor_centimos': valor_mensal,
+            'valor_centimos': valores_prest[i],
             'dueDate': f"{ano}-{mes:02d}-15",
             'historico': True,
+            'estado': estados[i],
         }
-        if pago_acumulado + valor_mensal <= pago_total_silvia:
-            prest['estado'] = 'pago'
+        if estados[i] == 'pago':
             prest['pagoEm'] = datetime(ano, mes, 20).timestamp() * 1000
-            pago_acumulado += valor_mensal
-        else:
-            prest['estado'] = 'pendente'
         prestacoes.append(prest)
 
 print(f"Planos gerados: {len(planos)}")
@@ -475,27 +491,28 @@ meta = {
         },
     },
     # Plano Schindler · pagamentos faseados do condomínio à Schindler
-    # Saídas previstas a partir do plano original (Dez 2025 - Nov 2026)
+    # Excel: Entrada 10% + 12 prestações mensais (Dez 2025 - Nov 2026) = 6023.26 €
     'planoSchindler': {
-        'inicio': '2025-12-01',
+        'inicio': '2025-11-01',
         'fim': '2026-11-30',
         'fornecedor': 'Schindler',
         'descricao': 'Plano de pagamento faseado para reparação do elevador',
         'totalPrevisto_centimos': 602326,
         'rubricaId': 'rub_plano_schindler',
         'prestacoes': [
-            {'data': '2025-12-01', 'valor_centimos': 62326, 'descricao': 'Entrada (10%)'},
-            {'data': '2026-01-01', 'valor_centimos': 45000, 'descricao': 'Prestação 1 / 12'},
-            {'data': '2026-02-01', 'valor_centimos': 45000, 'descricao': 'Prestação 2 / 12'},
-            {'data': '2026-03-01', 'valor_centimos': 45000, 'descricao': 'Prestação 3 / 12'},
-            {'data': '2026-04-01', 'valor_centimos': 45000, 'descricao': 'Prestação 4 / 12'},
-            {'data': '2026-05-01', 'valor_centimos': 45000, 'descricao': 'Prestação 5 / 12'},
-            {'data': '2026-06-01', 'valor_centimos': 45000, 'descricao': 'Prestação 6 / 12'},
-            {'data': '2026-07-01', 'valor_centimos': 45000, 'descricao': 'Prestação 7 / 12'},
-            {'data': '2026-08-01', 'valor_centimos': 45000, 'descricao': 'Prestação 8 / 12'},
-            {'data': '2026-09-01', 'valor_centimos': 45000, 'descricao': 'Prestação 9 / 12'},
-            {'data': '2026-10-01', 'valor_centimos': 45000, 'descricao': 'Prestação 10 / 12'},
-            {'data': '2026-11-01', 'valor_centimos': 45000, 'descricao': 'Prestação 11 / 12'},
+            {'data': '2025-11-01', 'valor_centimos': 62326, 'descricao': 'Entrada (10%)'},
+            {'data': '2025-12-01', 'valor_centimos': 45000, 'descricao': 'Prestação 1 / 12 · Dez 2025'},
+            {'data': '2026-01-01', 'valor_centimos': 45000, 'descricao': 'Prestação 2 / 12 · Jan 2026'},
+            {'data': '2026-02-01', 'valor_centimos': 45000, 'descricao': 'Prestação 3 / 12 · Fev 2026'},
+            {'data': '2026-03-01', 'valor_centimos': 45000, 'descricao': 'Prestação 4 / 12 · Mar 2026'},
+            {'data': '2026-04-01', 'valor_centimos': 45000, 'descricao': 'Prestação 5 / 12 · Abr 2026'},
+            {'data': '2026-05-01', 'valor_centimos': 45000, 'descricao': 'Prestação 6 / 12 · Mai 2026'},
+            {'data': '2026-06-01', 'valor_centimos': 45000, 'descricao': 'Prestação 7 / 12 · Jun 2026'},
+            {'data': '2026-07-01', 'valor_centimos': 45000, 'descricao': 'Prestação 8 / 12 · Jul 2026'},
+            {'data': '2026-08-01', 'valor_centimos': 45000, 'descricao': 'Prestação 9 / 12 · Ago 2026'},
+            {'data': '2026-09-01', 'valor_centimos': 45000, 'descricao': 'Prestação 10 / 12 · Set 2026'},
+            {'data': '2026-10-01', 'valor_centimos': 45000, 'descricao': 'Prestação 11 / 12 · Out 2026'},
+            {'data': '2026-11-01', 'valor_centimos': 45000, 'descricao': 'Prestação 12 / 12 · Nov 2026'},
         ],
     },
 }
