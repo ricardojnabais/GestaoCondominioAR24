@@ -97,9 +97,12 @@ async function buildAdminItems() {
     { sep: true, label: 'Visão e Gestão' },
     { route: 'admin/analise',        icon: 'ic-dashboard',    label: 'Análise' },
     { route: 'admin/orcamento',      icon: 'ic-quota-in',     label: 'Orçamento' },
-    { route: 'admin/comunicacoes',   icon: 'ic-receipt',      label: 'Comunicações' },
+    { route: 'admin/comunicacoes',   icon: 'ic-chat',         label: 'Comunicações' },
     { sep: true, label: 'Definições' },
-    { route: 'admin/definicoes',     icon: 'ic-settings',     label: 'Definições' }
+    { route: 'admin/condominos',     icon: 'ic-settings',     label: 'Condóminos' },
+    { route: 'admin/utilizadores',   icon: 'ic-settings',     label: 'Acessos ao Portal' },
+    { route: 'admin/rubricas',       icon: 'ic-settings',     label: 'Rúbricas' },
+    { route: 'admin/definicoes-dados', icon: 'ic-settings',   label: 'Dados do Condomínio' }
   ];
 }
 
@@ -114,7 +117,7 @@ async function buildCondominoItems(tenantId) {
     { sep: true, label: 'A Minha Área' },
     { route: 'condomino/recibos',  icon: 'ic-receipt',      label: 'Os Meus Recibos' },
     { route: 'condomino/conta',    icon: 'ic-quota-in',     label: 'A Minha Conta' },
-    { route: 'condomino/comunicacoes', icon: 'ic-payment-out', label: 'Comunicações', badge: naoLidas },
+    { route: 'condomino/comunicacoes', icon: 'ic-chat',         label: 'Comunicações', badge: naoLidas },
     { sep: true, label: 'Condomínio' },
     { route: 'condomino/contas',   icon: 'ic-bank',         label: 'Contas do Condomínio' },
     { sep: true, label: 'Conta Pessoal' },

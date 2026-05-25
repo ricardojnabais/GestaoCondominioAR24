@@ -37,8 +37,8 @@ export async function render(container) {
           <div class="page-title">
             <button class="btn-home-circle" id="back-home">${icon('ic-home', 'btn-home-icon')}</button>
             <div>
-              <div class="breadcrumb">Contas de Condómino</div>
-              <h1>Utilizadores</h1>
+              <div class="breadcrumb">Definições · Credenciais</div>
+              <h1>Acessos ao Portal</h1>
             </div>
           </div>
         </div>

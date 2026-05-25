@@ -117,7 +117,11 @@ async function saveTelefone(tenantId) {
     return;
   }
   const tenant = await store.getDoc('tenants', tenantId);
+  const mudou = valor !== (tenant.telefone || '');
   tenant.telefone = valor;
+  if (mudou) {
+    tenant.telefoneAtualizadoEm = Date.now();
+  }
   await store.setDoc('tenants', tenant);
   showMsg('#msg-telefone', '✓ Telefone guardado.', 'ok');
 }

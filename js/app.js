@@ -27,6 +27,7 @@ import * as adminDefinicoesMenu from './ui/admin/definicoes-menu.js';
 import * as adminDefinicoesDados from './ui/admin/definicoes-condominio.js';
 import * as adminComunicacoes from './ui/admin/comunicacoes.js';
 import * as adminUtilizadores from './ui/admin/utilizadores.js';
+import * as adminCondominos from './ui/admin/condominos.js';
 import * as condominoHome from './ui/condomino/home.js';
 import * as condominoRecibos from './ui/condomino/recibos.js';
 import * as condominoConta from './ui/condomino/conta.js';
@@ -73,6 +74,7 @@ async function main() {
   router.register('admin/definicoes-dados', adminDefinicoesDados, { requiresAuth: 'admin' });
   router.register('admin/comunicacoes',    adminComunicacoes,    { requiresAuth: 'admin' });
   router.register('admin/utilizadores',    adminUtilizadores,    { requiresAuth: 'admin' });
+  router.register('admin/condominos',      adminCondominos,      { requiresAuth: 'admin' });
   router.register('admin/consultar',       adminRecibos,         { requiresAuth: 'admin' });  // alias
 
   router.register('condomino/comunicacoes', condominoComunicacoes, { requiresAuth: 'condomino' });

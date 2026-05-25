@@ -3298,3 +3298,112 @@ select.ctrl-input { width: 160px; text-align: left; }
 @media (max-width: 380px) {
   .drawer { width: 280px; }
 }
+
+/* ==========================================================================
+   CONDÓMINOS · gestão admin
+   ========================================================================== */
+.cond-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  gap: 12px;
+}
+.cond-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  box-shadow: var(--shadow-sm);
+}
+.cond-card-inativo { opacity: .65; background: var(--gray-50); }
+
+.cc-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.cc-frac {
+  font-weight: 800;
+  color: var(--primary);
+  font-size: 14px;
+}
+.cc-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+.cc-tag {
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+  white-space: nowrap;
+}
+.tag-green   { background: var(--green-light); color: #047857; }
+.tag-amber   { background: var(--amber-light); color: #92400E; }
+.tag-red     { background: var(--red-light);   color: #B91C1C; }
+.tag-primary { background: var(--blue-50);     color: var(--primary); }
+.tag-muted   { background: var(--gray-100);    color: var(--text-muted); }
+
+.cc-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.cc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 14px;
+  margin-bottom: 12px;
+}
+.cc-grid > div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.cc-lbl {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.cc-val {
+  font-size: 13px;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cc-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  border-top: 1px dashed var(--border);
+  padding-top: 10px;
+}
+
+.tel-edited-tag {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--amber);
+  margin-left: 4px;
+  cursor: help;
+  vertical-align: middle;
+}
+
+.btn-danger { color: var(--red) !important; border-color: var(--red) !important; }
+.btn-danger:hover { background: var(--red-light) !important; }
+
+.modal-wide { max-width: 640px; width: 92vw; }
+
+@media (max-width: 500px) {
+  .cc-grid { grid-template-columns: 1fr; }
+}

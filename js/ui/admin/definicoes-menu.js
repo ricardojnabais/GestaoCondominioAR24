@@ -46,11 +46,20 @@ export async function render(container) {
             <div class="scl-arrow">›</div>
           </a>
 
+          <a class="settings-card-link" data-route="admin/condominos">
+            <div class="scl-ic">${icon('ic-settings', 'scl-ic-svg')}</div>
+            <div class="scl-info">
+              <div class="scl-title">Condóminos</div>
+              <div class="scl-desc">Dados pessoais, fração, permilagem, quotas anuais · adicionar e desativar</div>
+            </div>
+            <div class="scl-arrow">›</div>
+          </a>
+
           <a class="settings-card-link" data-route="admin/utilizadores">
             <div class="scl-ic">${icon('ic-settings', 'scl-ic-svg')}</div>
             <div class="scl-info">
-              <div class="scl-title">Utilizadores</div>
-              <div class="scl-desc">Contas de acesso dos condóminos · criar, repor passwords, desativar</div>
+              <div class="scl-title">Acessos ao Portal</div>
+              <div class="scl-desc">Credenciais dos condóminos · criar acesso, repor password, desativar</div>
             </div>
             <div class="scl-arrow">›</div>
           </a>

@@ -38,6 +38,14 @@ export const ICON_SPRITE_HTML = `
       <line x1="19" y1="34" x2="30" y2="34"/>
     </symbol>
 
+    <!-- Comunicações · balão de conversa -->
+    <symbol id="ic-chat" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M 12,18 Q 12,12 18,12 L 46,12 Q 52,12 52,18 L 52,38 Q 52,44 46,44 L 30,44 L 20,52 L 20,44 L 18,44 Q 12,44 12,38 Z"/>
+      <circle cx="22" cy="28" r="2" fill="currentColor" stroke="none"/>
+      <circle cx="32" cy="28" r="2" fill="currentColor" stroke="none"/>
+      <circle cx="42" cy="28" r="2" fill="currentColor" stroke="none"/>
+    </symbol>
+
     <!-- 4. Consultar Pagamentos (lista com lupa) -->
     <symbol id="ic-search-list" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
       <rect x="10" y="12" width="32" height="40" rx="3"/>

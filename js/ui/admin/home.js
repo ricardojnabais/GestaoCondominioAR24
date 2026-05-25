@@ -80,7 +80,7 @@ export async function render(container) {
           </a>
           <a class="menu-tile span-2" data-route="admin/comunicacoes">
             <div class="mt-icon-wrap">
-              ${icon('ic-receipt', 'mt-icon')}
+              ${icon('ic-chat', 'mt-icon')}
               ${naoLidas > 0 ? `<span class="mt-badge">${naoLidas}</span>` : ''}
             </div>
             <div class="mt-name">Comunicações${naoLidas > 0 ? ` · ${naoLidas}` : ''}</div>
