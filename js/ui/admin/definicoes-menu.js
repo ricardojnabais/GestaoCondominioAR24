@@ -72,6 +72,15 @@ export async function render(container) {
             </div>
             <div class="scl-arrow">›</div>
           </a>
+
+          <a class="settings-card-link" data-route="admin/importar-dados">
+            <div class="scl-ic">${icon('ic-settings', 'scl-ic-svg')}</div>
+            <div class="scl-info">
+              <div class="scl-title">Importar Dados (JSON)</div>
+              <div class="scl-desc">Backup / restauro · carregar histórico AR24 ou snapshot exportado</div>
+            </div>
+            <div class="scl-arrow">›</div>
+          </a>
         </div>
       </main>
     </div>

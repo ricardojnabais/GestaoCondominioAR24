@@ -96,13 +96,15 @@ async function buildAdminItems() {
     { route: 'admin/planos',         icon: 'ic-quota-in',     label: 'Planos de Pagamento' },
     { sep: true, label: 'Visão e Gestão' },
     { route: 'admin/analise',        icon: 'ic-dashboard',    label: 'Análise' },
+    { route: 'admin/despesas-mensal',icon: 'ic-dashboard',    label: 'Mapa Mensal de Despesas' },
     { route: 'admin/orcamento',      icon: 'ic-quota-in',     label: 'Orçamento' },
     { route: 'admin/comunicacoes',   icon: 'ic-chat',         label: 'Comunicações' },
     { sep: true, label: 'Definições' },
     { route: 'admin/condominos',     icon: 'ic-settings',     label: 'Condóminos' },
     { route: 'admin/utilizadores',   icon: 'ic-settings',     label: 'Acessos ao Portal' },
     { route: 'admin/rubricas',       icon: 'ic-settings',     label: 'Rúbricas' },
-    { route: 'admin/definicoes-dados', icon: 'ic-settings',   label: 'Dados do Condomínio' }
+    { route: 'admin/definicoes-dados', icon: 'ic-settings',   label: 'Dados do Condomínio' },
+    { route: 'admin/importar-dados', icon: 'ic-settings',     label: 'Importar Dados (JSON)' }
   ];
 }
 

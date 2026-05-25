@@ -18,7 +18,7 @@ import { formatMoney, formatDate } from '../../utils/format.js';
 
 let state = {
   ano: new Date().getFullYear().toString(),
-  tipo: 'todos'  // 'todos' | 'entradas' | 'saidas'
+  tipo: 'saidas'  // 'todos' | 'entradas' | 'saidas' · default em saídas (foco em pagamentos)
 };
 
 let containerRef = null;
@@ -88,12 +88,47 @@ export async function render(container) {
 
 async function renderAll() {
   const ano = state.ano;
-  const { saldo, receitas, despesas, saldoInicial } = await saldoBanco.calcularSaldo(ano);
+  const { saldo, receitas, despesas, saldoInicial, saldoConhecido, diferenca } = await saldoBanco.calcularSaldo(ano);
+
+  // Bloco superior · saldo real BPI + saldo calculado + diferença
+  const saldoConhecidoHtml = saldoConhecido ? `
+    <div class="bank-real-card">
+      <div class="brc-head">
+        <span class="brc-lbl">Saldo Real BPI · ${formatDate(saldoConhecido.data)}</span>
+        <button class="btn-link" id="btn-edit-saldo-real">Atualizar</button>
+      </div>
+      <div class="brc-total">${formatMoney(saldoConhecido.total_centimos)}</div>
+      <div class="brc-breakdown">
+        <span><strong>${formatMoney(saldoConhecido.contaOrdem_centimos)}</strong> Conta à Ordem</span>
+        <span><strong>${formatMoney(saldoConhecido.contaPoupanca_centimos)}</strong> Poupança</span>
+      </div>
+      ${diferenca !== null && Math.abs(diferenca) >= 100 ? `
+        <div class="brc-diff ${diferenca > 0 ? 'pos' : 'neg'}">
+          Diferença vs calculado:
+          <strong>${diferenca > 0 ? '+' : ''}${formatMoney(diferenca)}</strong>
+          ${diferenca > 0 ? '· o BPI tem mais do que o esperado' : '· o BPI tem menos do que o esperado'}
+        </div>
+      ` : (diferenca !== null && Math.abs(diferenca) < 100 ? `
+        <div class="brc-diff ok">✓ Calculado bate com o real (margem < 1€)</div>
+      ` : '')}
+    </div>
+  ` : `
+    <div class="bank-real-card empty">
+      <div class="brc-head">
+        <span class="brc-lbl">Saldo Real BPI</span>
+        <button class="btn-link" id="btn-edit-saldo-real">Registar</button>
+      </div>
+      <p style="margin:6px 0 0 0;font-size:12px;color:var(--text-muted)">
+        Sem registo · clica em "Registar" para introduzir o saldo atual do BPI.
+      </p>
+    </div>
+  `;
 
   // Resumo no topo
   containerRef.querySelector('#saldo-resumo').innerHTML = `
+    ${saldoConhecidoHtml}
     <div class="bank-summary">
-      <div class="bs-lbl">Saldo Bancário Actual</div>
+      <div class="bs-lbl">Saldo Calculado · ${ano}</div>
       <div class="bs-value">${formatMoney(saldo)}</div>
       <div class="bs-formula">
         <span title="Saldo inicial">${formatMoney(saldoInicial)}</span>
@@ -104,6 +139,12 @@ async function renderAll() {
       </div>
     </div>
   `;
+
+  // Listener do botão de saldo real
+  const btnEdit = containerRef.querySelector('#btn-edit-saldo-real');
+  if (btnEdit) {
+    btnEdit.addEventListener('click', () => abrirModalSaldoReal(saldoConhecido));
+  }
 
   // Construir lista de movimentos
   const receipts = (await store.queryDocs('receipts', { ano })).map(r => ({
@@ -224,3 +265,82 @@ function buildRow(m) {
     </div>
   `;
 }
+
+/**
+ * Abre modal para registar/atualizar o saldo real observado no BPI.
+ */
+function abrirModalSaldoReal(atual) {
+  const hoje = new Date().toISOString().slice(0, 10);
+  const modal = document.createElement('div');
+  modal.className = 'modal-overlay';
+  modal.innerHTML = `
+    <div class="modal">
+      <div class="modal-head">
+        <h3>${atual ? 'Atualizar' : 'Registar'} Saldo Real BPI</h3>
+        <button class="btn-close" id="sr-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="orc-help">
+          Introduz os saldos atuais lidos do BPI Net Empresas. Servem como ancoragem para detectar descalibração com o saldo calculado pela app.
+        </p>
+        <div class="field">
+          <label>Data da observação</label>
+          <input type="date" id="sr-data" value="${atual?.data || hoje}">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Conta à Ordem (€)</label>
+            <input type="text" id="sr-co" value="${atual ? (atual.contaOrdem_centimos / 100).toFixed(2).replace('.', ',') : ''}" placeholder="7521,78">
+          </div>
+          <div class="field">
+            <label>Conta Poupança (€)</label>
+            <input type="text" id="sr-poup" value="${atual ? (atual.contaPoupanca_centimos / 100).toFixed(2).replace('.', ',') : '704,34'}" placeholder="704,34">
+          </div>
+        </div>
+        <div class="field">
+          <label>Notas (opcional)</label>
+          <input type="text" id="sr-notas" value="${escapeAttr(atual?.notas || '')}" maxlength="100" placeholder="ex: posição integrada BPI">
+        </div>
+        <div id="sr-msg"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn ghost" id="sr-cancel">Cancelar</button>
+        <button class="btn primary" id="sr-save">Guardar</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  const close = () => modal.remove();
+  modal.querySelector('#sr-close').addEventListener('click', close);
+  modal.querySelector('#sr-cancel').addEventListener('click', close);
+  modal.addEventListener('click', e => { if (e.target === modal) close(); });
+
+  modal.querySelector('#sr-save').addEventListener('click', async () => {
+    const data = modal.querySelector('#sr-data').value;
+    const co = eurToCent(modal.querySelector('#sr-co').value);
+    const poup = eurToCent(modal.querySelector('#sr-poup').value);
+    const notas = modal.querySelector('#sr-notas').value.trim();
+    if (!data) {
+      modal.querySelector('#sr-msg').innerHTML = '<div class="save-msg save-msg-error">Data obrigatória.</div>';
+      return;
+    }
+    try {
+      await saldoBanco.setSaldoConhecido({ data, contaOrdem_centimos: co, contaPoupanca_centimos: poup, notas });
+      close();
+      await renderAll();
+    } catch (e) {
+      modal.querySelector('#sr-msg').innerHTML = `<div class="save-msg save-msg-error">${e.message}</div>`;
+    }
+  });
+}
+
+function eurToCent(s) {
+  if (!s) return 0;
+  const cleaned = String(s).replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
+  const n = parseFloat(cleaned);
+  if (isNaN(n)) return 0;
+  return Math.round(n * 100);
+}
+
+function escapeAttr(s) { return String(s || '').replace(/"/g, '&quot;'); }

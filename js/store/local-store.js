@@ -163,7 +163,61 @@ export function importAll(data) {
   });
 }
 
+/**
+ * Importa um SNAPSHOT estruturado (gerado pelo backup ou exportação).
+ * Limpa as coleções afectadas e repõe com os dados do snapshot.
+ *
+ * @param {Object} snapshot - estrutura com chaves:
+ *   - meta: objeto cujas chaves viram docs com id em meta/
+ *   - tenants, rubricas, receipts, pagamentosDespesa, planos, prestacoes,
+ *     orcamentos, outrosRecebimentos, comunicacoes: arrays de docs
+ */
+export function importarSnapshot(snapshot) {
+  if (!snapshot || typeof snapshot !== 'object') {
+    throw new Error('Snapshot inválido.');
+  }
+  const collectionsParaArray = [
+    'tenants', 'rubricas', 'receipts', 'pagamentosDespesa',
+    'planos', 'prestacoes', 'orcamentos', 'outrosRecebimentos', 'comunicacoes',
+  ];
+
+  // 1. Limpar coleções de dados
+  collectionsParaArray.forEach(c => writeCollection(c, []));
+  writeCollection('meta', []);
+
+  // 2. Popular arrays
+  collectionsParaArray.forEach(c => {
+    const arr = snapshot[c];
+    if (Array.isArray(arr) && arr.length > 0) {
+      writeCollection(c, arr);
+    }
+  });
+
+  // 3. Meta · cada chave do objeto vira um doc com id
+  const meta = snapshot.meta;
+  if (meta && typeof meta === 'object') {
+    const metaDocs = Object.entries(meta).map(([key, value]) => {
+      if (value && typeof value === 'object' && !Array.isArray(value)) {
+        return { id: key, ...value };
+      }
+      return { id: key, valor: value };
+    });
+    writeCollection('meta', metaDocs);
+  }
+
+  // 4. Emitir sinais de mudança para recarregar UI
+  [...collectionsParaArray, 'meta'].forEach(c => emitChange(c));
+
+  return {
+    ok: true,
+    contagens: collectionsParaArray.reduce((acc, c) => {
+      acc[c] = (snapshot[c] || []).length;
+      return acc;
+    }, { meta: Object.keys(meta || {}).length }),
+  };
+}
+
 // Expor para debugging em consola (não usar em código de produção)
 if (typeof window !== 'undefined') {
-  window.__store = { listDocs, getDoc, setDoc, deleteDoc, clearAll, exportAll, importAll };
+  window.__store = { listDocs, getDoc, setDoc, deleteDoc, clearAll, exportAll, importAll, importarSnapshot };
 }

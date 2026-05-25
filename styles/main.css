@@ -3407,3 +3407,177 @@ select.ctrl-input { width: 160px; text-align: left; }
 @media (max-width: 500px) {
   .cc-grid { grid-template-columns: 1fr; }
 }
+
+/* ==========================================================================
+   MAPA MENSAL DE DESPESAS · tabela cruzada
+   ========================================================================== */
+.mapa-mensal-wrap {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: auto;
+  box-shadow: var(--shadow-sm);
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+}
+.mapa-mensal {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  min-width: 600px;
+}
+.mapa-mensal thead th {
+  position: sticky;
+  top: 0;
+  background: var(--primary);
+  color: var(--white);
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+  padding: 10px 8px;
+  text-align: right;
+  white-space: nowrap;
+  z-index: 2;
+}
+.mapa-mensal thead th.mm-mes-col {
+  text-align: left;
+  position: sticky;
+  left: 0;
+  z-index: 3;
+}
+.mapa-mensal thead th.mm-total-col {
+  background: var(--primary-dk, #1640A0);
+}
+.mapa-mensal tbody td {
+  padding: 9px 8px;
+  text-align: right;
+  border-bottom: 1px solid var(--border-light, #F1F5F9);
+  white-space: nowrap;
+}
+.mapa-mensal tbody td.mm-mes-col {
+  text-align: left;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--white);
+  position: sticky;
+  left: 0;
+  border-right: 1px solid var(--border);
+  z-index: 1;
+}
+.mapa-mensal tbody td.mm-cell-empty {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+.mapa-mensal tbody td.mm-cell-bold {
+  font-weight: 700;
+  color: var(--primary);
+}
+.mapa-mensal tbody td.mm-total-col {
+  font-weight: 700;
+  color: var(--primary);
+  background: var(--blue-50);
+  border-left: 1px solid var(--border);
+}
+.mapa-mensal tbody tr:nth-child(even) td:not(.mm-mes-col):not(.mm-total-col) {
+  background: var(--gray-50);
+}
+.mapa-mensal tbody tr.mm-row-empty {
+  opacity: .55;
+}
+.mapa-mensal tbody tr.mm-row-total td {
+  background: var(--primary-dk, #1640A0) !important;
+  color: var(--white) !important;
+  font-weight: 700;
+  font-size: 12.5px;
+  padding: 12px 8px;
+  border-top: 2px solid var(--primary);
+}
+.mapa-mensal tbody tr.mm-row-total td.mm-mes-col {
+  text-align: left;
+  background: var(--primary-dk, #1640A0) !important;
+}
+.mapa-mensal tbody tr.mm-row-medio td {
+  background: var(--blue-50) !important;
+  font-style: italic;
+  color: var(--text);
+  font-size: 12px;
+}
+.mapa-mensal tbody tr.mm-row-medio td.mm-mes-col {
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   BANCO · Saldo Real BPI (card de ancoragem)
+   ========================================================================== */
+.bank-real-card {
+  background: linear-gradient(135deg, #047857 0%, #10B981 100%);
+  color: #FFFFFF;
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+}
+.bank-real-card.empty {
+  background: var(--white);
+  color: var(--text);
+  border: 1.5px dashed var(--border);
+  box-shadow: none;
+}
+.brc-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.brc-lbl {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  font-weight: 700;
+  opacity: .9;
+}
+.bank-real-card.empty .brc-lbl { opacity: 1; color: var(--text-muted); }
+.brc-total {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 8px;
+}
+.brc-breakdown {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  opacity: .95;
+  flex-wrap: wrap;
+}
+.brc-breakdown strong { font-variant-numeric: tabular-nums; }
+.brc-diff {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,.25);
+  font-size: 12px;
+}
+.brc-diff.ok { color: #FFFFFF; opacity: .9; }
+.brc-diff.neg strong { color: #FECACA; }
+.brc-diff.pos strong { color: #BBF7D0; }
+.bank-real-card .btn-link {
+  background: rgba(255,255,255,.18);
+  border: 1px solid rgba(255,255,255,.32);
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: background .15s;
+}
+.bank-real-card .btn-link:hover { background: rgba(255,255,255,.32); }
+.bank-real-card.empty .btn-link {
+  background: var(--primary);
+  border-color: var(--primary);
+}
