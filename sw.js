@@ -15,13 +15,13 @@
  * mais lentos.
  */
 
-const CACHE_VERSION = 'ar24-v0.7.2';
+const CACHE_VERSION = 'ar24-v0.8.0';
 const ASSETS_TO_PRECACHE = [
   './',
   './index.html',
   './manifest.json',
   './styles/main.css',
-  './vendor/xlsx.mini.min.js',
+  './vendor/exceljs.min.js',
   './vendor/jspdf.umd.min.js',
   './assets/icon-192.png',
   './assets/icon-512.png',
