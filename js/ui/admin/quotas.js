@@ -201,6 +201,7 @@ async function renderTable() {
   `;
 
   const html = `
+    ${await renderDividasArrastadas(ano)}
     <div class="quotas-summary">
       <div class="qs-stat">
         <div class="qs-lbl">Recebido YTD</div>
@@ -226,4 +227,32 @@ async function renderTable() {
     </div>
   `;
   containerRef.querySelector('#quotas-table').innerHTML = html;
+}
+
+async function renderDividasArrastadas(ano) {
+  const config = await store.getDoc('meta', 'config');
+  const dividas = config?.dividasAnoAnterior?.[ano];
+  if (!dividas || Object.keys(dividas).length === 0) return '';
+
+  const itens = Object.values(dividas);
+  const total = itens.reduce((s, d) => s + (d.valor_centimos || 0), 0);
+
+  return `
+    <div class="divida-arrastada-banner">
+      <div class="dab-head">
+        <span class="dab-icon">⚠</span>
+        <span class="dab-title">Dívidas arrastadas de anos anteriores</span>
+        <span class="dab-total">${formatMoney(total)}</span>
+      </div>
+      <div class="dab-list">
+        ${itens.map(d => `
+          <div class="dab-item">
+            <span class="dab-tenant">${d.fraction} · ${d.tenantName}</span>
+            <span class="dab-origem">${d.origem}</span>
+            <span class="dab-valor neg">${formatMoney(d.valor_centimos)}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
 }

@@ -3789,3 +3789,37 @@ select.ctrl-input { width: 160px; text-align: left; }
   font-weight: 700;
   border-top: 2px solid var(--primary);
 }
+
+/* ─── Banner Dívidas Arrastadas ─────────────────────────────────────── */
+.divida-arrastada-banner {
+  background: linear-gradient(135deg, #fff5f5 0%, #fef0e8 100%);
+  border: 1px solid #fbc4b8;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+.dab-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed rgba(220, 80, 50, 0.25);
+}
+.dab-icon { font-size: 18px; color: #c0392b; }
+.dab-title { font-weight: 600; color: #8a2c1c; flex: 1; font-size: 14px; }
+.dab-total { font-weight: 700; color: #c0392b; font-size: 15px; }
+.dab-list { padding-top: 8px; }
+.dab-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 5px 0;
+  font-size: 13px;
+}
+.dab-tenant { font-weight: 500; color: #2a2a2a; flex: 1; }
+.dab-origem { color: #888; font-size: 12px; }
+.dab-valor.neg { color: #c0392b; font-weight: 600; min-width: 80px; text-align: right; }
+@media (max-width: 720px) {
+  .dab-item { flex-wrap: wrap; }
+  .dab-origem { width: 100%; padding-left: 0; }
+}
