@@ -17,19 +17,20 @@ wb = openpyxl.load_workbook(EXCEL, data_only=True)
 # MAPEAMENTOS
 # ──────────────────────────────────────────────────────────
 
-# Coluna no Excel (1-based) → tenantId
-# Excel: A=R/C DTO, B=R/C ESQ, C=1º DTO, D=1º ESQ, E=2º DTO, F=2º ESQ, G=3º DTO, H=3º ESQ, I=4º DTO, J=4º ESQ
+# Coluna no Excel (0-based) → tenantId
+# Excel: posição 0 = label "Fracções"
+#        posição 1 = R/C.Dto, 2 = R/C.Esq, 3 = 1º Dto, ...
 COL_TO_TENANT = {
-    2: 'cond_02',   # R/C Dto - Filipe Solha (91‰) - ADMIN
-    3: 'cond_01',   # R/C Esq - João Vaz (79‰)
-    4: 'cond_04',   # 1º Dto - Sílvia Gonçalves (87‰) ⚠ em atraso
-    5: 'cond_03',   # 1º Esq - Leonel Venâncio (119‰)
-    6: 'cond_06',   # 2º Dto - António Figueiredo (88‰)
-    7: 'cond_05',   # 2º Esq - Ricardo N. Cordeiro (121‰) - ADMIN
-    8: 'cond_08',   # 3º Dto - Lurdes Serafim (88‰)
-    9: 'cond_07',   # 3º Esq - Nuno P. Silva (115‰)
-    10: 'cond_10',  # 4º Dto - Vitor Barata (87‰)
-    11: 'cond_09',  # 4º Esq - J.C. Monteiro (125‰)
+    1: 'cond_02',   # R/C Dto - Filipe Solha (91‰) - ADMIN
+    2: 'cond_01',   # R/C Esq - João Vaz (79‰)
+    3: 'cond_04',   # 1º Dto - Sílvia Gonçalves (87‰) ⚠ em atraso
+    4: 'cond_03',   # 1º Esq - Leonel Venâncio (119‰)
+    5: 'cond_06',   # 2º Dto - António Figueiredo (88‰)
+    6: 'cond_05',   # 2º Esq - Ricardo Cordeiro (121‰)
+    7: 'cond_08',   # 3º Dto - Lurdes Serafim (88‰)
+    8: 'cond_07',   # 3º Esq - Nuno Silva (115‰)
+    9: 'cond_10',   # 4º Dto - Vitor Barata (87‰)
+    10: 'cond_09',  # 4º Esq - José Carlos Monteiro (125‰)
 }
 
 # Tenants completos (com rentByYear de cada ano)
@@ -98,7 +99,7 @@ receipt_counter_by_year = {}
 
 def next_num(year):
     receipt_counter_by_year[year] = receipt_counter_by_year.get(year, 0) + 1
-    return f"RCB H{receipt_counter_by_year[year]:03d}/{year}"
+    return f"H{receipt_counter_by_year[year]:03d}/{year}"
 
 def parse_quotas_sheet(sheet_name, year):
     """Lê uma folha de Quotas YYYY e gera recibos.
@@ -151,16 +152,16 @@ def parse_quotas_sheet(sheet_name, year):
                 coverage.append({'year': ano_cov, 'month': mes_cov, 'valor_centimos': restante})
             receipts.append({
                 'id': f'rcp_h_{year}_{mes_num:02d}_{tenant_id}',
+                'recibo_numero': next_num(year),
+                'ano': str(year),
                 'tenantId': tenant_id,
+                'data': data,
                 'valor_centimos': valor_cent,
-                'date': data,
-                'numero': next_num(year),
+                'mesReferencia': [f"{c['year']}-{c['month']:02d}" for c in coverage],
                 'descricao': f'Quota {MES_NAMES[mes_idx]} {year} (histórico)',
-                'metodoPagamento': 'transferencia',
-                'coverage': coverage,
-                'cobrancas': [],
-                'criadoEm': datetime(year, mes_num, 15).timestamp() * 1000,
+                'tipo': 'quota',
                 'historico': True,
+                'criadoEm': datetime(year, mes_num, 15).timestamp() * 1000,
             })
 
 for year, sheet_name in [(2021,'Quotas 2021'),(2022,'Quotas 2022'),(2023,'Quotas 2023'),
@@ -191,7 +192,7 @@ def add_despesa(year, mes, val_eur, rubricaId, descricao):
         'id': f'pd_h_{year}_{mes:02d}_{despesa_counter}',
         'rubricaId': rubricaId,
         'valor_centimos': int(round(val_eur * 100)),
-        'date': f"{year}-{mes:02d}-15",
+        'data': f"{year}-{mes:02d}-15",
         'descricao': descricao,
         'metodoPagamento': 'transferencia',
         'fornecedor': '',
@@ -249,155 +250,179 @@ for year, sheet_name in [(2021,'Despesas 2021'),(2022,'Despesas 2022'),(2023,'De
 print(f"Despesas geradas: {len(pagamentosDespesa)}")
 
 # ──────────────────────────────────────────────────────────
-# PLANOS (Reparação Elevador 2023, Quotização Obras 2024, Reparação Elevador 2025)
+# PLANOS · lidos EXATAMENTE das tabelas Excel
+#
+# Cada célula com valor numérico = 1 prestação registada como paga.
+# A diferença entre quota total e total registado = valor em falta.
+# Não criamos prestações "futuras" ou "pendentes" artificiais.
 # ──────────────────────────────────────────────────────────
+
+# Mapeamento de fração letra → tenantId (lendo Reparação Elevador 2025)
+FRAC_LETRA_TO_TENANT = {
+    'A': 'cond_02', 'B': 'cond_01', 'C': 'cond_04', 'D': 'cond_03',
+    'E': 'cond_06', 'F': 'cond_05', 'G': 'cond_08', 'H': 'cond_07',
+    'I': 'cond_10', 'J': 'cond_09',
+}
 
 planos = []
 prestacoes = []
 
-# Plano 1: Reparação Elevador 2023 (Ago-Out 2023)
-plano_elev_2023 = {
-    'id': 'plano_elev_2023',
-    'nome': 'Reparação Elevador 2023',
-    'descricao': 'Reparação extraordinária do elevador · 3 prestações',
-    'tipo': 'valor_fixo',
-    'total_centimos': 226500,
-    'inicio': '2023-08-01',
-    'fim': '2023-10-31',
-    'estado': 'concluido',
-    'criadoEm': datetime(2023, 8, 1).timestamp() * 1000,
-    'numPrestacoes': 3,
-    'historico': True,
-}
-planos.append(plano_elev_2023)
+def parse_plano_sheet(sheet_name, plano_id, plano_nome, descricao,
+                       linha_dados_inicio, col_dados_inicio,
+                       col_frac_letra, col_quota_total, col_quota_mensal,
+                       header_meses_row, datas_explicitas=None):
+    """
+    Lê uma folha de plano e gera:
+     - 1 doc no array `planos` com campos exigidos pela UI
+     - prestações em MATRIZ (cada tenant tem N prestações iguais ao nº de meses do plano)
+       · estado='paga' se a célula tem valor, 'pendente' caso contrário
+    """
+    ws = wb[sheet_name]
+    rows = list(ws.iter_rows(values_only=True))
 
-# Valores Reparação Elevador 2023 por fração (a partir do Excel · 3 mensais iguais)
-valores_elev_2023 = {
-    'cond_02': 69, 'cond_01': 60, 'cond_04': 66, 'cond_03': 90,
-    'cond_06': 66, 'cond_05': 91, 'cond_08': 66, 'cond_07': 87,
-    'cond_10': 66, 'cond_09': 94,
-}
-for tenant_id, valor_mensal in valores_elev_2023.items():
-    for i, (ano, mes) in enumerate([(2023,8),(2023,9),(2023,10)]):
-        prestacoes.append({
-            'id': f'prest_elev2023_{tenant_id}_{i+1}',
-            'planoId': 'plano_elev_2023',
-            'tenantId': tenant_id,
-            'numero': i+1,
-            'valor_centimos': valor_mensal * 100,
-            'dueDate': f"{ano}-{mes:02d}-15",
-            'estado': 'pago',
-            'pagoEm': datetime(ano, mes, 20).timestamp() * 1000,
-            'historico': True,
-        })
+    if datas_explicitas:
+        datas_meses = datas_explicitas
+    else:
+        header = rows[header_meses_row]
+        datas_meses = []
+        for c in range(col_dados_inicio, len(header)):
+            val = header[c]
+            if isinstance(val, datetime):
+                datas_meses.append((c, val))
 
-# Plano 2: Quotização Obras 2024 (Mar 2024 - Abr 2025) - concluído
-plano_obras = {
-    'id': 'plano_obras_2024',
-    'nome': 'Quotização Obras 2024',
-    'descricao': 'Quotização extraordinária para obras · 14 prestações',
-    'tipo': 'valor_fixo',
-    'total_centimos': 2500000,
-    'inicio': '2024-03-24',
-    'fim': '2025-04-24',
-    'estado': 'concluido',
-    'criadoEm': datetime(2024, 3, 1).timestamp() * 1000,
-    'numPrestacoes': 14,
-    'historico': True,
-}
-planos.append(plano_obras)
+    num_prestacoes = len(datas_meses)
+    inicio_data = min(d for _, d in datas_meses) if datas_meses else None
+    fim_data = max(d for _, d in datas_meses) if datas_meses else None
 
-# Valores Quotização Obras (Excel · mensal por fração)
-valores_obras = {
-    'cond_02': 18958,   # 189.58 €
-    'cond_01': 16458,   # 164.58 €
-    'cond_04': 18125,
-    'cond_03': 24792,
-    'cond_06': 18333,
-    'cond_05': 25208,
-    'cond_08': 18333,
-    'cond_07': 23958,
-    'cond_10': 18125,
-    'cond_09': 26042,
-}
+    # Calcular valor total como soma das quotas totais das frações
+    total_centimos_plano = 0
+    quotas_por_tenant = {}  # tenant_id → quota_total_cent, quota_mensal_cent
 
-# Lista de 14 datas (Mar 2024 - Abr 2025)
-datas_obras = []
-y, m = 2024, 3
-for _ in range(14):
-    datas_obras.append((y, m))
-    m += 1
-    if m > 12: m = 1; y += 1
+    for r_idx in range(linha_dados_inicio, min(len(rows), linha_dados_inicio + 12)):
+        row = rows[r_idx]
+        if not row: continue
+        letra = row[col_frac_letra] if col_frac_letra < len(row) else None
+        if letra is None or letra == 'TOTAL': continue
+        letra = str(letra).strip()
+        if letra not in FRAC_LETRA_TO_TENANT: continue
+        tenant_id = FRAC_LETRA_TO_TENANT[letra]
+        try:
+            qtotal = int(round(float(row[col_quota_total]) * 100))
+        except (TypeError, ValueError):
+            qtotal = 0
+        try:
+            qmensal = int(round(float(row[col_quota_mensal]) * 100))
+        except (TypeError, ValueError):
+            qmensal = qtotal // num_prestacoes if num_prestacoes else qtotal
+        quotas_por_tenant[tenant_id] = (qtotal, qmensal, row)
+        total_centimos_plano += qtotal
 
-for tenant_id, valor_cent in valores_obras.items():
-    for i, (ano, mes) in enumerate(datas_obras):
-        prestacoes.append({
-            'id': f'prest_obras_{tenant_id}_{i+1}',
-            'planoId': 'plano_obras_2024',
-            'tenantId': tenant_id,
-            'numero': i+1,
-            'valor_centimos': valor_cent,
-            'dueDate': f"{ano}-{mes:02d}-24",
-            'estado': 'pago',
-            'pagoEm': datetime(ano, mes, 24).timestamp() * 1000,
-            'historico': True,
-        })
+    # Gerar prestações em matriz · cada tenant tem N prestações
+    total_pago_geral = 0
+    for tenant_id, (qtotal, qmensal, row) in quotas_por_tenant.items():
+        for i, (col_idx, data_mes) in enumerate(datas_meses):
+            cell_val = row[col_idx] if col_idx < len(row) else None
+            mes_ref = data_mes.strftime('%Y-%m')
+            try:
+                cell_eur = float(cell_val) if cell_val is not None and cell_val != '---' else None
+            except (TypeError, ValueError):
+                cell_eur = None
 
-# Plano 3: Reparação Elevador 2025 (Abr-Nov 2025) - EM CURSO
-plano_elev_2025 = {
-    'id': 'plano_elev_2025',
-    'nome': 'Reparação Elevador 2025',
-    'descricao': 'Reparação extraordinária do elevador 2025 · 8 prestações mensais',
-    'tipo': 'valor_fixo',
-    'total_centimos': 543617,
-    'inicio': '2025-04-01',
-    'fim': '2025-11-30',
-    'estado': 'ativo',
-    'criadoEm': datetime(2025, 4, 1).timestamp() * 1000,
-    'numPrestacoes': 8,
-    'historico': True,
-}
-planos.append(plano_elev_2025)
+            if cell_eur and cell_eur > 0:
+                # Pagamento real registado no Excel
+                cell_cent = int(round(cell_eur * 100))
+                prestacoes.append({
+                    'id': f'prest_{plano_id}_{tenant_id}_{i+1}',
+                    'planoId': plano_id,
+                    'tenantId': tenant_id,
+                    'numeroPrestacao': i + 1,
+                    'mesReferencia': mes_ref,
+                    'valor_centimos': cell_cent,
+                    'estado': 'paga',
+                    'pagoEm': data_mes.timestamp() * 1000,
+                    'historico': True,
+                })
+                total_pago_geral += cell_cent
+            else:
+                # Sem valor · prestação pendente com valor mensal teórico
+                prestacoes.append({
+                    'id': f'prest_{plano_id}_{tenant_id}_{i+1}',
+                    'planoId': plano_id,
+                    'tenantId': tenant_id,
+                    'numeroPrestacao': i + 1,
+                    'mesReferencia': mes_ref,
+                    'valor_centimos': qmensal,
+                    'estado': 'pendente',
+                    'historico': True,
+                })
 
-# Total por fração · Reparação Elevador 2025 (Excel)
-quotas_total_elev2025 = {
-    'cond_02': 49469,   # 494.69 €
-    'cond_01': 42946,
-    'cond_04': 47295,   # Sílvia · em atraso 190.95€
-    'cond_03': 64690,
-    'cond_06': 47838,
-    'cond_05': 65778,
-    'cond_08': 47838,
-    'cond_07': 62516,
-    'cond_10': 47295,
-    'cond_09': 67952,
-}
+    estado_plano = 'concluido' if total_pago_geral >= total_centimos_plano * 0.999 else 'ativo'
 
-# Mensal = total/8 (~mensal)
-# Para Sílvia (cond_04): total = 472.95€, pago = 472.95 - 190.95 = 282€ (vou marcar prestações 1-4 como pagas, 5-8 em atraso)
-elev2025_datas = [(2025,m) for m in range(4,12)]  # Abr-Nov 2025
-for tenant_id, total_cent in quotas_total_elev2025.items():
-    valor_mensal = round(total_cent / 8)
-    is_silvia = tenant_id == 'cond_04'
-    pago_acumulado = 0
-    pago_total_silvia = 28200 if is_silvia else total_cent  # Sílvia pagou 282€ ; outros pagaram tudo
-    for i, (ano, mes) in enumerate(elev2025_datas):
-        prest = {
-            'id': f'prest_elev2025_{tenant_id}_{i+1}',
-            'planoId': 'plano_elev_2025',
-            'tenantId': tenant_id,
-            'numero': i+1,
-            'valor_centimos': valor_mensal,
-            'dueDate': f"{ano}-{mes:02d}-15",
-            'historico': True,
-        }
-        if pago_acumulado + valor_mensal <= pago_total_silvia:
-            prest['estado'] = 'pago'
-            prest['pagoEm'] = datetime(ano, mes, 20).timestamp() * 1000
-            pago_acumulado += valor_mensal
-        else:
-            prest['estado'] = 'pendente'
-        prestacoes.append(prest)
+    planos.append({
+        'id': plano_id,
+        'nome': plano_nome,
+        'descricao': descricao,
+        'valorTotal_centimos': total_centimos_plano,
+        'numeroPrestacoes': num_prestacoes,
+        'baseCalculo': 'manual',  # valores foram alocados manualmente por permilagem do Excel
+        'dataInicio': inicio_data.strftime('%Y-%m') if inicio_data else None,
+        'dataPrevisaoFim': fim_data.strftime('%Y-%m') if fim_data else None,
+        'estado': estado_plano,
+        'criadoEm': inicio_data.timestamp() * 1000 if inicio_data else None,
+        'historico': True,
+    })
+
+# Reparação Elevador 2023 (Ago-Out 2023, 3 meses, headers em string)
+parse_plano_sheet(
+    sheet_name='Reparação Elevador 2023',
+    plano_id='plano_elev_2023',
+    plano_nome='Reparação Elevador 2023',
+    descricao='Reparação extraordinária do elevador · 3 prestações (Ago-Out 2023)',
+    linha_dados_inicio=3, col_dados_inicio=4,
+    col_frac_letra=1, col_quota_total=7, col_quota_mensal=4,
+    header_meses_row=2,
+    datas_explicitas=[
+        (4, datetime(2023, 8, 1)),
+        (5, datetime(2023, 9, 1)),
+        (6, datetime(2023, 10, 1)),
+    ],
+)
+
+# Quotização Obras 2024 (Mar 2024 - Fev 2025, 12 prestações)
+parse_plano_sheet(
+    sheet_name='Quotização Obras',
+    plano_id='plano_obras_2024',
+    plano_nome='Quotização Obras 2024',
+    descricao='Quotização extraordinária para obras de intervenção · 12 prestações (Mar 2024 - Fev 2025)',
+    linha_dados_inicio=4, col_dados_inicio=6,
+    col_frac_letra=1, col_quota_total=4, col_quota_mensal=5,
+    header_meses_row=3,
+    datas_explicitas=[
+        (6,  datetime(2024, 3, 24)),  (7,  datetime(2024, 4, 24)),
+        (8,  datetime(2024, 5, 24)),  (9,  datetime(2024, 6, 24)),
+        (10, datetime(2024, 7, 24)),  (11, datetime(2024, 8, 24)),
+        (12, datetime(2024, 9, 24)),  (13, datetime(2024, 10, 24)),
+        (14, datetime(2024, 11, 24)), (15, datetime(2024, 12, 24)),
+        (16, datetime(2025, 1, 24)),  (17, datetime(2025, 2, 24)),
+    ],
+)
+
+# Reparação Elevador 2025 (12 colunas no header: Abr 2025 - Mar 2026)
+parse_plano_sheet(
+    sheet_name='Reparação Elevador 2025',
+    plano_id='plano_elev_2025',
+    plano_nome='Reparação Elevador 2025',
+    descricao='Reparação extraordinária do elevador 2025',
+    linha_dados_inicio=4, col_dados_inicio=6,
+    col_frac_letra=1, col_quota_total=4, col_quota_mensal=5,
+    header_meses_row=3,
+)
+
+print(f"Planos gerados: {len(planos)}")
+for p in planos:
+    pagos = sum(x['valor_centimos'] for x in prestacoes if x['planoId']==p['id'] and x['estado']=='paga')
+    print(f"  • {p['nome']}: {p['valorTotal_centimos']/100:.2f}€ total · {pagos/100:.2f}€ pago · estado={p['estado']}")
+print(f"Prestações geradas: {len(prestacoes)}")
 
 print(f"Planos gerados: {len(planos)}")
 print(f"Prestações geradas: {len(prestacoes)}")
@@ -460,6 +485,11 @@ meta = {
         'telefone': '',
     },
     'config': {
+        # Operadores admin · escolhidos no ecrã de login
+        'administracao': {
+            'nomes': ['Ricardo Nabais Cordeiro', 'Filipe Solha'],
+            'emailContaCondominio': 'condoamira24@gmail.com',
+        },
         # Saldo inicial de cada ano (em cêntimos) · base do cálculo
         'saldoInicial': {
             '2026': 321478,    # CO 2510.44 + Poup 704.34 (01-Jan-2026)
@@ -473,29 +503,34 @@ meta = {
             'notas': 'BPI Net Empresas · posição integrada · ponto de ancoragem inicial',
             'registadoEm': int(datetime.now().timestamp() * 1000),
         },
+        # Numeração de recibos · usada para gerar nº sequencial de novos recibos
+        'nextNumberByYear': {
+            '2026': 200,  # depois do último importado · começa em 200 para sair fora do range histórico
+        },
     },
     # Plano Schindler · pagamentos faseados do condomínio à Schindler
-    # Saídas previstas a partir do plano original (Dez 2025 - Nov 2026)
+    # Excel: Entrada 10% + 12 prestações mensais (Dez 2025 - Nov 2026) = 6023.26 €
     'planoSchindler': {
-        'inicio': '2025-12-01',
+        'inicio': '2025-11-01',
         'fim': '2026-11-30',
         'fornecedor': 'Schindler',
         'descricao': 'Plano de pagamento faseado para reparação do elevador',
         'totalPrevisto_centimos': 602326,
         'rubricaId': 'rub_plano_schindler',
         'prestacoes': [
-            {'data': '2025-12-01', 'valor_centimos': 62326, 'descricao': 'Entrada (10%)'},
-            {'data': '2026-01-01', 'valor_centimos': 45000, 'descricao': 'Prestação 1 / 12'},
-            {'data': '2026-02-01', 'valor_centimos': 45000, 'descricao': 'Prestação 2 / 12'},
-            {'data': '2026-03-01', 'valor_centimos': 45000, 'descricao': 'Prestação 3 / 12'},
-            {'data': '2026-04-01', 'valor_centimos': 45000, 'descricao': 'Prestação 4 / 12'},
-            {'data': '2026-05-01', 'valor_centimos': 45000, 'descricao': 'Prestação 5 / 12'},
-            {'data': '2026-06-01', 'valor_centimos': 45000, 'descricao': 'Prestação 6 / 12'},
-            {'data': '2026-07-01', 'valor_centimos': 45000, 'descricao': 'Prestação 7 / 12'},
-            {'data': '2026-08-01', 'valor_centimos': 45000, 'descricao': 'Prestação 8 / 12'},
-            {'data': '2026-09-01', 'valor_centimos': 45000, 'descricao': 'Prestação 9 / 12'},
-            {'data': '2026-10-01', 'valor_centimos': 45000, 'descricao': 'Prestação 10 / 12'},
-            {'data': '2026-11-01', 'valor_centimos': 45000, 'descricao': 'Prestação 11 / 12'},
+            {'data': '2025-11-01', 'valor_centimos': 62326, 'descricao': 'Entrada (10%)'},
+            {'data': '2025-12-01', 'valor_centimos': 45000, 'descricao': 'Prestação 1 / 12 · Dez 2025'},
+            {'data': '2026-01-01', 'valor_centimos': 45000, 'descricao': 'Prestação 2 / 12 · Jan 2026'},
+            {'data': '2026-02-01', 'valor_centimos': 45000, 'descricao': 'Prestação 3 / 12 · Fev 2026'},
+            {'data': '2026-03-01', 'valor_centimos': 45000, 'descricao': 'Prestação 4 / 12 · Mar 2026'},
+            {'data': '2026-04-01', 'valor_centimos': 45000, 'descricao': 'Prestação 5 / 12 · Abr 2026'},
+            {'data': '2026-05-01', 'valor_centimos': 45000, 'descricao': 'Prestação 6 / 12 · Mai 2026'},
+            {'data': '2026-06-01', 'valor_centimos': 45000, 'descricao': 'Prestação 7 / 12 · Jun 2026'},
+            {'data': '2026-07-01', 'valor_centimos': 45000, 'descricao': 'Prestação 8 / 12 · Jul 2026'},
+            {'data': '2026-08-01', 'valor_centimos': 45000, 'descricao': 'Prestação 9 / 12 · Ago 2026'},
+            {'data': '2026-09-01', 'valor_centimos': 45000, 'descricao': 'Prestação 10 / 12 · Set 2026'},
+            {'data': '2026-10-01', 'valor_centimos': 45000, 'descricao': 'Prestação 11 / 12 · Out 2026'},
+            {'data': '2026-11-01', 'valor_centimos': 45000, 'descricao': 'Prestação 12 / 12 · Nov 2026'},
         ],
     },
 }
