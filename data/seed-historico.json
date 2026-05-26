@@ -20,15 +20,15 @@
         "emailContaCondominio": "condoamira24@gmail.com"
       },
       "saldoInicial": {
-        "2026": 321478
+        "2024": 289595
       },
       "saldoConhecido": {
         "data": "2026-05-25",
+        "total_centimos": 822612,
         "contaOrdem_centimos": 752178,
         "contaPoupanca_centimos": 70434,
-        "total_centimos": 822612,
-        "notas": "BPI Net Empresas · posição integrada · ponto de ancoragem inicial",
-        "registadoEm": 1779775758598
+        "fonte": "BPI Net Empresas",
+        "manual": false
       },
       "nextNumberByYear": {
         "2024": 89,
@@ -10268,5 +10268,504 @@
       "outrosRecebimentos": 2
     },
     "recibos_origem": "Excel exportado pela app antiga"
-  }
+  },
+  "movimentosBPI": [
+    {
+      "data": "2026-02-03",
+      "descricao": "TRF SEPA+ INST 673 DE PALMIRA MORAIS SANTOS FIGUEIREDO",
+      "valor_centimos": 3600,
+      "saldo_apos_centimos": 296795,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-02-03",
+      "descricao": "TRF CR SEPA+ 0000672 DE ANA ISABEL PINTO LAVRADOR BARATA",
+      "valor_centimos": 3600,
+      "saldo_apos_centimos": 293195,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-02-05",
+      "descricao": "TRF SEPA+ INST 674 DE RICARDO JOAO NABAIS CORDEIRO",
+      "valor_centimos": 11478,
+      "saldo_apos_centimos": 308273,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-02-06",
+      "descricao": "TRF SEPA+ INST 675 DE JOSE JOAO TEIXEIRA VAZ",
+      "valor_centimos": 7495,
+      "saldo_apos_centimos": 312648,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-02-06",
+      "descricao": "IMPOSTO DE SELO JAN 2026",
+      "valor_centimos": -32,
+      "saldo_apos_centimos": 305153,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-02-06",
+      "descricao": "MANUTENCAO DE CONTA VALOR NEGOCIOS JAN 2026",
+      "valor_centimos": -799,
+      "saldo_apos_centimos": 305185,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-02-06",
+      "descricao": "DD SIMAS OEIRAS E AMADORA 96230213747",
+      "valor_centimos": -2289,
+      "saldo_apos_centimos": 305984,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-02-13",
+      "descricao": "TRF SEPA+ INST 676 DE FILIPE JOSE LOPES ESTEVES SOLHA",
+      "valor_centimos": 3700,
+      "saldo_apos_centimos": 316348,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-02-18",
+      "descricao": "DD SU ELETRICIDADE, S.A. 40026710621",
+      "valor_centimos": -12669,
+      "saldo_apos_centimos": 303679,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-02-23",
+      "descricao": "TRF CR SEPA+ 660 P/ PT50003300000023601215605 PAGAMENTO RE",
+      "valor_centimos": -4401,
+      "saldo_apos_centimos": 299278,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-02-24",
+      "descricao": "TRF SEPA+ INST 677 DE JOSE CARLOS COELHO MONTEIRO",
+      "valor_centimos": 25500,
+      "saldo_apos_centimos": 324778,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-02-26",
+      "descricao": "TRF SEPA+ INST 678 DE FILIPE JOSE LOPES ESTEVES SOLHA",
+      "valor_centimos": 4950,
+      "saldo_apos_centimos": 329728,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-03-02",
+      "descricao": "DD COMPANHIA DE SEGUROS ALLIANZ PORTUGAL 00743597816",
+      "valor_centimos": -19835,
+      "saldo_apos_centimos": 309893,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-03-03",
+      "descricao": "TRF SEPA+ INST 680 DE RICARDO JOAO NABAIS CORDEIRO",
+      "valor_centimos": 11476,
+      "saldo_apos_centimos": 324324,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-03-03",
+      "descricao": "TRF CR SEPA+ 0000679 DE ANA ISABEL PINTO LAVRADOR BARATA",
+      "valor_centimos": 3600,
+      "saldo_apos_centimos": 312848,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-03-03",
+      "descricao": "DD SIMAS OEIRAS E AMADORA 96230213747",
+      "valor_centimos": -645,
+      "saldo_apos_centimos": 309248,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-03-05",
+      "descricao": "DD Schindler Portugal, S.A. 00156388184",
+      "valor_centimos": -26457,
+      "saldo_apos_centimos": 297867,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-03-06",
+      "descricao": "TRF SEPA+ INST 682 DE JOSE JOAO TEIXEIRA VAZ",
+      "valor_centimos": 7495,
+      "saldo_apos_centimos": 304531,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-03-06",
+      "descricao": "IMPOSTO DE SELO FEV 2026",
+      "valor_centimos": -32,
+      "saldo_apos_centimos": 297036,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-03-06",
+      "descricao": "MANUTENCAO DE CONTA VALOR NEGOCIOS FEV 2026",
+      "valor_centimos": -799,
+      "saldo_apos_centimos": 297068,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-03-09",
+      "descricao": "TRF SEPA+ INST 687 DE PALMIRA MORAIS SANTOS FIGUEIREDO",
+      "valor_centimos": 3600,
+      "saldo_apos_centimos": 325615,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-03-09",
+      "descricao": "TRF CR SEPA+ 0000686 DE ANA FILIPA BATISTA SERAFIM TORR",
+      "valor_centimos": 3600,
+      "saldo_apos_centimos": 322015,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-03-09",
+      "descricao": "TRF CR SEPA+ 0000685 DE ANA FILIPA BATISTA SERAFIM TORR",
+      "valor_centimos": 3600,
+      "saldo_apos_centimos": 318415,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-03-09",
+      "descricao": "TRF CR SEPA+ 0000684 DE ANA FILIPA BATISTA SERAFIM TORR",
+      "valor_centimos": 4784,
+      "saldo_apos_centimos": 314815,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-03-09",
+      "descricao": "TRF SEPA+ INST 683 DE SILVIA C S P SILVA GONCALVES",
+      "valor_centimos": 5500,
+      "saldo_apos_centimos": 310031,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-03-10",
+      "descricao": "TRF SEPA+ INST 688 DE NUNO MIGUEL DAS NEVES CASIMIRO PEREIRA",
+      "valor_centimos": 123616,
+      "saldo_apos_centimos": 449231,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-03-13",
+      "descricao": "TRF SEPA+ INST 689 DE FILIPE JOSE LOPES ESTEVES SOLHA",
+      "valor_centimos": 3700,
+      "saldo_apos_centimos": 452931,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-03-17",
+      "descricao": "DEPOSITO EM NUMERARIO 4. ESQ",
+      "valor_centimos": 61000,
+      "saldo_apos_centimos": 514131,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-03-17",
+      "descricao": "DEPOSITO EM NUMERARIO 4. ESQ",
+      "valor_centimos": 200,
+      "saldo_apos_centimos": 453131,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-03-23",
+      "descricao": "TRF CR SEPA+ 691 P/ PT50001800000411764202171 PAGAMENTO RE",
+      "valor_centimos": -10000,
+      "saldo_apos_centimos": 489730,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-03-23",
+      "descricao": "TRF SEPA+ INST 690 P/ PT50001800000411764202171 Glenda Mende",
+      "valor_centimos": -10000,
+      "saldo_apos_centimos": 499730,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-03-23",
+      "descricao": "TRF CR SEPA+ 660 P/ PT50003300000023601215605 PAGAMENTO RE",
+      "valor_centimos": -4401,
+      "saldo_apos_centimos": 509730,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-03-26",
+      "descricao": "TRF SEPA+ INST 692 DE FILIPE JOSE LOPES ESTEVES SOLHA",
+      "valor_centimos": 4950,
+      "saldo_apos_centimos": 494680,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-03-27",
+      "descricao": "DD SIMAS OEIRAS E AMADORA 96230213747",
+      "valor_centimos": -1588,
+      "saldo_apos_centimos": 493092,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-03-30",
+      "descricao": "TRF SEPA+ INST 695 DE RICARDO JOAO NABAIS CORDEIRO",
+      "valor_centimos": 200,
+      "saldo_apos_centimos": 1145293,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-03-30",
+      "descricao": "TRF SEPA+ INST 694 DE RICARDO JOAO NABAIS CORDEIRO",
+      "valor_centimos": 101,
+      "saldo_apos_centimos": 1145093,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-03-30",
+      "descricao": "TRF CR SEPA+ 0000693 DE MUNICIPIO AMADORA",
+      "valor_centimos": 651900,
+      "saldo_apos_centimos": 1144992,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-04-02",
+      "descricao": "TRF CR SEPA+ 698 P/ PT50003300000023601215605 PAGAMENTO DO",
+      "valor_centimos": -38395,
+      "saldo_apos_centimos": 1072103,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-04-02",
+      "descricao": "TRF CR SEPA+ 697 P/ PT50003300000023601215605 PAGAMENTO DO",
+      "valor_centimos": -38395,
+      "saldo_apos_centimos": 1110498,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-04-02",
+      "descricao": "TRF CR SEPA+ 0000696 DE ANA ISABEL PINTO LAVRADOR BARATA",
+      "valor_centimos": 3600,
+      "saldo_apos_centimos": 1148893,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-04-06",
+      "descricao": "TRF SEPA+ INST 699 DE SILVIA C S P SILVA GONCALVES",
+      "valor_centimos": 12000,
+      "saldo_apos_centimos": 1084103,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-04-08",
+      "descricao": "TRF SEPA+ INST 700 DE PALMIRA MORAIS SANTOS FIGUEIREDO",
+      "valor_centimos": 3600,
+      "saldo_apos_centimos": 1086872,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-04-08",
+      "descricao": "IMPOSTO DE SELO MAR 2026",
+      "valor_centimos": -32,
+      "saldo_apos_centimos": 1083272,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-04-08",
+      "descricao": "MANUTENCAO DE CONTA VALOR NEGOCIOS MAR 2026",
+      "valor_centimos": -799,
+      "saldo_apos_centimos": 1083304,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-04-09",
+      "descricao": "TRF SEPA+ INST 701 DE JOSE JOAO TEIXEIRA VAZ",
+      "valor_centimos": 3200,
+      "saldo_apos_centimos": 1090072,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-04-13",
+      "descricao": "TRF SEPA+ INST 702 DE FILIPE JOSE LOPES ESTEVES SOLHA",
+      "valor_centimos": 3700,
+      "saldo_apos_centimos": 1093772,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-04-14",
+      "descricao": "TRF SEPA+ INST 705 P/ PT50003505170005430953016 VIDEOLIGHT",
+      "valor_centimos": -74200,
+      "saldo_apos_centimos": 809486,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-04-14",
+      "descricao": "TRF SEPA+ INST 704 P/ PT50003505170005430953016 VIDEOLIGHT",
+      "valor_centimos": -183086,
+      "saldo_apos_centimos": 883686,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-04-14",
+      "descricao": "TRF SEPA+ INST 703 P/ PT50001800036249221002096 WIB - Filipe",
+      "valor_centimos": -27000,
+      "saldo_apos_centimos": 1066772,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-04-15",
+      "descricao": "TRF SEPA+ INST 706 DE FILIPE JOSE LOPES ESTEVES SOLHA",
+      "valor_centimos": 6300,
+      "saldo_apos_centimos": 815786,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-04-20",
+      "descricao": "TRF SEPA+ INST 707 DE RICARDO JOAO NABAIS CORDEIRO",
+      "valor_centimos": 5700,
+      "saldo_apos_centimos": 808891,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-04-20",
+      "descricao": "DD SU ELETRICIDADE, S.A. 40026710621",
+      "valor_centimos": -12595,
+      "saldo_apos_centimos": 803191,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-04-21",
+      "descricao": "TRF CR SEPA+ 660 P/ PT50003300000023601215605 PAGAMENTO RE",
+      "valor_centimos": -4401,
+      "saldo_apos_centimos": 804490,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-04-29",
+      "descricao": "TRF SEPA+ INST 709 P/ PT50001800000411764202171 Glenda Mende",
+      "valor_centimos": -10000,
+      "saldo_apos_centimos": 754762,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-04-29",
+      "descricao": "TRF CR SEPA+ 708 P/ PT50003300000023601215605 PAGAMENTO DO",
+      "valor_centimos": -37765,
+      "saldo_apos_centimos": 764762,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-04-29",
+      "descricao": "DD SIMAS OEIRAS E AMADORA 96230213747",
+      "valor_centimos": -1963,
+      "saldo_apos_centimos": 802527,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-05-04",
+      "descricao": "TRF CR SEPA+ 0000711 DE ANA ISABEL PINTO LAVRADOR BARATA",
+      "valor_centimos": 3600,
+      "saldo_apos_centimos": 763262,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-05-04",
+      "descricao": "TRF SEPA+ INST 710 DE RICARDO JOAO NABAIS CORDEIRO",
+      "valor_centimos": 4900,
+      "saldo_apos_centimos": 759662,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-05-05",
+      "descricao": "TRF CR SEPA+ 0000713 DE ANA FILIPA BATISTA SERAFIM TORR",
+      "valor_centimos": 3600,
+      "saldo_apos_centimos": 770462,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-05-05",
+      "descricao": "TRF CR SEPA+ 0000712 DE ANA FILIPA BATISTA SERAFIM TORR",
+      "valor_centimos": 3600,
+      "saldo_apos_centimos": 766862,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-05-07",
+      "descricao": "TRF SEPA+ INST 715 DE LEONEL JOAQUIM ROSA VENANCIO",
+      "valor_centimos": 2500,
+      "saldo_apos_centimos": 775305,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-05-07",
+      "descricao": "TRF SEPA+ INST 714 DE LEONEL JOAQUIM ROSA VENANCIO",
+      "valor_centimos": 28800,
+      "saldo_apos_centimos": 772805,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-05-07",
+      "descricao": "DD Schindler Portugal, S.A. 00156388184",
+      "valor_centimos": -26457,
+      "saldo_apos_centimos": 744005,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-05-08",
+      "descricao": "TRF SEPA+ INST 716 DE JOSE JOAO TEIXEIRA VAZ",
+      "valor_centimos": 3200,
+      "saldo_apos_centimos": 777674,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-05-08",
+      "descricao": "IMPOSTO DE SELO ABR 2026",
+      "valor_centimos": -32,
+      "saldo_apos_centimos": 774474,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-05-08",
+      "descricao": "MANUTENCAO DE CONTA VALOR NEGOCIOS ABR 2026",
+      "valor_centimos": -799,
+      "saldo_apos_centimos": 774506,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-05-11",
+      "descricao": "TRF SEPA+ INST 717 DE PALMIRA MORAIS SANTOS FIGUEIREDO",
+      "valor_centimos": 3600,
+      "saldo_apos_centimos": 781274,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-05-13",
+      "descricao": "TRF SEPA+ INST 718 DE FILIPE JOSE LOPES ESTEVES SOLHA",
+      "valor_centimos": 3700,
+      "saldo_apos_centimos": 784974,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-05-18",
+      "descricao": "TRF SEPA+ INST 719 DE SILVIA C S P SILVA GONCALVES",
+      "valor_centimos": 10000,
+      "saldo_apos_centimos": 794974,
+      "tipo": "entrada"
+    },
+    {
+      "data": "2026-05-19",
+      "descricao": "TRF CR SEPA+ 720 P/ PT50003300000023601215605 PAGAMENTO DO",
+      "valor_centimos": -38395,
+      "saldo_apos_centimos": 756579,
+      "tipo": "saida"
+    },
+    {
+      "data": "2026-05-21",
+      "descricao": "TRF CR SEPA+ 660 P/ PT50003300000023601215605 PAGAMENTO RE",
+      "valor_centimos": -4401,
+      "saldo_apos_centimos": 752178,
+      "tipo": "saida"
+    }
+  ]
 }

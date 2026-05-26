@@ -283,6 +283,9 @@ function abrirModalSaldoReal(atual) {
         <p class="orc-help">
           Introduz os saldos atuais lidos do BPI Net Empresas. Servem como ancoragem para detectar descalibração com o saldo calculado pela app.
         </p>
+        <div class="modal-alert-warn">
+          ⚠ <strong>Atenção:</strong> a alteração manual do saldo pode gerar discrepância com o saldo calculado pela app (recibos – despesas + saldo inicial). Usa apenas se queres ancorar ao valor real do banco.
+        </div>
         <div class="field">
           <label>Data da observação</label>
           <input type="date" id="sr-data" value="${atual?.data || hoje}">

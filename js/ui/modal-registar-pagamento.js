@@ -38,9 +38,21 @@ export async function open(opts = {}) {
   document.body.style.overflow = 'hidden';
 
   bindEvents();
+  popularSeletorAno();
   await refreshSaldoCard();
   await refreshChips();
   refreshComputation();
+}
+
+function popularSeletorAno() {
+  const anoAtual = parseInt(todayISO().split('-')[0]);
+  const opts = [];
+  // Ano atual + 2 anos anteriores
+  for (let y = anoAtual; y >= anoAtual - 2; y--) {
+    opts.push(`<option value="${y}" ${y === anoAtual ? 'selected' : ''}>${y}${y < anoAtual ? ' (atrasado)' : ''}</option>`);
+  }
+  const sel = modalEl.querySelector('#rp-ano-quota');
+  if (sel) sel.innerHTML = opts.join('');
 }
 
 export function close() {
@@ -106,6 +118,12 @@ function buildHTML(opts) {
           </select>
         </div>
 
+        <div class="field" id="rp-ano-wrap">
+          <label>Ano dos meses a cobrir</label>
+          <select id="rp-ano-quota"></select>
+          <div class="hint">Para liquidar dívidas atrasadas, seleciona o ano correspondente</div>
+        </div>
+
         <div class="field">
           <label id="rp-chips-label">Mês(es) Abrangidos · Clica para selecionar</label>
           <div class="chips-grid" id="rp-meses"></div>
@@ -165,12 +183,17 @@ function bindEvents() {
   modalEl.querySelector('#rp-tipo').addEventListener('change', async () => {
     const isPrest = modalEl.querySelector('#rp-tipo').value === 'prestacao';
     modalEl.querySelector('#rp-plano-wrap').style.display = isPrest ? 'block' : 'none';
+    modalEl.querySelector('#rp-ano-wrap').style.display = isPrest ? 'none' : 'block';
     modalEl.querySelector('#rp-chips-label').textContent = isPrest
       ? 'Prestações Pendentes · Clica para selecionar'
       : 'Mês(es) Abrangidos · Clica para selecionar';
     modalEl.querySelector('#rp-chips-hint').textContent = isPrest
       ? 'Cada chip é uma prestação. Podes selecionar várias para pagar de uma vez.'
       : 'Selecciona vários para pagamentos semestrais ou anuais';
+    await refreshChips();
+    refreshComputation();
+  });
+  modalEl.querySelector('#rp-ano-quota').addEventListener('change', async () => {
     await refreshChips();
     refreshComputation();
   });
@@ -220,7 +243,7 @@ async function refreshChips() {
   prestacoesAtuais = [];
 
   if (tipo === 'quota') {
-    const year = todayISO().split('-')[0];
+    const year = modalEl.querySelector('#rp-ano-quota')?.value || todayISO().split('-')[0];
     const months = monthsOfYear(year);
     grid.innerHTML = months.map(m =>
       `<button type="button" class="chip-month" data-kind="quota" data-month="${m}">
