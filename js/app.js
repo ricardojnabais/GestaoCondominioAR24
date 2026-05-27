@@ -56,6 +56,22 @@ async function main() {
   // 3. Inicializar auth
   await auth.initAuth();
 
+  // 3.1 Sincronizar Firebase Auth (admin Google) com sessão local
+  try {
+    const firebaseAuth = await import('./auth/firebase-auth.js');
+    if (firebaseAuth.isFirebaseAvailable()) {
+      firebaseAuth.onAuthStateChanged((fbUser) => {
+        const session = auth.getSession();
+        // Se admin estava logado via Firebase mas Firebase perdeu sessão · logout local
+        if (session?.role === 'admin' && session?.firebaseUid && !fbUser) {
+          console.log('[Auth] Firebase perdeu sessão · logout local');
+          auth.logout();
+          router.navigate('login');
+        }
+      });
+    }
+  } catch (e) { console.warn('Firebase auth sync:', e); }
+
   // 4. Registar rotas
   router.register('login', loginPage);
   router.register('admin/home', adminHome, { requiresAuth: 'admin' });

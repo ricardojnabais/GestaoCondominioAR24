@@ -34,11 +34,13 @@ if (!configValida) {
   const [
     { initializeApp },
     firestore,
-    appCheckMod
+    appCheckMod,
+    authMod
   ] = await Promise.all([
     import('https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js'),
     import('https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js'),
-    import('https://www.gstatic.com/firebasejs/10.13.2/firebase-app-check.js')
+    import('https://www.gstatic.com/firebasejs/10.13.2/firebase-app-check.js'),
+    import('https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js')
   ]);
 
   const app = initializeApp(firebaseConfig);
@@ -63,9 +65,15 @@ if (!configValida) {
     }
   }
 
+  // Firebase Auth (admin Google Sign-In)
+  const auth = authMod.getAuth(app);
+  // Persistência local · não perde sessão ao fechar browser
+  await authMod.setPersistence(auth, authMod.browserLocalPersistence);
+
   window.__firebase = {
     app,
     db,
+    auth,
     firestoreFns: {
       collection: firestore.collection,
       doc: firestore.doc,
@@ -77,6 +85,14 @@ if (!configValida) {
       onSnapshot: firestore.onSnapshot,
       query: firestore.query,
       where: firestore.where
+    },
+    authFns: {
+      GoogleAuthProvider: authMod.GoogleAuthProvider,
+      signInWithPopup: authMod.signInWithPopup,
+      signInWithRedirect: authMod.signInWithRedirect,
+      getRedirectResult: authMod.getRedirectResult,
+      signOut: authMod.signOut,
+      onAuthStateChanged: authMod.onAuthStateChanged
     }
   };
 

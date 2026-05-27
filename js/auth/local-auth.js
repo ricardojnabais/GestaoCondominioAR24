@@ -41,18 +41,40 @@ export async function initAuth() {
 // ─── login admin ──────────────────────────────────────────
 
 /**
- * Simula Google OAuth: na versão de teste, dá login direto + seleção de operador.
- * @param {string} operatorName - nome do operador (Ricardo ou Filipe)
+ * Login admin. Suporta 2 modos:
+ *  - Modo legacy (sem Firebase): operatorName + nada · valida contra whitelist local
+ *  - Modo Firebase: { firebaseUser, operatorName } · firebaseUser já validado via Google Sign-In
+ *
+ * @param {string|object} operatorOrPayload
  */
-export async function loginAdmin(operatorName) {
+export async function loginAdmin(operatorOrPayload) {
+  let operatorName, email, firebaseUid = null, photoURL = null;
+
+  if (typeof operatorOrPayload === 'object' && operatorOrPayload.firebaseUser) {
+    // Modo Firebase · user já autenticado, só falta seleccionar operador
+    operatorName = operatorOrPayload.operatorName;
+    email = operatorOrPayload.firebaseUser.email;
+    firebaseUid = operatorOrPayload.firebaseUser.uid;
+    photoURL = operatorOrPayload.firebaseUser.photoURL || null;
+  } else {
+    // Modo legacy · só operatorName
+    operatorName = operatorOrPayload;
+    const meta = await store.getDoc('meta', 'config');
+    email = meta?.administracao?.emailContaCondominio || '';
+  }
+
+  // Validar operatorName contra whitelist da app
   const meta = await store.getDoc('meta', 'config');
   if (!meta || !meta.administracao.nomes.includes(operatorName)) {
     throw new Error(`Operador "${operatorName}" não autorizado.`);
   }
+
   setSession({
     role: 'admin',
     operatorName,
-    email: meta.administracao.emailContaCondominio,
+    email,
+    firebaseUid,
+    photoURL,
     loginAt: Date.now()
   });
 }
@@ -191,7 +213,14 @@ export async function changeOwnPassword(currentPassword, newPassword) {
 
 // ─── logout ───────────────────────────────────────────────
 
-export function logout() {
+export async function logout() {
+  // Se foi sessão Firebase Admin, fazer signOut do Firebase
+  if (currentSession?.role === 'admin' && currentSession?.firebaseUid) {
+    try {
+      const { signOutAdmin } = await import('./firebase-auth.js');
+      await signOutAdmin();
+    } catch (e) { console.warn('signOut firebase:', e); }
+  }
   currentSession = null;
   sessionStorage.removeItem(SESSION_KEY);
   notifyListeners();
