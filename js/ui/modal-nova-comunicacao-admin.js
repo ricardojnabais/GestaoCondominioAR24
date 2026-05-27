@@ -154,7 +154,9 @@ async function submit() {
 async function mostrarPosCriacao(comunicacao, destinatariosLabel, destinatariosPush) {
   // Verificar se push está configurado
   const config = await store.getDoc('meta', 'config');
-  const pushConfigurado = !!config?.push?.apiUrl && !!config?.push?.adminApiKey;
+  // Push adiado para v2.0 · forçar a flag a false para esconder UI
+  const pushConfigurado = false;
+  // const pushConfigurado = !!config?.push?.apiUrl && !!config?.push?.adminApiKey;
 
   const dlg = document.createElement('div');
   dlg.className = 'modal-overlay';
@@ -176,10 +178,10 @@ async function mostrarPosCriacao(comunicacao, destinatariosLabel, destinatariosP
           <div id="pc-result" style="margin-top:10px;font-size:13px"></div>
         ` : `
           <div class="post-actions" style="margin-top:18px;display:flex;gap:10px">
-            <button class="btn ghost" id="pc-skip">Fechar</button>
+            <button class="btn primary" id="pc-skip">Fechar</button>
           </div>
           <p class="hint" style="margin-top:10px;font-size:11px">
-            Push notifications não está configurado · vai a Definições → Notificações Push.
+            Os destinatários vão ver a comunicação ao abrir a app.
           </p>
         `}
       </div>

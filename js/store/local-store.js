@@ -1,223 +1,62 @@
 /**
- * LocalStore · camada de persistência baseada em localStorage.
+ * Store · facade que escolhe o backend em runtime.
  *
- * API desenhada para ser facilmente substituível por FirestoreStore
- * no momento da migração para produção. Cada coleção fica numa chave
- * separada do localStorage com prefixo "ar24:" para isolamento.
+ * Backends:
+ *   - 'local' (default) · localStorage via local-store-impl.js
+ *   - 'firestore'       · Cloud Firestore via firestore-store.js
  *
- * Modelo de cada coleção: array de objetos com `id` único.
+ * Para alternar:
+ *   localStorage.setItem('ar24_storage_backend', 'firestore'); location.reload();
  *
- * NOTA IMPORTANTE: localStorage é SÍNCRONO no browser, mas a API aqui
- * é assíncrona (retorna Promises) deliberadamente — para que a migração
- * para Firestore (que é assíncrono) seja transparente.
+ * 60+ ficheiros importam de 'local-store.js' · este facade preserva a API
+ * sem que mais nada precise mudar.
  */
 
-const PREFIX = 'ar24:';
+import * as localImpl from './local-store-impl.js';
 
-// ─── helpers internos ─────────────────────────────────────────
+const BACKEND_KEY = 'ar24_storage_backend';
+const backend = (typeof localStorage !== 'undefined' && localStorage.getItem(BACKEND_KEY)) || 'local';
 
-function readCollection(name) {
-  const raw = localStorage.getItem(PREFIX + name);
-  if (!raw) return [];
-  try { return JSON.parse(raw); }
-  catch (e) {
-    console.error(`[LocalStore] coleção "${name}" corrompida, a reinicializar.`, e);
-    return [];
+let activeStore = localImpl;
+
+if (backend === 'firestore') {
+  try {
+    const firestoreStore = await import('./firestore-store.js');
+    // Bootstrap antes de exportar (popular cache via onSnapshot)
+    await firestoreStore.bootstrap();
+    activeStore = firestoreStore;
+    console.log('[Store] Backend ativo: Firestore');
+  } catch (e) {
+    console.error('[Store] Firestore falhou · fallback para localStorage:', e);
   }
+} else {
+  console.log('[Store] Backend ativo: localStorage');
 }
 
-function writeCollection(name, items) {
-  localStorage.setItem(PREFIX + name, JSON.stringify(items));
-  emitChange(name);
+// Re-export · API idêntica para os 60+ ficheiros
+export const listDocs = (...a) => activeStore.listDocs(...a);
+export const getDoc = (...a) => activeStore.getDoc(...a);
+export const setDoc = (...a) => activeStore.setDoc(...a);
+export const deleteDoc = (...a) => activeStore.deleteDoc(...a);
+export const queryDocs = (...a) => activeStore.queryDocs(...a);
+export const onSnapshot = (...a) => activeStore.onSnapshot(...a);
+export const exportAll = (...a) => activeStore.exportAll(...a);
+export const importAll = (...a) => activeStore.importAll(...a);
+export const importarSnapshot = (...a) =>
+  activeStore.importarSnapshot ? activeStore.importarSnapshot(...a) : activeStore.importAll(...a);
+export const clearAll = (...a) => activeStore.clearAll(...a);
+
+// Utilitários do selector
+export function getBackend() { return backend; }
+export function setBackend(name) {
+  if (!['local', 'firestore'].includes(name)) throw new Error("Backend inválido (use 'local' ou 'firestore')");
+  localStorage.setItem(BACKEND_KEY, name);
+  return name;
 }
 
-const listeners = new Map();  // collection name → Set of callbacks
-
-function emitChange(name) {
-  const callbacks = listeners.get(name);
-  if (callbacks) callbacks.forEach(cb => {
-    try { cb(); } catch (e) { console.error('[LocalStore] listener erro:', e); }
-  });
-}
-
-// ─── API pública ──────────────────────────────────────────────
-
-/**
- * Lê todos os documentos de uma coleção.
- * @param {string} collection - nome da coleção (ex: 'tenants', 'receipts')
- * @returns {Promise<Array>}
- */
-export async function listDocs(collection) {
-  return readCollection(collection);
-}
-
-/**
- * Lê um documento específico pelo id.
- * @param {string} collection
- * @param {string} id
- * @returns {Promise<Object|null>}
- */
-export async function getDoc(collection, id) {
-  const items = readCollection(collection);
-  return items.find(d => d.id === id) || null;
-}
-
-/**
- * Cria ou atualiza um documento. Se `data.id` existir, faz update; senão, cria com novo id.
- * @param {string} collection
- * @param {Object} data
- * @returns {Promise<Object>} - o documento gravado (com id)
- */
-export async function setDoc(collection, data) {
-  const items = readCollection(collection);
-  const doc = { ...data };
-  if (!doc.id) doc.id = generateId();
-  const idx = items.findIndex(d => d.id === doc.id);
-  if (idx >= 0) items[idx] = doc;
-  else items.push(doc);
-  writeCollection(collection, items);
-  return doc;
-}
-
-/**
- * Apaga um documento.
- * @param {string} collection
- * @param {string} id
- * @returns {Promise<boolean>} - true se apagou, false se não existia
- */
-export async function deleteDoc(collection, id) {
-  const items = readCollection(collection);
-  const idx = items.findIndex(d => d.id === id);
-  if (idx < 0) return false;
-  items.splice(idx, 1);
-  writeCollection(collection, items);
-  return true;
-}
-
-/**
- * Procura documentos com filtros simples (campo === valor).
- * @param {string} collection
- * @param {Object} filters - { campo: valor, ... }
- * @returns {Promise<Array>}
- */
-export async function queryDocs(collection, filters = {}) {
-  const items = readCollection(collection);
-  return items.filter(doc =>
-    Object.entries(filters).every(([k, v]) => doc[k] === v)
-  );
-}
-
-/**
- * Subscreve mudanças numa coleção. Análogo a Firestore onSnapshot.
- * @param {string} collection
- * @param {Function} callback - chamada quando coleção muda
- * @returns {Function} unsubscribe
- */
-export function onSnapshot(collection, callback) {
-  if (!listeners.has(collection)) listeners.set(collection, new Set());
-  listeners.get(collection).add(callback);
-  // Chamar logo com estado inicial
-  callback(readCollection(collection));
-  return () => listeners.get(collection).delete(callback);
-}
-
-/**
- * Gera id curto. Para localStorage usamos timestamp + random; suficiente.
- */
-function generateId() {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
-}
-
-/**
- * Apaga todas as coleções (útil para testes — usar com cuidado).
- */
-export function clearAll() {
-  if (!confirm('Vais apagar TODOS os dados locais. Continuar?')) return;
-  Object.keys(localStorage)
-    .filter(k => k.startsWith(PREFIX))
-    .forEach(k => localStorage.removeItem(k));
-  location.reload();
-}
-
-/**
- * Exporta todas as coleções como JSON (backup local).
- */
-export function exportAll() {
-  const data = {};
-  Object.keys(localStorage)
-    .filter(k => k.startsWith(PREFIX))
-    .forEach(k => {
-      const name = k.replace(PREFIX, '');
-      data[name] = readCollection(name);
-    });
-  return data;
-}
-
-/**
- * Importa coleções a partir de JSON.
- * @param {Object} data - { collection: [docs...] }
- */
-export function importAll(data) {
-  Object.entries(data).forEach(([name, items]) => {
-    writeCollection(name, items);
-  });
-}
-
-/**
- * Importa um SNAPSHOT estruturado (gerado pelo backup ou exportação).
- * Limpa as coleções afectadas e repõe com os dados do snapshot.
- *
- * @param {Object} snapshot - estrutura com chaves:
- *   - meta: objeto cujas chaves viram docs com id em meta/
- *   - tenants, rubricas, receipts, pagamentosDespesa, planos, prestacoes,
- *     orcamentos, outrosRecebimentos, comunicacoes: arrays de docs
- */
-export function importarSnapshot(snapshot) {
-  if (!snapshot || typeof snapshot !== 'object') {
-    throw new Error('Snapshot inválido.');
-  }
-  const collectionsParaArray = [
-    'tenants', 'rubricas', 'receipts', 'pagamentosDespesa',
-    'planos', 'prestacoes', 'orcamentos', 'outrosRecebimentos', 'comunicacoes',
-  ];
-
-  // 1. Limpar coleções de dados
-  collectionsParaArray.forEach(c => writeCollection(c, []));
-  writeCollection('meta', []);
-
-  // 2. Popular arrays
-  collectionsParaArray.forEach(c => {
-    const arr = snapshot[c];
-    if (Array.isArray(arr) && arr.length > 0) {
-      writeCollection(c, arr);
-    }
-  });
-
-  // 3. Meta · cada chave do objeto vira um doc com id
-  const meta = snapshot.meta;
-  if (meta && typeof meta === 'object') {
-    const metaDocs = Object.entries(meta).map(([key, value]) => {
-      if (value && typeof value === 'object' && !Array.isArray(value)) {
-        return { id: key, ...value };
-      }
-      return { id: key, valor: value };
-    });
-    writeCollection('meta', metaDocs);
-  }
-
-  // 4. Emitir sinais de mudança para recarregar UI
-  [...collectionsParaArray, 'meta'].forEach(c => emitChange(c));
-
-  return {
-    ok: true,
-    contagens: collectionsParaArray.reduce((acc, c) => {
-      acc[c] = (snapshot[c] || []).length;
-      return acc;
-    }, { meta: Object.keys(meta || {}).length }),
-  };
-}
-
-// Expor para debugging em consola (não usar em código de produção)
 if (typeof window !== 'undefined') {
-  window.__store = { listDocs, getDoc, setDoc, deleteDoc, clearAll, exportAll, importAll, importarSnapshot };
+  window.__store = {
+    listDocs, getDoc, setDoc, deleteDoc, queryDocs, exportAll, importAll, importarSnapshot, clearAll,
+    getBackend, setBackend
+  };
 }

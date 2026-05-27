@@ -105,7 +105,7 @@ async function buildAdminItems() {
     { route: 'admin/utilizadores',   icon: 'ic-settings',     label: 'Acessos ao Portal' },
     { route: 'admin/rubricas',       icon: 'ic-settings',     label: 'Rúbricas' },
     { route: 'admin/definicoes-dados', icon: 'ic-settings',   label: 'Dados do Condomínio' },
-    { route: 'admin/notificacoes',     icon: 'ic-settings',   label: 'Notificações Push' },
+    // { route: 'admin/notificacoes',     icon: 'ic-settings',   label: 'Notificações Push' },  // v2.0
     { route: 'admin/importar-dados', icon: 'ic-settings',     label: 'Importar Dados (JSON)' }
   ];
 }

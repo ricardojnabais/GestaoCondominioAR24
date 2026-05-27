@@ -153,8 +153,8 @@ export async function render(container) {
     });
   });
 
-  // Banner subscrição push (assíncrono · não bloqueia render)
-  renderPushBanner(container, tenantId, tenantName).catch(e => console.warn('push banner:', e));
+  // Banner subscrição push · adiado para v2.0 (com Firebase Cloud Messaging)
+  // renderPushBanner(container, tenantId, tenantName).catch(e => console.warn('push banner:', e));
 }
 
 async function renderPushBanner(container, tenantId, tenantName) {
