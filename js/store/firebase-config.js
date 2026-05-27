@@ -12,12 +12,12 @@
 // ─── PREENCHER COM A CONFIG DO TEU PROJETO FIREBASE ─────────────────
 // Console Firebase → Project Settings → Your apps → Web SDK config
 const firebaseConfig = {
-  apiKey: "AIzaSy...",
+  apiKey: "AIzaSyBndtz0BVV1v5MLmELUiNlk0w0L__EvH80",
   authDomain: "ar24-b1a18.firebaseapp.com",
   projectId: "ar24-b1a18",
-  storageBucket: "ar24-b1a18.appspot.com",
+  storageBucket: "ar24-b1a18.firebasestorage.app",
   messagingSenderId: "906665528152",
-  appId: "1:906665528152:web:..."
+  appId: "1:906665528152:web:5f5a662a7c94bd4788f32d"
 };
 
 // reCAPTCHA v3 site key · obtém em https://www.google.com/recaptcha/admin
