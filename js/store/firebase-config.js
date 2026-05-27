@@ -22,7 +22,7 @@ const firebaseConfig = {
 
 // reCAPTCHA v3 site key · obtém em https://www.google.com/recaptcha/admin
 // Ativa App Check. Deixa "PREENCHER..." para desativar.
-const RECAPTCHA_V3_SITE_KEY = "PREENCHER_RECAPTCHA_SITEKEY";
+const RECAPTCHA_V3_SITE_KEY = "6LfY6_8sAAAAANv1m-FHPvOyTPhf-WmNSmg4ixPr";
 
 // ─── Bootstrap defensivo ─────────────────────────────────────────────
 const configValida = !firebaseConfig.apiKey.startsWith('PREENCHER');
