@@ -15,7 +15,7 @@
  * mais lentos.
  */
 
-const CACHE_VERSION = 'ar24-v1.0.16';
+const CACHE_VERSION = 'ar24-v1.0.17';
 const ASSETS_TO_PRECACHE = [
   './',
   './index.html',
@@ -84,5 +84,45 @@ self.addEventListener('fetch', (event) => {
           return new Response('Offline', { status: 503 });
         });
       })
+  );
+});
+
+// ─── Push Notifications · v1.0.17 ──────────────────────────────────────
+self.addEventListener('push', (event) => {
+  if (!event.data) return;
+  let payload;
+  try { payload = event.data.json(); }
+  catch { payload = { title: 'AR24', body: event.data.text() }; }
+
+  const { title = 'Condomínio AR24', body = '', url = '/', timestamp = Date.now() } = payload;
+
+  event.waitUntil(
+    self.registration.showNotification(title, {
+      body,
+      icon: 'icon192.png',
+      badge: 'icon192.png',
+      tag: 'ar24-msg-' + timestamp,
+      data: { url, timestamp },
+      vibrate: [120, 60, 120],
+      requireInteraction: false,
+    })
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const url = event.notification.data?.url || '/';
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((wins) => {
+      // Se já há janela aberta, foca · senão abre
+      for (const w of wins) {
+        if (w.url.includes(self.location.origin)) {
+          w.focus();
+          if ('navigate' in w) w.navigate(url);
+          return;
+        }
+      }
+      return clients.openWindow(url);
+    })
   );
 });
