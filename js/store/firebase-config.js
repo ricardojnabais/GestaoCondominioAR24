@@ -12,12 +12,12 @@
 // ─── PREENCHER COM A CONFIG DO TEU PROJETO FIREBASE ─────────────────
 // Console Firebase → Project Settings → Your apps → Web SDK config
 const firebaseConfig = {
-  apiKey: "PREENCHER_APIKEY",
-  authDomain: "PREENCHER.firebaseapp.com",
-  projectId: "PREENCHER_PROJECTID",
-  storageBucket: "PREENCHER.appspot.com",
-  messagingSenderId: "PREENCHER_SENDER_ID",
-  appId: "PREENCHER_APPID"
+  apiKey: "AIzaSy...",
+  authDomain: "ar24-b1a18.firebaseapp.com",
+  projectId: "ar24-b1a18",
+  storageBucket: "ar24-b1a18.appspot.com",
+  messagingSenderId: "906665528152",
+  appId: "1:906665528152:web:..."
 };
 
 // reCAPTCHA v3 site key · obtém em https://www.google.com/recaptcha/admin
