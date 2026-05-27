@@ -22,7 +22,7 @@
       "saldoInicial": {
         "2024": 0,
         "2025": 0,
-        "2026": -1804885
+        "2026": 752178
       },
       "saldoConhecido": {
         "data": "2026-05-27",
@@ -48,7 +48,8 @@
             "detalhe": "5€ parcial de Março 2025 + 144€ (Set-Dez 2025)"
           }
         }
-      }
+      },
+      "dataInicioGestao": "2026-05-27"
     },
     "planoSchindler": {
       "inicio": "2025-11-01",
@@ -391,7 +392,8 @@
       "descricao": "Quota mensal Janeiro 2024",
       "tipo": "quota",
       "criadoEm": 1705276800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_002",
@@ -408,7 +410,8 @@
       "descricao": "Quota mensal Janeiro 2024",
       "tipo": "quota",
       "criadoEm": 1705276800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_003",
@@ -425,7 +428,8 @@
       "descricao": "Quota mensal Janeiro 2024",
       "tipo": "quota",
       "criadoEm": 1705276800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_004",
@@ -442,7 +446,8 @@
       "descricao": "Quota mensal Janeiro 2024",
       "tipo": "quota",
       "criadoEm": 1705276800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_005",
@@ -459,7 +464,8 @@
       "descricao": "Quota mensal Janeiro 2024",
       "tipo": "quota",
       "criadoEm": 1705276800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_006",
@@ -476,7 +482,8 @@
       "descricao": "Quota mensal Janeiro 2024",
       "tipo": "quota",
       "criadoEm": 1705276800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_007",
@@ -493,7 +500,8 @@
       "descricao": "Quota mensal Janeiro 2024",
       "tipo": "quota",
       "criadoEm": 1705276800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_008",
@@ -510,7 +518,8 @@
       "descricao": "Quota mensal Janeiro 2024",
       "tipo": "quota",
       "criadoEm": 1705276800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_009",
@@ -527,7 +536,8 @@
       "descricao": "Quota mensal Janeiro 2024",
       "tipo": "quota",
       "criadoEm": 1705276800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_010",
@@ -544,7 +554,8 @@
       "descricao": "Quota mensal Janeiro 2024",
       "tipo": "quota",
       "criadoEm": 1705276800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_011",
@@ -561,7 +572,8 @@
       "descricao": "Quota mensal Fevereiro 2024",
       "tipo": "quota",
       "criadoEm": 1707955200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_012",
@@ -578,7 +590,8 @@
       "descricao": "Quota mensal Fevereiro 2024",
       "tipo": "quota",
       "criadoEm": 1707955200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_013",
@@ -595,7 +608,8 @@
       "descricao": "Quota mensal Fevereiro 2024",
       "tipo": "quota",
       "criadoEm": 1707955200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_014",
@@ -612,7 +626,8 @@
       "descricao": "Quota mensal Fevereiro 2024",
       "tipo": "quota",
       "criadoEm": 1707955200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_015",
@@ -629,7 +644,8 @@
       "descricao": "Quota mensal Fevereiro 2024",
       "tipo": "quota",
       "criadoEm": 1707955200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_016",
@@ -646,7 +662,8 @@
       "descricao": "Quota mensal Fevereiro 2024",
       "tipo": "quota",
       "criadoEm": 1707955200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_017",
@@ -663,7 +680,8 @@
       "descricao": "Quota mensal Fevereiro 2024",
       "tipo": "quota",
       "criadoEm": 1707955200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_018",
@@ -680,7 +698,8 @@
       "descricao": "Quota mensal Fevereiro 2024",
       "tipo": "quota",
       "criadoEm": 1707955200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_019",
@@ -697,7 +716,8 @@
       "descricao": "Quota mensal Fevereiro 2024",
       "tipo": "quota",
       "criadoEm": 1707955200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_020",
@@ -714,7 +734,8 @@
       "descricao": "Quota mensal Fevereiro 2024",
       "tipo": "quota",
       "criadoEm": 1707955200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_021",
@@ -731,7 +752,8 @@
       "descricao": "Quota mensal Março 2024",
       "tipo": "quota",
       "criadoEm": 1710460800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_022",
@@ -748,7 +770,8 @@
       "descricao": "Quota mensal Março 2024",
       "tipo": "quota",
       "criadoEm": 1710460800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_023",
@@ -765,7 +788,8 @@
       "descricao": "Quota mensal Março 2024",
       "tipo": "quota",
       "criadoEm": 1710460800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_024",
@@ -782,7 +806,8 @@
       "descricao": "Quota mensal Março 2024",
       "tipo": "quota",
       "criadoEm": 1710460800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_025",
@@ -799,7 +824,8 @@
       "descricao": "Quota mensal Março 2024",
       "tipo": "quota",
       "criadoEm": 1710460800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_026",
@@ -816,7 +842,8 @@
       "descricao": "Quota mensal Março 2024",
       "tipo": "quota",
       "criadoEm": 1710460800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_027",
@@ -833,7 +860,8 @@
       "descricao": "Quota mensal Março 2024",
       "tipo": "quota",
       "criadoEm": 1710460800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_028",
@@ -850,7 +878,8 @@
       "descricao": "Quota mensal Março 2024",
       "tipo": "quota",
       "criadoEm": 1710460800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_029",
@@ -867,7 +896,8 @@
       "descricao": "Quota mensal Março 2024",
       "tipo": "quota",
       "criadoEm": 1710460800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_030",
@@ -884,7 +914,8 @@
       "descricao": "Quota mensal Março 2024",
       "tipo": "quota",
       "criadoEm": 1710460800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_031",
@@ -901,7 +932,8 @@
       "descricao": "Quota mensal Abril 2024",
       "tipo": "quota",
       "criadoEm": 1713139200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_032",
@@ -918,7 +950,8 @@
       "descricao": "Quota mensal Abril 2024",
       "tipo": "quota",
       "criadoEm": 1713139200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_033",
@@ -935,7 +968,8 @@
       "descricao": "Quota mensal Abril 2024",
       "tipo": "quota",
       "criadoEm": 1713139200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_034",
@@ -952,7 +986,8 @@
       "descricao": "Quota mensal Abril 2024",
       "tipo": "quota",
       "criadoEm": 1713139200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_035",
@@ -969,7 +1004,8 @@
       "descricao": "Quota mensal Abril 2024",
       "tipo": "quota",
       "criadoEm": 1713139200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_036",
@@ -986,7 +1022,8 @@
       "descricao": "Quota mensal Abril 2024",
       "tipo": "quota",
       "criadoEm": 1713139200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_037",
@@ -1003,7 +1040,8 @@
       "descricao": "Quota mensal Abril 2024",
       "tipo": "quota",
       "criadoEm": 1713139200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_038",
@@ -1020,7 +1058,8 @@
       "descricao": "Quota mensal Abril 2024",
       "tipo": "quota",
       "criadoEm": 1713139200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_039",
@@ -1037,7 +1076,8 @@
       "descricao": "Quota mensal Abril 2024",
       "tipo": "quota",
       "criadoEm": 1713139200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_040",
@@ -1054,7 +1094,8 @@
       "descricao": "Quota mensal Abril 2024",
       "tipo": "quota",
       "criadoEm": 1713139200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_041",
@@ -1071,7 +1112,8 @@
       "descricao": "Quota mensal Maio 2024",
       "tipo": "quota",
       "criadoEm": 1715731200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_042",
@@ -1088,7 +1130,8 @@
       "descricao": "Quota mensal Maio 2024",
       "tipo": "quota",
       "criadoEm": 1715731200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_043",
@@ -1105,7 +1148,8 @@
       "descricao": "Quota mensal Maio 2024",
       "tipo": "quota",
       "criadoEm": 1715731200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_044",
@@ -1122,7 +1166,8 @@
       "descricao": "Quota mensal Maio 2024",
       "tipo": "quota",
       "criadoEm": 1715731200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_045",
@@ -1139,7 +1184,8 @@
       "descricao": "Quota mensal Maio 2024",
       "tipo": "quota",
       "criadoEm": 1715731200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_046",
@@ -1156,7 +1202,8 @@
       "descricao": "Quota mensal Maio 2024",
       "tipo": "quota",
       "criadoEm": 1715731200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_047",
@@ -1173,7 +1220,8 @@
       "descricao": "Quota mensal Maio 2024",
       "tipo": "quota",
       "criadoEm": 1715731200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_048",
@@ -1190,7 +1238,8 @@
       "descricao": "Quota mensal Maio 2024",
       "tipo": "quota",
       "criadoEm": 1715731200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_049",
@@ -1207,7 +1256,8 @@
       "descricao": "Quota mensal Maio 2024",
       "tipo": "quota",
       "criadoEm": 1715731200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_050",
@@ -1224,7 +1274,8 @@
       "descricao": "Quota mensal Maio 2024",
       "tipo": "quota",
       "criadoEm": 1715731200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_051",
@@ -1241,7 +1292,8 @@
       "descricao": "Quota mensal Junho 2024",
       "tipo": "quota",
       "criadoEm": 1718409600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_052",
@@ -1258,7 +1310,8 @@
       "descricao": "Quota mensal Junho 2024",
       "tipo": "quota",
       "criadoEm": 1718409600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_053",
@@ -1275,7 +1328,8 @@
       "descricao": "Quota mensal Junho 2024",
       "tipo": "quota",
       "criadoEm": 1718409600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_054",
@@ -1292,7 +1346,8 @@
       "descricao": "Quota mensal Junho 2024",
       "tipo": "quota",
       "criadoEm": 1718409600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_055",
@@ -1309,7 +1364,8 @@
       "descricao": "Quota mensal Junho 2024",
       "tipo": "quota",
       "criadoEm": 1718409600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_056",
@@ -1326,7 +1382,8 @@
       "descricao": "Quota mensal Junho 2024",
       "tipo": "quota",
       "criadoEm": 1718409600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_057",
@@ -1343,7 +1400,8 @@
       "descricao": "Quota mensal Junho 2024",
       "tipo": "quota",
       "criadoEm": 1718409600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_058",
@@ -1360,7 +1418,8 @@
       "descricao": "Quota mensal Junho 2024",
       "tipo": "quota",
       "criadoEm": 1718409600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_059",
@@ -1377,7 +1436,8 @@
       "descricao": "Quota mensal Junho 2024",
       "tipo": "quota",
       "criadoEm": 1718409600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2024_001",
@@ -1391,7 +1451,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (para obras) - Março / Julho 2024",
       "tipo": "prestacao",
-      "criadoEm": 1718495955000.0
+      "criadoEm": 1718495955000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2024_003",
@@ -1405,7 +1466,8 @@
       "mesReferencia": [],
       "descricao": "Regularização da quota referente ao pagamento da reparação do elevador",
       "tipo": "prestacao",
-      "criadoEm": 1718495955000.0
+      "criadoEm": 1718495955000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2024_011",
@@ -1419,7 +1481,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (para obras) - Agosto / Setembro 2024",
       "tipo": "prestacao",
-      "criadoEm": 1719705555000.0
+      "criadoEm": 1719705555000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_060",
@@ -1436,7 +1499,8 @@
       "descricao": "Quota mensal Julho 2024",
       "tipo": "quota",
       "criadoEm": 1721001600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_061",
@@ -1453,7 +1517,8 @@
       "descricao": "Quota mensal Julho 2024",
       "tipo": "quota",
       "criadoEm": 1721001600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_062",
@@ -1470,7 +1535,8 @@
       "descricao": "Quota mensal Julho 2024",
       "tipo": "quota",
       "criadoEm": 1721001600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_063",
@@ -1487,7 +1553,8 @@
       "descricao": "Quota mensal Julho 2024",
       "tipo": "quota",
       "criadoEm": 1721001600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_064",
@@ -1504,7 +1571,8 @@
       "descricao": "Quota mensal Julho 2024",
       "tipo": "quota",
       "criadoEm": 1721001600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_065",
@@ -1521,7 +1589,8 @@
       "descricao": "Quota mensal Julho 2024",
       "tipo": "quota",
       "criadoEm": 1721001600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_066",
@@ -1538,7 +1607,8 @@
       "descricao": "Quota mensal Julho 2024",
       "tipo": "quota",
       "criadoEm": 1721001600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_067",
@@ -1555,7 +1625,8 @@
       "descricao": "Quota mensal Julho 2024",
       "tipo": "quota",
       "criadoEm": 1721001600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_068",
@@ -1572,7 +1643,8 @@
       "descricao": "Quota mensal Julho 2024",
       "tipo": "quota",
       "criadoEm": 1721001600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2024_014",
@@ -1586,7 +1658,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (para obras) - Março / Agosto 2024",
       "tipo": "prestacao",
-      "criadoEm": 1721087955000.0
+      "criadoEm": 1721087955000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2024_016",
@@ -1600,7 +1673,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (para obras) - Março / Abril 2024",
       "tipo": "prestacao",
-      "criadoEm": 1721087955000.0
+      "criadoEm": 1721087955000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2024_022",
@@ -1614,7 +1688,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (para obras) - Março / Julho 2024",
       "tipo": "prestacao",
-      "criadoEm": 1723247955000.0
+      "criadoEm": 1723247955000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2024_025",
@@ -1628,7 +1703,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (para obras) - Março / Agosto 2024",
       "tipo": "prestacao",
-      "criadoEm": 1723247955000.0
+      "criadoEm": 1723247955000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_069",
@@ -1645,7 +1721,8 @@
       "descricao": "Quota mensal Agosto 2024",
       "tipo": "quota",
       "criadoEm": 1723680000000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_070",
@@ -1662,7 +1739,8 @@
       "descricao": "Quota mensal Agosto 2024",
       "tipo": "quota",
       "criadoEm": 1723680000000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_071",
@@ -1679,7 +1757,8 @@
       "descricao": "Quota mensal Agosto 2024",
       "tipo": "quota",
       "criadoEm": 1723680000000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_072",
@@ -1696,7 +1775,8 @@
       "descricao": "Quota mensal Agosto 2024",
       "tipo": "quota",
       "criadoEm": 1723680000000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_073",
@@ -1713,7 +1793,8 @@
       "descricao": "Quota mensal Agosto 2024",
       "tipo": "quota",
       "criadoEm": 1723680000000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_074",
@@ -1730,7 +1811,8 @@
       "descricao": "Quota mensal Agosto 2024",
       "tipo": "quota",
       "criadoEm": 1723680000000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_075",
@@ -1747,7 +1829,8 @@
       "descricao": "Quota mensal Agosto 2024",
       "tipo": "quota",
       "criadoEm": 1723680000000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_076",
@@ -1764,7 +1847,8 @@
       "descricao": "Quota mensal Agosto 2024",
       "tipo": "quota",
       "criadoEm": 1723680000000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_077",
@@ -1781,7 +1865,8 @@
       "descricao": "Quota mensal Agosto 2024",
       "tipo": "quota",
       "criadoEm": 1723680000000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2024_028",
@@ -1795,7 +1880,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (para obras) - Totalidade",
       "tipo": "prestacao",
-      "criadoEm": 1725753555000.0
+      "criadoEm": 1725753555000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2024_032",
@@ -1809,7 +1895,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (para obras) - Março / Abril 2024",
       "tipo": "prestacao",
-      "criadoEm": 1725753555000.0
+      "criadoEm": 1725753555000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_078",
@@ -1826,7 +1913,8 @@
       "descricao": "Quota mensal Setembro 2024",
       "tipo": "quota",
       "criadoEm": 1726358400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_079",
@@ -1843,7 +1931,8 @@
       "descricao": "Quota mensal Setembro 2024",
       "tipo": "quota",
       "criadoEm": 1726358400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_080",
@@ -1860,7 +1949,8 @@
       "descricao": "Quota mensal Setembro 2024",
       "tipo": "quota",
       "criadoEm": 1726358400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_081",
@@ -1877,7 +1967,8 @@
       "descricao": "Quota mensal Setembro 2024",
       "tipo": "quota",
       "criadoEm": 1726358400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_082",
@@ -1894,7 +1985,8 @@
       "descricao": "Quota mensal Setembro 2024",
       "tipo": "quota",
       "criadoEm": 1726358400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_083",
@@ -1911,7 +2003,8 @@
       "descricao": "Quota mensal Setembro 2024",
       "tipo": "quota",
       "criadoEm": 1726358400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_084",
@@ -1928,7 +2021,8 @@
       "descricao": "Quota mensal Setembro 2024",
       "tipo": "quota",
       "criadoEm": 1726358400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_085",
@@ -1945,7 +2039,8 @@
       "descricao": "Quota mensal Setembro 2024",
       "tipo": "quota",
       "criadoEm": 1726358400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_086",
@@ -1962,7 +2057,8 @@
       "descricao": "Quota mensal Setembro 2024",
       "tipo": "quota",
       "criadoEm": 1726358400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2024_041",
@@ -1976,7 +2072,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (para obras) - Maio 2024",
       "tipo": "prestacao",
-      "criadoEm": 1728777555000.0
+      "criadoEm": 1728777555000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_087",
@@ -1993,7 +2090,8 @@
       "descricao": "Quota mensal Outubro 2024",
       "tipo": "quota",
       "criadoEm": 1728950400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_088",
@@ -2010,7 +2108,8 @@
       "descricao": "Quota mensal Outubro 2024",
       "tipo": "quota",
       "criadoEm": 1728950400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_089",
@@ -2027,7 +2126,8 @@
       "descricao": "Quota mensal Outubro 2024",
       "tipo": "quota",
       "criadoEm": 1728950400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_090",
@@ -2044,7 +2144,8 @@
       "descricao": "Quota mensal Outubro 2024",
       "tipo": "quota",
       "criadoEm": 1728950400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_091",
@@ -2061,7 +2162,8 @@
       "descricao": "Quota mensal Outubro 2024",
       "tipo": "quota",
       "criadoEm": 1728950400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_092",
@@ -2078,7 +2180,8 @@
       "descricao": "Quota mensal Outubro 2024",
       "tipo": "quota",
       "criadoEm": 1728950400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_093",
@@ -2095,7 +2198,8 @@
       "descricao": "Quota mensal Outubro 2024",
       "tipo": "quota",
       "criadoEm": 1728950400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_094",
@@ -2112,7 +2216,8 @@
       "descricao": "Quota mensal Outubro 2024",
       "tipo": "quota",
       "criadoEm": 1728950400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_095",
@@ -2129,7 +2234,8 @@
       "descricao": "Quota mensal Outubro 2024",
       "tipo": "quota",
       "criadoEm": 1728950400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_096",
@@ -2146,7 +2252,8 @@
       "descricao": "Quota mensal Novembro 2024",
       "tipo": "quota",
       "criadoEm": 1731628800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_097",
@@ -2163,7 +2270,8 @@
       "descricao": "Quota mensal Novembro 2024",
       "tipo": "quota",
       "criadoEm": 1731628800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_098",
@@ -2180,7 +2288,8 @@
       "descricao": "Quota mensal Novembro 2024",
       "tipo": "quota",
       "criadoEm": 1731628800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_099",
@@ -2197,7 +2306,8 @@
       "descricao": "Quota mensal Novembro 2024",
       "tipo": "quota",
       "criadoEm": 1731628800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_100",
@@ -2214,7 +2324,8 @@
       "descricao": "Quota mensal Novembro 2024",
       "tipo": "quota",
       "criadoEm": 1731628800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_101",
@@ -2231,7 +2342,8 @@
       "descricao": "Quota mensal Novembro 2024",
       "tipo": "quota",
       "criadoEm": 1731628800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_102",
@@ -2248,7 +2360,8 @@
       "descricao": "Quota mensal Novembro 2024",
       "tipo": "quota",
       "criadoEm": 1731628800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_103",
@@ -2265,7 +2378,8 @@
       "descricao": "Quota mensal Novembro 2024",
       "tipo": "quota",
       "criadoEm": 1731628800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_104",
@@ -2282,7 +2396,8 @@
       "descricao": "Quota mensal Novembro 2024",
       "tipo": "quota",
       "criadoEm": 1731628800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2024_048",
@@ -2296,7 +2411,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (para obras) - Agosto 24 / Fevereiro 25",
       "tipo": "prestacao",
-      "criadoEm": 1731801555000.0
+      "criadoEm": 1731801555000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2024_052",
@@ -2310,7 +2426,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (para obras) - Outubro / Dezembro 2024",
       "tipo": "prestacao",
-      "criadoEm": 1734220755000.0
+      "criadoEm": 1734220755000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2024_056",
@@ -2324,7 +2441,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quotas suplementares (para obras) - até Julho 2024",
       "tipo": "prestacao",
-      "criadoEm": 1734220755000.0
+      "criadoEm": 1734220755000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_105",
@@ -2341,7 +2459,8 @@
       "descricao": "Quota mensal Dezembro 2024",
       "tipo": "quota",
       "criadoEm": 1734220800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_106",
@@ -2358,7 +2477,8 @@
       "descricao": "Quota mensal Dezembro 2024",
       "tipo": "quota",
       "criadoEm": 1734220800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_107",
@@ -2375,7 +2495,8 @@
       "descricao": "Quota mensal Dezembro 2024",
       "tipo": "quota",
       "criadoEm": 1734220800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_108",
@@ -2392,7 +2513,8 @@
       "descricao": "Quota mensal Dezembro 2024",
       "tipo": "quota",
       "criadoEm": 1734220800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_109",
@@ -2409,7 +2531,8 @@
       "descricao": "Quota mensal Dezembro 2024",
       "tipo": "quota",
       "criadoEm": 1734220800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_110",
@@ -2426,7 +2549,8 @@
       "descricao": "Quota mensal Dezembro 2024",
       "tipo": "quota",
       "criadoEm": 1734220800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_111",
@@ -2443,7 +2567,8 @@
       "descricao": "Quota mensal Dezembro 2024",
       "tipo": "quota",
       "criadoEm": 1734220800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_112",
@@ -2460,7 +2585,8 @@
       "descricao": "Quota mensal Dezembro 2024",
       "tipo": "quota",
       "criadoEm": 1734220800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2024_113",
@@ -2477,7 +2603,8 @@
       "descricao": "Quota mensal Dezembro 2024",
       "tipo": "quota",
       "criadoEm": 1734220800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2024_060",
@@ -2491,7 +2618,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (para obras) - Set. 2024 / Fev. 2025",
       "tipo": "prestacao",
-      "criadoEm": 1736639955000.0
+      "criadoEm": 1736639955000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2024_062",
@@ -2505,7 +2633,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quotas suplementares (para obras) - até Dezembro 2024",
       "tipo": "prestacao",
-      "criadoEm": 1736639955000.0
+      "criadoEm": 1736639955000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2024_064",
@@ -2519,7 +2648,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quotização suplementar (para obras)",
       "tipo": "prestacao",
-      "criadoEm": 1736639955000.0
+      "criadoEm": 1736639955000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2024_069",
@@ -2533,7 +2663,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quotas suplementares (para obras) - até Dezembro 2024",
       "tipo": "prestacao",
-      "criadoEm": 1739663955000.0
+      "criadoEm": 1739663955000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2024_073",
@@ -2547,7 +2678,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quotização suplementar (para obras) - até janeiro 25",
       "tipo": "prestacao",
-      "criadoEm": 1739663955000.0
+      "criadoEm": 1739663955000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2024_077",
@@ -2561,7 +2693,8 @@
       "mesReferencia": [],
       "descricao": "Regularização final de quotização suplementar (para obras)",
       "tipo": "prestacao",
-      "criadoEm": 1742083155000.0
+      "criadoEm": 1742083155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2024_080",
@@ -2575,7 +2708,8 @@
       "mesReferencia": [],
       "descricao": "Regularização integral da quota suplementar (para obras)",
       "tipo": "prestacao",
-      "criadoEm": 1742083155000.0
+      "criadoEm": 1742083155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2024_082",
@@ -2589,7 +2723,8 @@
       "mesReferencia": [],
       "descricao": "Regularização final de quotização suplementar (para obras)",
       "tipo": "prestacao",
-      "criadoEm": 1742083155000.0
+      "criadoEm": 1742083155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2024_088",
@@ -2603,7 +2738,8 @@
       "mesReferencia": [],
       "descricao": "Regularização final de quotização suplementar (para obras)",
       "tipo": "prestacao",
-      "criadoEm": 1742342355000.0
+      "criadoEm": 1742342355000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2025_089",
@@ -2617,7 +2753,8 @@
       "mesReferencia": [],
       "descricao": "Regularização final de quotização suplementar (para obras)",
       "tipo": "prestacao",
-      "criadoEm": 1742774355000.0
+      "criadoEm": 1742774355000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2025_097",
@@ -2631,7 +2768,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (reparação elevador) - 1/10",
       "tipo": "prestacao",
-      "criadoEm": 1747180755000.0
+      "criadoEm": 1747180755000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2025_098",
@@ -2645,7 +2783,8 @@
       "mesReferencia": [],
       "descricao": "Regularização integral da quota suplementar (para obras)",
       "tipo": "prestacao",
-      "criadoEm": 1747180755000.0
+      "criadoEm": 1747180755000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2025_100",
@@ -2659,7 +2798,8 @@
       "mesReferencia": [],
       "descricao": "Pagamento parcial da quotização suplementar (para obras)",
       "tipo": "prestacao",
-      "criadoEm": 1747180755000.0
+      "criadoEm": 1747180755000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2025_105",
@@ -2673,7 +2813,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (reparação elevador) - 2/10",
       "tipo": "prestacao",
-      "criadoEm": 1747180755000.0
+      "criadoEm": 1747180755000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2025_106",
@@ -2687,7 +2828,8 @@
       "mesReferencia": [],
       "descricao": "Regularização integral da quota suplementar (reparação elevador)",
       "tipo": "prestacao",
-      "criadoEm": 1747180755000.0
+      "criadoEm": 1747180755000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2025_116",
@@ -2701,7 +2843,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (reparação elevador) - 2/10",
       "tipo": "prestacao",
-      "criadoEm": 1747180755000.0
+      "criadoEm": 1747180755000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2025_095",
@@ -2715,7 +2858,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (reparação elevador) - 1/10",
       "tipo": "prestacao",
-      "criadoEm": 1747267155000.0
+      "criadoEm": 1747267155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2025_118",
@@ -2729,7 +2873,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (reparação elevador) - 1/10",
       "tipo": "prestacao",
-      "criadoEm": 1747699155000.0
+      "criadoEm": 1747699155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2025_124",
@@ -2743,7 +2888,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (reparação elevador) - 1/10",
       "tipo": "prestacao",
-      "criadoEm": 1748476755000.0
+      "criadoEm": 1748476755000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2025_127",
@@ -2757,7 +2903,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (reparação elevador) - 3/10",
       "tipo": "prestacao",
-      "criadoEm": 1749427155000.0
+      "criadoEm": 1749427155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2025_134",
@@ -2771,7 +2918,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (reparação elevador) - 1/10",
       "tipo": "prestacao",
-      "criadoEm": 1749427155000.0
+      "criadoEm": 1749427155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2025_139",
@@ -2785,7 +2933,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (reparação elevador) - 1/10",
       "tipo": "prestacao",
-      "criadoEm": 1749599955000.0
+      "criadoEm": 1749599955000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2025_120",
@@ -2799,7 +2948,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (reparação elevador) - 2/10",
       "tipo": "prestacao",
-      "criadoEm": 1749686355000.0
+      "criadoEm": 1749686355000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2025_125",
@@ -2813,7 +2963,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (reparação elevador) - 2 a 6/10 (5 quotas)",
       "tipo": "prestacao",
-      "criadoEm": 1750377555000.0
+      "criadoEm": 1750377555000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2025_112",
@@ -2827,7 +2978,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (reparação elevador) - 1/10",
       "tipo": "prestacao",
-      "criadoEm": 1750895955000.0
+      "criadoEm": 1750895955000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2025_115",
@@ -2841,7 +2993,8 @@
       "mesReferencia": [],
       "descricao": "Regularização final de quotização suplementar (para obras)",
       "tipo": "prestacao",
-      "criadoEm": 1751587155000.0
+      "criadoEm": 1751587155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2025_141",
@@ -2855,7 +3008,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (reparação elevador) - 2/10",
       "tipo": "prestacao",
-      "criadoEm": 1751932755000.0
+      "criadoEm": 1751932755000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2025_129",
@@ -2869,7 +3023,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (reparação elevador) - 4/10",
       "tipo": "prestacao",
-      "criadoEm": 1752019155000.0
+      "criadoEm": 1752019155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2025_137",
@@ -2883,7 +3038,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (reparação elevador) - 2/10",
       "tipo": "prestacao",
-      "criadoEm": 1752451155000.0
+      "criadoEm": 1752451155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2025_138",
@@ -2897,7 +3053,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (reparação elevador) - 3/10",
       "tipo": "prestacao",
-      "criadoEm": 1752451155000.0
+      "criadoEm": 1752451155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2025_113",
@@ -2911,7 +3068,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (reparação elevador) - 2/10",
       "tipo": "prestacao",
-      "criadoEm": 1753660755000.0
+      "criadoEm": 1753660755000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2025_122",
@@ -2925,7 +3083,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (reparação elevador) - 3/10",
       "tipo": "prestacao",
-      "criadoEm": 1753833555000.0
+      "criadoEm": 1753833555000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2025_146",
@@ -2939,7 +3098,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (reparação elevador) - 3/10",
       "tipo": "prestacao",
-      "criadoEm": 1754351955000.0
+      "criadoEm": 1754351955000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2025_133",
@@ -2953,7 +3113,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (reparação elevador) - 5/10",
       "tipo": "prestacao",
-      "criadoEm": 1754611155000.0
+      "criadoEm": 1754611155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2025_143",
@@ -2967,7 +3128,8 @@
       "mesReferencia": [],
       "descricao": "Regularização de quota suplementar (reparação elevador) - 3/10",
       "tipo": "prestacao",
-      "criadoEm": 1754611155000.0
+      "criadoEm": 1754611155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_001",
@@ -2984,7 +3146,8 @@
       "descricao": "Quota mensal Janeiro 2026",
       "tipo": "quota",
       "criadoEm": 1768435200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_002",
@@ -3001,7 +3164,8 @@
       "descricao": "Quota mensal Janeiro 2026",
       "tipo": "quota",
       "criadoEm": 1768435200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_003",
@@ -3018,7 +3182,8 @@
       "descricao": "Quota mensal Janeiro 2026",
       "tipo": "quota",
       "criadoEm": 1768435200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_004",
@@ -3035,7 +3200,8 @@
       "descricao": "Quota mensal Janeiro 2026",
       "tipo": "quota",
       "criadoEm": 1768435200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_005",
@@ -3052,7 +3218,8 @@
       "descricao": "Quota mensal Janeiro 2026",
       "tipo": "quota",
       "criadoEm": 1768435200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_006",
@@ -3069,7 +3236,8 @@
       "descricao": "Quota mensal Janeiro 2026",
       "tipo": "quota",
       "criadoEm": 1768435200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_007",
@@ -3086,7 +3254,8 @@
       "descricao": "Quota mensal Janeiro 2026",
       "tipo": "quota",
       "criadoEm": 1768435200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_008",
@@ -3103,7 +3272,8 @@
       "descricao": "Quota mensal Janeiro 2026",
       "tipo": "quota",
       "criadoEm": 1768435200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_009",
@@ -3120,7 +3290,8 @@
       "descricao": "Quota mensal Janeiro 2026",
       "tipo": "quota",
       "criadoEm": 1768435200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_010",
@@ -3137,7 +3308,8 @@
       "descricao": "Quota mensal Janeiro 2026",
       "tipo": "quota",
       "criadoEm": 1768435200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_011",
@@ -3154,7 +3326,8 @@
       "descricao": "Quota mensal Fevereiro 2026",
       "tipo": "quota",
       "criadoEm": 1771113600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_012",
@@ -3171,7 +3344,8 @@
       "descricao": "Quota mensal Fevereiro 2026",
       "tipo": "quota",
       "criadoEm": 1771113600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_013",
@@ -3188,7 +3362,8 @@
       "descricao": "Quota mensal Fevereiro 2026",
       "tipo": "quota",
       "criadoEm": 1771113600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_014",
@@ -3205,7 +3380,8 @@
       "descricao": "Quota mensal Fevereiro 2026",
       "tipo": "quota",
       "criadoEm": 1771113600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_015",
@@ -3222,7 +3398,8 @@
       "descricao": "Quota mensal Fevereiro 2026",
       "tipo": "quota",
       "criadoEm": 1771113600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_016",
@@ -3239,7 +3416,8 @@
       "descricao": "Quota mensal Fevereiro 2026",
       "tipo": "quota",
       "criadoEm": 1771113600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_017",
@@ -3256,7 +3434,8 @@
       "descricao": "Quota mensal Fevereiro 2026",
       "tipo": "quota",
       "criadoEm": 1771113600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_018",
@@ -3273,7 +3452,8 @@
       "descricao": "Quota mensal Fevereiro 2026",
       "tipo": "quota",
       "criadoEm": 1771113600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_019",
@@ -3290,7 +3470,8 @@
       "descricao": "Quota mensal Fevereiro 2026",
       "tipo": "quota",
       "criadoEm": 1771113600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_020",
@@ -3307,7 +3488,8 @@
       "descricao": "Quota mensal Fevereiro 2026",
       "tipo": "quota",
       "criadoEm": 1771113600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_002",
@@ -3321,7 +3503,8 @@
       "mesReferencia": [],
       "descricao": "Obras Reparação",
       "tipo": "prestacao",
-      "criadoEm": 1771891155000.0
+      "criadoEm": 1771891155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_003",
@@ -3335,7 +3518,8 @@
       "mesReferencia": [],
       "descricao": "Reparação Elevador",
       "tipo": "prestacao",
-      "criadoEm": 1771891155000.0
+      "criadoEm": 1771891155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_005",
@@ -3349,7 +3533,8 @@
       "mesReferencia": [],
       "descricao": "Reparação Elevador",
       "tipo": "prestacao",
-      "criadoEm": 1771891155000.0
+      "criadoEm": 1771891155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_006",
@@ -3363,7 +3548,8 @@
       "mesReferencia": [],
       "descricao": "Obras de Conservação",
       "tipo": "prestacao",
-      "criadoEm": 1771891155000.0
+      "criadoEm": 1771891155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_008",
@@ -3377,7 +3563,8 @@
       "mesReferencia": [],
       "descricao": "Reparação Elevador",
       "tipo": "prestacao",
-      "criadoEm": 1771891155000.0
+      "criadoEm": 1771891155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_009",
@@ -3391,7 +3578,8 @@
       "mesReferencia": [],
       "descricao": "Obras de Conservação",
       "tipo": "prestacao",
-      "criadoEm": 1771891155000.0
+      "criadoEm": 1771891155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_011",
@@ -3405,7 +3593,8 @@
       "mesReferencia": [],
       "descricao": "Reparação Elevador",
       "tipo": "prestacao",
-      "criadoEm": 1771891155000.0
+      "criadoEm": 1771891155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_012",
@@ -3419,7 +3608,8 @@
       "mesReferencia": [],
       "descricao": "Obras de Conservação",
       "tipo": "prestacao",
-      "criadoEm": 1771891155000.0
+      "criadoEm": 1771891155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_014",
@@ -3433,7 +3623,8 @@
       "mesReferencia": [],
       "descricao": "Reparação Elevador",
       "tipo": "prestacao",
-      "criadoEm": 1771891155000.0
+      "criadoEm": 1771891155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_015",
@@ -3447,7 +3638,8 @@
       "mesReferencia": [],
       "descricao": "Obras de Conservação",
       "tipo": "prestacao",
-      "criadoEm": 1771891155000.0
+      "criadoEm": 1771891155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_016",
@@ -3461,7 +3653,8 @@
       "mesReferencia": [],
       "descricao": "Obras de Conservação",
       "tipo": "prestacao",
-      "criadoEm": 1771891155000.0
+      "criadoEm": 1771891155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_018",
@@ -3475,7 +3668,8 @@
       "mesReferencia": [],
       "descricao": "Reparação Elevador",
       "tipo": "prestacao",
-      "criadoEm": 1771891155000.0
+      "criadoEm": 1771891155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_019",
@@ -3489,7 +3683,8 @@
       "mesReferencia": [],
       "descricao": "Obras de Conservação",
       "tipo": "prestacao",
-      "criadoEm": 1771891155000.0
+      "criadoEm": 1771891155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_020",
@@ -3503,7 +3698,8 @@
       "mesReferencia": [],
       "descricao": "Obras de Conservação",
       "tipo": "prestacao",
-      "criadoEm": 1771891155000.0
+      "criadoEm": 1771891155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_021",
@@ -3517,7 +3713,8 @@
       "mesReferencia": [],
       "descricao": "Reparação Elevador",
       "tipo": "prestacao",
-      "criadoEm": 1771891155000.0
+      "criadoEm": 1771891155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_024",
@@ -3531,7 +3728,8 @@
       "mesReferencia": [],
       "descricao": "Obras de Conservação",
       "tipo": "prestacao",
-      "criadoEm": 1771977555000.0
+      "criadoEm": 1771977555000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_025",
@@ -3545,7 +3743,8 @@
       "mesReferencia": [],
       "descricao": null,
       "tipo": "outro",
-      "criadoEm": 1771977555000.0
+      "criadoEm": 1771977555000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_029",
@@ -3559,7 +3758,8 @@
       "mesReferencia": [],
       "descricao": "Reparação Elevador",
       "tipo": "prestacao",
-      "criadoEm": 1772668755000.0
+      "criadoEm": 1772668755000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_030",
@@ -3573,7 +3773,8 @@
       "mesReferencia": [],
       "descricao": "Reparação Elevador",
       "tipo": "prestacao",
-      "criadoEm": 1772755155000.0
+      "criadoEm": 1772755155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_031",
@@ -3587,7 +3788,8 @@
       "mesReferencia": [],
       "descricao": "Obras de Conservação",
       "tipo": "prestacao",
-      "criadoEm": 1772755155000.0
+      "criadoEm": 1772755155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_035",
@@ -3601,7 +3803,8 @@
       "mesReferencia": [],
       "descricao": "Pagamento Quota extraordinária Elevador - Prestação 9",
       "tipo": "prestacao",
-      "criadoEm": 1773014355000.0
+      "criadoEm": 1773014355000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_038",
@@ -3615,7 +3818,8 @@
       "mesReferencia": [],
       "descricao": "Reparação Elevador",
       "tipo": "prestacao",
-      "criadoEm": 1773100755000.0
+      "criadoEm": 1773100755000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_041",
@@ -3629,7 +3833,8 @@
       "mesReferencia": [],
       "descricao": "Reparação Elevador",
       "tipo": "prestacao",
-      "criadoEm": 1773100755000.0
+      "criadoEm": 1773100755000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_021",
@@ -3646,7 +3851,8 @@
       "descricao": "Quota mensal Março 2026",
       "tipo": "quota",
       "criadoEm": 1773532800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_022",
@@ -3663,7 +3869,8 @@
       "descricao": "Quota mensal Março 2026",
       "tipo": "quota",
       "criadoEm": 1773532800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_023",
@@ -3680,7 +3887,8 @@
       "descricao": "Quota mensal Março 2026",
       "tipo": "quota",
       "criadoEm": 1773532800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_024",
@@ -3697,7 +3905,8 @@
       "descricao": "Quota mensal Março 2026",
       "tipo": "quota",
       "criadoEm": 1773532800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_025",
@@ -3714,7 +3923,8 @@
       "descricao": "Quota mensal Março 2026",
       "tipo": "quota",
       "criadoEm": 1773532800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_026",
@@ -3731,7 +3941,8 @@
       "descricao": "Quota mensal Março 2026",
       "tipo": "quota",
       "criadoEm": 1773532800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_027",
@@ -3748,7 +3959,8 @@
       "descricao": "Quota mensal Março 2026",
       "tipo": "quota",
       "criadoEm": 1773532800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_028",
@@ -3765,7 +3977,8 @@
       "descricao": "Quota mensal Março 2026",
       "tipo": "quota",
       "criadoEm": 1773532800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_029",
@@ -3782,7 +3995,8 @@
       "descricao": "Quota mensal Março 2026",
       "tipo": "quota",
       "criadoEm": 1773532800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_030",
@@ -3799,7 +4013,8 @@
       "descricao": "Quota mensal Março 2026",
       "tipo": "quota",
       "criadoEm": 1773532800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_044",
@@ -3813,7 +4028,8 @@
       "mesReferencia": [],
       "descricao": "Pagamento Quota extraordinária Elevador - Prestação 10",
       "tipo": "prestacao",
-      "criadoEm": 1773791955000.0
+      "criadoEm": 1773791955000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_045",
@@ -3827,7 +4043,8 @@
       "mesReferencia": [],
       "descricao": "Reparação Elevador",
       "tipo": "prestacao",
-      "criadoEm": 1774483155000.0
+      "criadoEm": 1774483155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_049",
@@ -3841,7 +4058,8 @@
       "mesReferencia": [],
       "descricao": "Reparação Elevador",
       "tipo": "prestacao",
-      "criadoEm": 1775519955000.0
+      "criadoEm": 1775519955000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_052",
@@ -3855,7 +4073,8 @@
       "mesReferencia": [],
       "descricao": "Upgrade Video Porteiro",
       "tipo": "outro",
-      "criadoEm": 1776211155000.0
+      "criadoEm": 1776211155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_031",
@@ -3872,7 +4091,8 @@
       "descricao": "Quota mensal Abril 2026",
       "tipo": "quota",
       "criadoEm": 1776211200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_032",
@@ -3889,7 +4109,8 @@
       "descricao": "Quota mensal Abril 2026",
       "tipo": "quota",
       "criadoEm": 1776211200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_033",
@@ -3906,7 +4127,8 @@
       "descricao": "Quota mensal Abril 2026",
       "tipo": "quota",
       "criadoEm": 1776211200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_034",
@@ -3923,7 +4145,8 @@
       "descricao": "Quota mensal Abril 2026",
       "tipo": "quota",
       "criadoEm": 1776211200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_035",
@@ -3940,7 +4163,8 @@
       "descricao": "Quota mensal Abril 2026",
       "tipo": "quota",
       "criadoEm": 1776211200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_036",
@@ -3957,7 +4181,8 @@
       "descricao": "Quota mensal Abril 2026",
       "tipo": "quota",
       "criadoEm": 1776211200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_037",
@@ -3974,7 +4199,8 @@
       "descricao": "Quota mensal Abril 2026",
       "tipo": "quota",
       "criadoEm": 1776211200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_038",
@@ -3991,7 +4217,8 @@
       "descricao": "Quota mensal Abril 2026",
       "tipo": "quota",
       "criadoEm": 1776211200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_039",
@@ -4008,7 +4235,8 @@
       "descricao": "Quota mensal Abril 2026",
       "tipo": "quota",
       "criadoEm": 1776211200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_053",
@@ -4022,7 +4250,8 @@
       "mesReferencia": [],
       "descricao": "Upgrade Video Porteiro",
       "tipo": "outro",
-      "criadoEm": 1776643155000.0
+      "criadoEm": 1776643155000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_058",
@@ -4036,7 +4265,8 @@
       "mesReferencia": [],
       "descricao": "Upgrade Video porteiro",
       "tipo": "outro",
-      "criadoEm": 1778111955000.0
+      "criadoEm": 1778111955000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_040",
@@ -4053,7 +4283,8 @@
       "descricao": "Quota mensal Maio 2026",
       "tipo": "quota",
       "criadoEm": 1778803200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_041",
@@ -4070,7 +4301,8 @@
       "descricao": "Quota mensal Maio 2026",
       "tipo": "quota",
       "criadoEm": 1778803200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_042",
@@ -4087,7 +4319,8 @@
       "descricao": "Quota mensal Maio 2026",
       "tipo": "quota",
       "criadoEm": 1778803200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_043",
@@ -4104,7 +4337,8 @@
       "descricao": "Quota mensal Maio 2026",
       "tipo": "quota",
       "criadoEm": 1778803200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_044",
@@ -4121,7 +4355,8 @@
       "descricao": "Quota mensal Maio 2026",
       "tipo": "quota",
       "criadoEm": 1778803200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_045",
@@ -4138,7 +4373,8 @@
       "descricao": "Quota mensal Maio 2026",
       "tipo": "quota",
       "criadoEm": 1778803200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_046",
@@ -4155,7 +4391,8 @@
       "descricao": "Quota mensal Maio 2026",
       "tipo": "quota",
       "criadoEm": 1778803200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_047",
@@ -4172,7 +4409,8 @@
       "descricao": "Quota mensal Maio 2026",
       "tipo": "quota",
       "criadoEm": 1778803200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_048",
@@ -4189,7 +4427,8 @@
       "descricao": "Quota mensal Maio 2026",
       "tipo": "quota",
       "criadoEm": 1778803200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_2026_064",
@@ -4203,7 +4442,8 @@
       "mesReferencia": [],
       "descricao": "Reparação Elevador",
       "tipo": "prestacao",
-      "criadoEm": 1779062355000.0
+      "criadoEm": 1779062355000.0,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_049",
@@ -4220,7 +4460,8 @@
       "descricao": "Quota mensal Junho 2026",
       "tipo": "quota",
       "criadoEm": 1781481600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_050",
@@ -4237,7 +4478,8 @@
       "descricao": "Quota mensal Junho 2026",
       "tipo": "quota",
       "criadoEm": 1781481600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_051",
@@ -4254,7 +4496,8 @@
       "descricao": "Quota mensal Julho 2026",
       "tipo": "quota",
       "criadoEm": 1784073600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_052",
@@ -4271,7 +4514,8 @@
       "descricao": "Quota mensal Agosto 2026",
       "tipo": "quota",
       "criadoEm": 1786752000000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_053",
@@ -4288,7 +4532,8 @@
       "descricao": "Quota mensal Setembro 2026",
       "tipo": "quota",
       "criadoEm": 1789430400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_054",
@@ -4305,7 +4550,8 @@
       "descricao": "Quota mensal Outubro 2026",
       "tipo": "quota",
       "criadoEm": 1792022400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_055",
@@ -4322,7 +4568,8 @@
       "descricao": "Quota mensal Novembro 2026",
       "tipo": "quota",
       "criadoEm": 1794700800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2026_056",
@@ -4339,7 +4586,8 @@
       "descricao": "Quota mensal Dezembro 2026",
       "tipo": "quota",
       "criadoEm": 1797292800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_001",
@@ -4356,7 +4604,8 @@
       "descricao": "Quota mensal Janeiro 2025",
       "tipo": "quota",
       "criadoEm": 1736899200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_002",
@@ -4373,7 +4622,8 @@
       "descricao": "Quota mensal Fevereiro 2025",
       "tipo": "quota",
       "criadoEm": 1739577600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_003",
@@ -4390,7 +4640,8 @@
       "descricao": "Quota mensal Março 2025",
       "tipo": "quota",
       "criadoEm": 1741996800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_004",
@@ -4407,7 +4658,8 @@
       "descricao": "Quota mensal Abril 2025",
       "tipo": "quota",
       "criadoEm": 1744675200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_005",
@@ -4424,7 +4676,8 @@
       "descricao": "Quota mensal Maio 2025",
       "tipo": "quota",
       "criadoEm": 1747267200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_006",
@@ -4441,7 +4694,8 @@
       "descricao": "Quota mensal Junho 2025",
       "tipo": "quota",
       "criadoEm": 1749945600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_007",
@@ -4458,7 +4712,8 @@
       "descricao": "Quota mensal Julho 2025",
       "tipo": "quota",
       "criadoEm": 1752537600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_008",
@@ -4475,7 +4730,8 @@
       "descricao": "Quota mensal Agosto 2025",
       "tipo": "quota",
       "criadoEm": 1755216000000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_009",
@@ -4492,7 +4748,8 @@
       "descricao": "Quota mensal Setembro 2025",
       "tipo": "quota",
       "criadoEm": 1757894400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_010",
@@ -4509,7 +4766,8 @@
       "descricao": "Quota mensal Outubro 2025",
       "tipo": "quota",
       "criadoEm": 1760486400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_011",
@@ -4526,7 +4784,8 @@
       "descricao": "Quota mensal Novembro 2025",
       "tipo": "quota",
       "criadoEm": 1763164800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_012",
@@ -4543,7 +4802,8 @@
       "descricao": "Quota mensal Dezembro 2025",
       "tipo": "quota",
       "criadoEm": 1765756800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_013",
@@ -4560,7 +4820,8 @@
       "descricao": "Quota mensal Janeiro 2025",
       "tipo": "quota",
       "criadoEm": 1736899200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_014",
@@ -4577,7 +4838,8 @@
       "descricao": "Quota mensal Fevereiro 2025",
       "tipo": "quota",
       "criadoEm": 1739577600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_015",
@@ -4594,7 +4856,8 @@
       "descricao": "Quota mensal Março 2025",
       "tipo": "quota",
       "criadoEm": 1741996800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_016",
@@ -4611,7 +4874,8 @@
       "descricao": "Quota mensal Abril 2025",
       "tipo": "quota",
       "criadoEm": 1744675200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_017",
@@ -4628,7 +4892,8 @@
       "descricao": "Quota mensal Maio 2025",
       "tipo": "quota",
       "criadoEm": 1747267200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_018",
@@ -4645,7 +4910,8 @@
       "descricao": "Quota mensal Junho 2025",
       "tipo": "quota",
       "criadoEm": 1749945600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_019",
@@ -4662,7 +4928,8 @@
       "descricao": "Quota mensal Julho 2025",
       "tipo": "quota",
       "criadoEm": 1752537600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_020",
@@ -4679,7 +4946,8 @@
       "descricao": "Quota mensal Agosto 2025",
       "tipo": "quota",
       "criadoEm": 1755216000000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_021",
@@ -4696,7 +4964,8 @@
       "descricao": "Quota mensal Setembro 2025",
       "tipo": "quota",
       "criadoEm": 1757894400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_022",
@@ -4713,7 +4982,8 @@
       "descricao": "Quota mensal Outubro 2025",
       "tipo": "quota",
       "criadoEm": 1760486400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_023",
@@ -4730,7 +5000,8 @@
       "descricao": "Quota mensal Novembro 2025",
       "tipo": "quota",
       "criadoEm": 1763164800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_024",
@@ -4747,7 +5018,8 @@
       "descricao": "Quota mensal Dezembro 2025",
       "tipo": "quota",
       "criadoEm": 1765756800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_025",
@@ -4764,7 +5036,8 @@
       "descricao": "Quota mensal Janeiro 2025",
       "tipo": "quota",
       "criadoEm": 1736899200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_026",
@@ -4781,7 +5054,8 @@
       "descricao": "Quota mensal Fevereiro 2025",
       "tipo": "quota",
       "criadoEm": 1739577600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_027",
@@ -4798,7 +5072,8 @@
       "descricao": "Quota mensal Março 2025 (parcial)",
       "tipo": "quota",
       "criadoEm": 1741996800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_028",
@@ -4815,7 +5090,8 @@
       "descricao": "Quota mensal Abril 2025",
       "tipo": "quota",
       "criadoEm": 1744675200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_029",
@@ -4832,7 +5108,8 @@
       "descricao": "Quota mensal Maio 2025",
       "tipo": "quota",
       "criadoEm": 1747267200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_030",
@@ -4849,7 +5126,8 @@
       "descricao": "Quota mensal Junho 2025",
       "tipo": "quota",
       "criadoEm": 1749945600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_031",
@@ -4866,7 +5144,8 @@
       "descricao": "Quota mensal Julho 2025",
       "tipo": "quota",
       "criadoEm": 1752537600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_032",
@@ -4883,7 +5162,8 @@
       "descricao": "Quota mensal Agosto 2025",
       "tipo": "quota",
       "criadoEm": 1755216000000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_033",
@@ -4900,7 +5180,8 @@
       "descricao": "Quota mensal Janeiro 2025",
       "tipo": "quota",
       "criadoEm": 1736899200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_034",
@@ -4917,7 +5198,8 @@
       "descricao": "Quota mensal Fevereiro 2025",
       "tipo": "quota",
       "criadoEm": 1739577600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_035",
@@ -4934,7 +5216,8 @@
       "descricao": "Quota mensal Março 2025",
       "tipo": "quota",
       "criadoEm": 1741996800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_036",
@@ -4951,7 +5234,8 @@
       "descricao": "Quota mensal Abril 2025",
       "tipo": "quota",
       "criadoEm": 1744675200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_037",
@@ -4968,7 +5252,8 @@
       "descricao": "Quota mensal Maio 2025",
       "tipo": "quota",
       "criadoEm": 1747267200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_038",
@@ -4985,7 +5270,8 @@
       "descricao": "Quota mensal Junho 2025",
       "tipo": "quota",
       "criadoEm": 1749945600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_039",
@@ -5002,7 +5288,8 @@
       "descricao": "Quota mensal Julho 2025",
       "tipo": "quota",
       "criadoEm": 1752537600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_040",
@@ -5019,7 +5306,8 @@
       "descricao": "Quota mensal Agosto 2025",
       "tipo": "quota",
       "criadoEm": 1755216000000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_041",
@@ -5036,7 +5324,8 @@
       "descricao": "Quota mensal Setembro 2025",
       "tipo": "quota",
       "criadoEm": 1757894400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_042",
@@ -5053,7 +5342,8 @@
       "descricao": "Quota mensal Outubro 2025",
       "tipo": "quota",
       "criadoEm": 1760486400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_043",
@@ -5070,7 +5360,8 @@
       "descricao": "Quota mensal Novembro 2025",
       "tipo": "quota",
       "criadoEm": 1763164800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_044",
@@ -5087,7 +5378,8 @@
       "descricao": "Quota mensal Dezembro 2025",
       "tipo": "quota",
       "criadoEm": 1765756800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_045",
@@ -5104,7 +5396,8 @@
       "descricao": "Quota mensal Janeiro 2025",
       "tipo": "quota",
       "criadoEm": 1736899200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_046",
@@ -5121,7 +5414,8 @@
       "descricao": "Quota mensal Fevereiro 2025",
       "tipo": "quota",
       "criadoEm": 1739577600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_047",
@@ -5138,7 +5432,8 @@
       "descricao": "Quota mensal Março 2025",
       "tipo": "quota",
       "criadoEm": 1741996800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_048",
@@ -5155,7 +5450,8 @@
       "descricao": "Quota mensal Abril 2025",
       "tipo": "quota",
       "criadoEm": 1744675200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_049",
@@ -5172,7 +5468,8 @@
       "descricao": "Quota mensal Maio 2025",
       "tipo": "quota",
       "criadoEm": 1747267200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_050",
@@ -5189,7 +5486,8 @@
       "descricao": "Quota mensal Junho 2025",
       "tipo": "quota",
       "criadoEm": 1749945600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_051",
@@ -5206,7 +5504,8 @@
       "descricao": "Quota mensal Julho 2025",
       "tipo": "quota",
       "criadoEm": 1752537600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_052",
@@ -5223,7 +5522,8 @@
       "descricao": "Quota mensal Agosto 2025",
       "tipo": "quota",
       "criadoEm": 1755216000000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_053",
@@ -5240,7 +5540,8 @@
       "descricao": "Quota mensal Setembro 2025",
       "tipo": "quota",
       "criadoEm": 1757894400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_054",
@@ -5257,7 +5558,8 @@
       "descricao": "Quota mensal Outubro 2025",
       "tipo": "quota",
       "criadoEm": 1760486400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_055",
@@ -5274,7 +5576,8 @@
       "descricao": "Quota mensal Novembro 2025",
       "tipo": "quota",
       "criadoEm": 1763164800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_056",
@@ -5291,7 +5594,8 @@
       "descricao": "Quota mensal Dezembro 2025",
       "tipo": "quota",
       "criadoEm": 1765756800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_057",
@@ -5308,7 +5612,8 @@
       "descricao": "Quota mensal Janeiro 2025",
       "tipo": "quota",
       "criadoEm": 1736899200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_058",
@@ -5325,7 +5630,8 @@
       "descricao": "Quota mensal Fevereiro 2025",
       "tipo": "quota",
       "criadoEm": 1739577600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_059",
@@ -5342,7 +5648,8 @@
       "descricao": "Quota mensal Março 2025",
       "tipo": "quota",
       "criadoEm": 1741996800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_060",
@@ -5359,7 +5666,8 @@
       "descricao": "Quota mensal Abril 2025",
       "tipo": "quota",
       "criadoEm": 1744675200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_061",
@@ -5376,7 +5684,8 @@
       "descricao": "Quota mensal Maio 2025",
       "tipo": "quota",
       "criadoEm": 1747267200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_062",
@@ -5393,7 +5702,8 @@
       "descricao": "Quota mensal Junho 2025",
       "tipo": "quota",
       "criadoEm": 1749945600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_063",
@@ -5410,7 +5720,8 @@
       "descricao": "Quota mensal Julho 2025",
       "tipo": "quota",
       "criadoEm": 1752537600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_064",
@@ -5427,7 +5738,8 @@
       "descricao": "Quota mensal Agosto 2025",
       "tipo": "quota",
       "criadoEm": 1755216000000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_065",
@@ -5444,7 +5756,8 @@
       "descricao": "Quota mensal Setembro 2025",
       "tipo": "quota",
       "criadoEm": 1757894400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_066",
@@ -5461,7 +5774,8 @@
       "descricao": "Quota mensal Outubro 2025",
       "tipo": "quota",
       "criadoEm": 1760486400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_067",
@@ -5478,7 +5792,8 @@
       "descricao": "Quota mensal Novembro 2025",
       "tipo": "quota",
       "criadoEm": 1763164800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_068",
@@ -5495,7 +5810,8 @@
       "descricao": "Quota mensal Dezembro 2025",
       "tipo": "quota",
       "criadoEm": 1765756800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_069",
@@ -5512,7 +5828,8 @@
       "descricao": "Quota mensal Janeiro 2025",
       "tipo": "quota",
       "criadoEm": 1736899200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_070",
@@ -5529,7 +5846,8 @@
       "descricao": "Quota mensal Fevereiro 2025",
       "tipo": "quota",
       "criadoEm": 1739577600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_071",
@@ -5546,7 +5864,8 @@
       "descricao": "Quota mensal Março 2025",
       "tipo": "quota",
       "criadoEm": 1741996800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_072",
@@ -5563,7 +5882,8 @@
       "descricao": "Quota mensal Abril 2025",
       "tipo": "quota",
       "criadoEm": 1744675200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_073",
@@ -5580,7 +5900,8 @@
       "descricao": "Quota mensal Maio 2025",
       "tipo": "quota",
       "criadoEm": 1747267200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_074",
@@ -5597,7 +5918,8 @@
       "descricao": "Quota mensal Junho 2025",
       "tipo": "quota",
       "criadoEm": 1749945600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_075",
@@ -5614,7 +5936,8 @@
       "descricao": "Quota mensal Julho 2025",
       "tipo": "quota",
       "criadoEm": 1752537600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_076",
@@ -5631,7 +5954,8 @@
       "descricao": "Quota mensal Agosto 2025",
       "tipo": "quota",
       "criadoEm": 1755216000000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_077",
@@ -5648,7 +5972,8 @@
       "descricao": "Quota mensal Setembro 2025",
       "tipo": "quota",
       "criadoEm": 1757894400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_078",
@@ -5665,7 +5990,8 @@
       "descricao": "Quota mensal Outubro 2025",
       "tipo": "quota",
       "criadoEm": 1760486400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_079",
@@ -5682,7 +6008,8 @@
       "descricao": "Quota mensal Novembro 2025",
       "tipo": "quota",
       "criadoEm": 1763164800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_080",
@@ -5699,7 +6026,8 @@
       "descricao": "Quota mensal Dezembro 2025",
       "tipo": "quota",
       "criadoEm": 1765756800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_081",
@@ -5716,7 +6044,8 @@
       "descricao": "Quota mensal Janeiro 2025",
       "tipo": "quota",
       "criadoEm": 1736899200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_082",
@@ -5733,7 +6062,8 @@
       "descricao": "Quota mensal Fevereiro 2025",
       "tipo": "quota",
       "criadoEm": 1739577600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_083",
@@ -5750,7 +6080,8 @@
       "descricao": "Quota mensal Março 2025",
       "tipo": "quota",
       "criadoEm": 1741996800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_084",
@@ -5767,7 +6098,8 @@
       "descricao": "Quota mensal Abril 2025",
       "tipo": "quota",
       "criadoEm": 1744675200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_085",
@@ -5784,7 +6116,8 @@
       "descricao": "Quota mensal Maio 2025",
       "tipo": "quota",
       "criadoEm": 1747267200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_086",
@@ -5801,7 +6134,8 @@
       "descricao": "Quota mensal Junho 2025",
       "tipo": "quota",
       "criadoEm": 1749945600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_087",
@@ -5818,7 +6152,8 @@
       "descricao": "Quota mensal Julho 2025",
       "tipo": "quota",
       "criadoEm": 1752537600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_088",
@@ -5835,7 +6170,8 @@
       "descricao": "Quota mensal Agosto 2025",
       "tipo": "quota",
       "criadoEm": 1755216000000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_089",
@@ -5852,7 +6188,8 @@
       "descricao": "Quota mensal Setembro 2025",
       "tipo": "quota",
       "criadoEm": 1757894400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_090",
@@ -5869,7 +6206,8 @@
       "descricao": "Quota mensal Outubro 2025",
       "tipo": "quota",
       "criadoEm": 1760486400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_091",
@@ -5886,7 +6224,8 @@
       "descricao": "Quota mensal Novembro 2025",
       "tipo": "quota",
       "criadoEm": 1763164800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_092",
@@ -5903,7 +6242,8 @@
       "descricao": "Quota mensal Dezembro 2025",
       "tipo": "quota",
       "criadoEm": 1765756800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_093",
@@ -5920,7 +6260,8 @@
       "descricao": "Quota mensal Janeiro 2025",
       "tipo": "quota",
       "criadoEm": 1736899200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_094",
@@ -5937,7 +6278,8 @@
       "descricao": "Quota mensal Fevereiro 2025",
       "tipo": "quota",
       "criadoEm": 1739577600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_095",
@@ -5954,7 +6296,8 @@
       "descricao": "Quota mensal Março 2025",
       "tipo": "quota",
       "criadoEm": 1741996800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_096",
@@ -5971,7 +6314,8 @@
       "descricao": "Quota mensal Abril 2025",
       "tipo": "quota",
       "criadoEm": 1744675200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_097",
@@ -5988,7 +6332,8 @@
       "descricao": "Quota mensal Maio 2025",
       "tipo": "quota",
       "criadoEm": 1747267200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_098",
@@ -6005,7 +6350,8 @@
       "descricao": "Quota mensal Junho 2025",
       "tipo": "quota",
       "criadoEm": 1749945600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_099",
@@ -6022,7 +6368,8 @@
       "descricao": "Quota mensal Julho 2025",
       "tipo": "quota",
       "criadoEm": 1752537600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_100",
@@ -6039,7 +6386,8 @@
       "descricao": "Quota mensal Agosto 2025",
       "tipo": "quota",
       "criadoEm": 1755216000000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_101",
@@ -6056,7 +6404,8 @@
       "descricao": "Quota mensal Setembro 2025",
       "tipo": "quota",
       "criadoEm": 1757894400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_102",
@@ -6073,7 +6422,8 @@
       "descricao": "Quota mensal Outubro 2025",
       "tipo": "quota",
       "criadoEm": 1760486400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_103",
@@ -6090,7 +6440,8 @@
       "descricao": "Quota mensal Novembro 2025",
       "tipo": "quota",
       "criadoEm": 1763164800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_104",
@@ -6107,7 +6458,8 @@
       "descricao": "Quota mensal Dezembro 2025",
       "tipo": "quota",
       "criadoEm": 1765756800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_105",
@@ -6124,7 +6476,8 @@
       "descricao": "Quota mensal Janeiro 2025",
       "tipo": "quota",
       "criadoEm": 1736899200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_106",
@@ -6141,7 +6494,8 @@
       "descricao": "Quota mensal Fevereiro 2025",
       "tipo": "quota",
       "criadoEm": 1739577600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_107",
@@ -6158,7 +6512,8 @@
       "descricao": "Quota mensal Março 2025",
       "tipo": "quota",
       "criadoEm": 1741996800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_108",
@@ -6175,7 +6530,8 @@
       "descricao": "Quota mensal Abril 2025",
       "tipo": "quota",
       "criadoEm": 1744675200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_109",
@@ -6192,7 +6548,8 @@
       "descricao": "Quota mensal Maio 2025",
       "tipo": "quota",
       "criadoEm": 1747267200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_110",
@@ -6209,7 +6566,8 @@
       "descricao": "Quota mensal Junho 2025",
       "tipo": "quota",
       "criadoEm": 1749945600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_111",
@@ -6226,7 +6584,8 @@
       "descricao": "Quota mensal Julho 2025",
       "tipo": "quota",
       "criadoEm": 1752537600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_112",
@@ -6243,7 +6602,8 @@
       "descricao": "Quota mensal Agosto 2025",
       "tipo": "quota",
       "criadoEm": 1755216000000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_113",
@@ -6260,7 +6620,8 @@
       "descricao": "Quota mensal Setembro 2025",
       "tipo": "quota",
       "criadoEm": 1757894400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_114",
@@ -6277,7 +6638,8 @@
       "descricao": "Quota mensal Outubro 2025",
       "tipo": "quota",
       "criadoEm": 1760486400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_115",
@@ -6294,7 +6656,8 @@
       "descricao": "Quota mensal Novembro 2025",
       "tipo": "quota",
       "criadoEm": 1763164800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "rcb_h_2025_116",
@@ -6311,7 +6674,8 @@
       "descricao": "Quota mensal Dezembro 2025",
       "tipo": "quota",
       "criadoEm": 1765756800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     }
   ],
   "pagamentosDespesa": [
@@ -6324,7 +6688,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1736899200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_01_rub_limpeza",
@@ -6335,7 +6700,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1736899200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_01_rub_banc",
@@ -6346,7 +6712,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1736899200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_01_rub_outras",
@@ -6357,7 +6724,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1736899200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_02_rub_edp",
@@ -6368,7 +6736,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1739577600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_02_rub_limpeza",
@@ -6379,7 +6748,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1739577600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_02_rub_banc",
@@ -6390,7 +6760,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1739577600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_03_rub_schindler",
@@ -6401,7 +6772,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1741996800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_03_rub_agua",
@@ -6412,7 +6784,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1741996800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_03_rub_limpeza",
@@ -6423,7 +6796,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1741996800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_03_rub_banc",
@@ -6434,7 +6808,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1741996800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_03_rub_allianz",
@@ -6445,7 +6820,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1741996800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_04_rub_edp",
@@ -6456,7 +6832,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1744675200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_04_rub_agua",
@@ -6467,7 +6844,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1744675200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_04_rub_limpeza",
@@ -6478,7 +6856,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1744675200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_04_rub_banc",
@@ -6489,7 +6868,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1744675200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_05_rub_schindler",
@@ -6500,7 +6880,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1747267200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_05_rub_agua",
@@ -6511,7 +6892,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1747267200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_05_rub_limpeza",
@@ -6522,7 +6904,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1747267200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_05_rub_banc",
@@ -6533,7 +6916,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1747267200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_05_rub_outras",
@@ -6544,7 +6928,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1747267200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_06_rub_edp",
@@ -6555,7 +6940,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1749945600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_06_rub_schindler",
@@ -6566,7 +6952,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1749945600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_06_rub_agua",
@@ -6577,7 +6964,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1749945600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_06_rub_limpeza",
@@ -6588,7 +6976,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1749945600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_06_rub_banc",
@@ -6599,7 +6988,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1749945600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_06_rub_allianz",
@@ -6610,7 +7000,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1749945600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_06_rub_outras",
@@ -6621,7 +7012,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1749945600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_07_rub_agua",
@@ -6632,7 +7024,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1752537600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_07_rub_limpeza",
@@ -6643,7 +7036,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1752537600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_07_rub_banc",
@@ -6654,7 +7048,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1752537600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_07_rub_outras",
@@ -6665,7 +7060,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1752537600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_08_rub_edp",
@@ -6676,7 +7072,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1755216000000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_08_rub_schindler",
@@ -6687,7 +7084,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1755216000000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_08_rub_agua",
@@ -6698,7 +7096,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1755216000000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_08_rub_limpeza",
@@ -6709,7 +7108,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1755216000000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_08_rub_banc",
@@ -6720,7 +7120,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1755216000000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_08_rub_allianz",
@@ -6731,7 +7132,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1755216000000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_08_rub_outras",
@@ -6742,7 +7144,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1755216000000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_09_rub_agua",
@@ -6753,7 +7156,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1757894400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_09_rub_banc",
@@ -6764,7 +7168,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1757894400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_10_rub_edp",
@@ -6775,7 +7180,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1760486400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_10_rub_agua",
@@ -6786,7 +7192,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1760486400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_10_rub_limpeza",
@@ -6797,7 +7204,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1760486400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_10_rub_banc",
@@ -6808,7 +7216,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1760486400000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_11_rub_schindler",
@@ -6819,7 +7228,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1763164800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_11_rub_agua",
@@ -6830,7 +7240,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1763164800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_11_rub_limpeza",
@@ -6841,7 +7252,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1763164800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_11_rub_banc",
@@ -6852,7 +7264,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1763164800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_12_rub_edp",
@@ -6863,7 +7276,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1765756800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_12_rub_agua",
@@ -6874,7 +7288,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1765756800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_12_rub_limpeza",
@@ -6885,7 +7300,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1765756800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_12_rub_banc",
@@ -6896,7 +7312,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1765756800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2025_12_rub_allianz",
@@ -6907,7 +7324,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1765756800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2026_01_rub_schindler",
@@ -6918,7 +7336,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1768435200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2026_01_rub_agua",
@@ -6929,7 +7348,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1768435200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2026_01_rub_limpeza",
@@ -6940,7 +7360,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1768435200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2026_01_rub_banc",
@@ -6951,7 +7372,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1768435200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2026_01_rub_plano_schindler",
@@ -6962,7 +7384,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1768435200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2026_02_rub_edp",
@@ -6973,7 +7396,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1771113600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2026_02_rub_agua",
@@ -6984,7 +7408,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1771113600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2026_02_rub_banc",
@@ -6995,7 +7420,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1771113600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2026_02_rub_plano_schindler",
@@ -7006,7 +7432,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1771113600000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2026_03_rub_schindler",
@@ -7017,7 +7444,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1773532800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2026_03_rub_agua",
@@ -7028,7 +7456,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1773532800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2026_03_rub_limpeza",
@@ -7039,7 +7468,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1773532800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2026_03_rub_banc",
@@ -7050,7 +7480,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1773532800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2026_03_rub_allianz",
@@ -7061,7 +7492,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1773532800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2026_03_rub_outras",
@@ -7072,7 +7504,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1773532800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2026_03_rub_plano_schindler",
@@ -7083,7 +7516,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1773532800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2026_04_rub_edp",
@@ -7094,7 +7528,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1776211200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2026_04_rub_agua",
@@ -7105,7 +7540,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1776211200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2026_04_rub_limpeza",
@@ -7116,7 +7552,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1776211200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2026_04_rub_banc",
@@ -7127,7 +7564,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1776211200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2026_04_rub_plano_schindler",
@@ -7138,7 +7576,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1776211200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2026_04_rub_obras",
@@ -7149,7 +7588,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1776211200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2026_05_rub_schindler",
@@ -7160,7 +7600,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1778803200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2026_05_rub_banc",
@@ -7171,7 +7612,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1778803200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "pd_2026_05_rub_plano_schindler",
@@ -7182,7 +7624,8 @@
       "metodoPagamento": "transferencia",
       "fornecedor": "",
       "criadoEm": 1778803200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     }
   ],
   "planos": [
@@ -10261,7 +10704,8 @@
       "metodoPagamento": "transferencia",
       "origem": "Reabilita+",
       "criadoEm": 1776211200000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     },
     {
       "id": "or_videoporteiro_2026",
@@ -10271,7 +10715,8 @@
       "metodoPagamento": "transferencia",
       "origem": "Condóminos",
       "criadoEm": 1773964800000.0,
-      "historico": true
+      "historico": true,
+      "excluirDoSaldo": true
     }
   ],
   "comunicacoes": [],

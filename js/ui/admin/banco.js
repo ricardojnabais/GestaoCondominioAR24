@@ -88,7 +88,7 @@ export async function render(container) {
 
 async function renderAll() {
   const ano = state.ano;
-  const { saldo, receitas, despesas, saldoInicial, saldoConhecido, diferenca } = await saldoBanco.calcularSaldo(ano);
+  const { saldo, receitas, despesas, saldoInicial, saldoConhecido, diferenca, marco } = await saldoBanco.calcularSaldo(ano);
 
   // Bloco superior · saldo real BPI + saldo calculado + diferença
   const saldoConhecidoHtml = saldoConhecido ? `
@@ -97,10 +97,10 @@ async function renderAll() {
         <span class="brc-lbl">Saldo Real BPI · ${formatDate(saldoConhecido.data)}</span>
         <button class="btn-link" id="btn-edit-saldo-real">Atualizar</button>
       </div>
-      <div class="brc-total">${formatMoney(saldoConhecido.total_centimos)}</div>
+      <div class="brc-total">${formatMoney(saldoConhecido.contaOrdem_centimos || saldoConhecido.total_centimos)}</div>
       <div class="brc-breakdown">
-        <span><strong>${formatMoney(saldoConhecido.contaOrdem_centimos)}</strong> Conta à Ordem</span>
-        <span><strong>${formatMoney(saldoConhecido.contaPoupanca_centimos)}</strong> Poupança</span>
+        <span><strong>${formatMoney(saldoConhecido.contaOrdem_centimos || saldoConhecido.total_centimos)}</strong> Conta à Ordem · em gestão</span>
+        ${saldoConhecido.contaPoupanca_centimos ? `<span class="poup-aside"><strong>${formatMoney(saldoConhecido.contaPoupanca_centimos)}</strong> Poupança · reservado</span>` : ''}
       </div>
       ${diferenca !== null && Math.abs(diferenca) >= 100 ? `
         <div class="brc-diff ${diferenca > 0 ? 'pos' : 'neg'}">
@@ -128,15 +128,16 @@ async function renderAll() {
   containerRef.querySelector('#saldo-resumo').innerHTML = `
     ${saldoConhecidoHtml}
     <div class="bank-summary">
-      <div class="bs-lbl">Saldo Calculado · ${ano}</div>
+      <div class="bs-lbl">Saldo Calculado · ${ano}${marco ? ` · desde ${formatDate(marco.dataInicio)}` : ''}</div>
       <div class="bs-value">${formatMoney(saldo)}</div>
       <div class="bs-formula">
-        <span title="Saldo inicial">${formatMoney(saldoInicial)}</span>
+        <span title="${marco ? `Saldo inicial à data ${formatDate(marco.dataInicio)}` : 'Saldo inicial'}">${formatMoney(saldoInicial)}</span>
         <span class="op">+</span>
-        <span class="rec" title="Receitas">${formatMoney(receitas)}</span>
+        <span class="rec" title="${marco ? 'Receitas após o marco' : 'Receitas'}">${formatMoney(receitas)}</span>
         <span class="op">−</span>
-        <span class="desp" title="Despesas">${formatMoney(despesas)}</span>
+        <span class="desp" title="${marco ? 'Despesas após o marco' : 'Despesas'}">${formatMoney(despesas)}</span>
       </div>
+      ${marco ? `<div class="bs-marco-hint">Início de gestão: <strong>${formatDate(marco.dataInicio)}</strong> · movimentos anteriores são apenas histórico</div>` : ''}
     </div>
   `;
 
@@ -147,7 +148,10 @@ async function renderAll() {
   }
 
   // Construir lista de movimentos
-  const receipts = (await store.queryDocs('receipts', { ano })).map(r => ({
+  // Quando é o ano do marco · só movimentos pós-go-live (importados têm excluirDoSaldo=true)
+  const filtroMarco = marco ? (m => !m.excluirDoSaldo) : (m => true);
+
+  const receipts = (await store.queryDocs('receipts', { ano })).filter(filtroMarco).map(r => ({
     id: r.id,
     data: r.data,
     descricao: r.descricao,
@@ -159,7 +163,7 @@ async function renderAll() {
     cancelado: r.cancelado
   }));
 
-  const outros = (await store.queryDocs('outrosRecebimentos', { ano })).map(o => ({
+  const outros = (await store.queryDocs('outrosRecebimentos', { ano })).filter(filtroMarco).map(o => ({
     id: 'o-' + o.id,
     data: o.data,
     descricao: o.descricao,
@@ -170,16 +174,19 @@ async function renderAll() {
     sourceCol: 'outrosRecebimentos'
   }));
 
-  const despesasList = (await store.queryDocs('pagamentosDespesa', { ano })).map(d => ({
-    id: 'd-' + d.id,
-    data: d.data,
-    descricao: d.descricao,
-    detalhe: d.fornecedor || 'Despesa',
-    valor: -Math.abs(d.valor_centimos),
-    tipo: 'despesa',
-    sourceId: d.id,
-    sourceCol: 'pagamentosDespesa'
-  }));
+  const despesasList = (await store.listDocs('pagamentosDespesa'))
+    .filter(d => d.data && d.data.startsWith(ano))
+    .filter(filtroMarco)
+    .map(d => ({
+      id: 'd-' + d.id,
+      data: d.data,
+      descricao: d.descricao,
+      detalhe: d.fornecedor || 'Despesa',
+      valor: -Math.abs(d.valor_centimos),
+      tipo: 'despesa',
+      sourceId: d.id,
+      sourceCol: 'pagamentosDespesa'
+    }));
 
   let movimentos = [...receipts, ...outros, ...despesasList];
 

@@ -1,84 +1,132 @@
 /**
- * Saldo Bancário · cálculo derivado + ancoragem opcional.
+ * Saldo Bancário · v1.0.17
  *
- * Fórmula:
- *   saldoCalculado = saldoInicial(ano) + Σ(receipts) + Σ(outrosRecebimentos) − Σ(pagamentosDespesa)
+ * Fórmulas:
+ *   Para o ano do MARCO de início de gestão (`meta.config.dataInicioGestao`):
+ *     saldoCalculado = saldoInicial(year) + Σ(receipts pós-marco, não-excluídos) +
+ *                      Σ(outros pós-marco) − Σ(despesas pós-marco)
  *
- * Adicionalmente, o admin pode registar um "saldo conhecido" (saldo real
- * observado no BPI numa data específica). Isto serve como ancoragem para
- * detectar descalibração entre o calculado e o real, sem tentar reconciliar
- * movimentos individuais.
+ *   Para anos anteriores ao marco (puramente histórico):
+ *     saldoCalculado = saldoInicial(year) + Σ(receipts year) + Σ(outros year) − Σ(despesas year)
+ *     (sem filtro `excluirDoSaldo` · cálculo histórico tradicional)
  *
- * Estrutura em meta/config:
- *   saldoInicial: { '2026': 321478, '2025': ..., ... }    // cêntimos
- *   saldoConhecido: {                                      // último observado
- *     data: '2026-05-25',
- *     contaOrdem_centimos: 752178,
- *     contaPoupanca_centimos: 70434,
- *     total_centimos: 822612,
- *     notas: 'BPI Net Empresas · posição integrada'
- *   }
+ *   Para anos posteriores ao marco:
+ *     saldoCalculado = saldoInicial(year) + Σ(receipts year) + Σ(outros year) − Σ(despesas year)
+ *     (todos os movimentos contam · são todos pós-marco)
  */
-
 import * as store from '../store/local-store.js';
 
 /**
- * Calcula o saldo bancário cumulativo.
- * @param {string} year - ano em causa (ex: '2026')
- * @returns {Promise<{saldo, receitas, despesas, saldoInicial, saldoConhecido, diferenca}>}
- *          Valores em cêntimos. saldoConhecido e diferenca podem ser null.
+ * Calcula o saldo bancário previsto para o ano dado.
+ * @param {string|number} year
+ * @returns {Promise<{saldo, receitas, despesas, saldoInicial, saldoConhecido, diferenca, marco}>}
  */
 export async function calcularSaldo(year) {
+  const yearStr = String(year);
   const meta = await store.getDoc('meta', 'config');
-  const saldoInicial = (meta?.saldoInicial?.[year]) || 0;
+  const saldoInicial = (meta?.saldoInicial?.[yearStr]) || 0;
   const saldoConhecido = meta?.saldoConhecido || null;
+  const dataInicio = meta?.dataInicioGestao || null;
+  const anoMarco = dataInicio ? dataInicio.slice(0, 4) : null;
+  const ehAnoMarco = (anoMarco === yearStr);
 
-  const receipts = await store.queryDocs('receipts', { ano: year });
-  const outros = await store.queryDocs('outrosRecebimentos', { ano: year });
-  const despesas = await store.queryDocs('pagamentosDespesa', { ano: year });
+  // Carregar dados
+  const allReceipts = await store.queryDocs('receipts', { ano: yearStr });
+  const allOutros = await store.queryDocs('outrosRecebimentos', { ano: yearStr });
+  const todasDespesas = await store.listDocs('pagamentosDespesa');
+  const despesasAno = todasDespesas.filter(d => d.data && d.data.startsWith(yearStr));
 
-  const totReceipts = receipts.filter(r => !r.cancelado).reduce((s, r) => s + (r.valor_centimos || 0), 0);
-  const totOutros   = outros.reduce((s, o) => s + (o.valor_centimos || 0), 0);
-  const totDespesas = despesas.filter(d => !d.cancelado).reduce((s, d) => s + (d.valor_centimos || 0), 0);
+  // Aplicar filtros segundo o ano em relação ao marco
+  let receiptsValidos, outrosValidos, despesasValidas;
+  if (ehAnoMarco) {
+    // Tudo o que foi importado tem excluirDoSaldo=true · só contam emissões pós-go-live
+    receiptsValidos = allReceipts.filter(r => !r.cancelado && !r.excluirDoSaldo);
+    outrosValidos = allOutros.filter(o => !o.excluirDoSaldo);
+    despesasValidas = despesasAno.filter(d => !d.cancelado && !d.excluirDoSaldo);
+  } else {
+    // Ano histórico ou futuro · cálculo tradicional (ignora flag)
+    receiptsValidos = allReceipts.filter(r => !r.cancelado);
+    outrosValidos = allOutros;
+    despesasValidas = despesasAno.filter(d => !d.cancelado);
+  }
+
+  const totReceipts = receiptsValidos.reduce((s, r) => s + (r.valor_centimos || 0), 0);
+  const totOutros = outrosValidos.reduce((s, o) => s + (o.valor_centimos || 0), 0);
+  const totDespesas = despesasValidas.reduce((s, d) => s + (d.valor_centimos || 0), 0);
 
   const receitas = totReceipts + totOutros;
   const saldo = saldoInicial + receitas - totDespesas;
 
-  // Calcular diferença vs saldo conhecido (apenas se for do mesmo ano)
+  // Diferença vs saldo conhecido (só se data conhecida for do mesmo ano)
   let diferenca = null;
-  if (saldoConhecido?.data?.startsWith(year)) {
+  if (saldoConhecido?.data?.startsWith(yearStr)) {
     diferenca = saldoConhecido.total_centimos - saldo;
   }
 
-  return { saldo, receitas, despesas: totDespesas, saldoInicial, saldoConhecido, diferenca };
+  return {
+    saldo,
+    receitas,
+    despesas: totDespesas,
+    saldoInicial,
+    saldoConhecido,
+    diferenca,
+    marco: ehAnoMarco ? { dataInicio, ano: anoMarco } : null
+  };
 }
 
 /**
- * Define o saldo inicial de um ano. Apenas admin.
+ * Atualiza saldo real BPI (valor conhecido).
  */
-export async function setSaldoInicial(year, valor_centimos) {
-  let meta = await store.getDoc('meta', 'config');
-  if (!meta) meta = { id: 'config' };
-  if (!meta.saldoInicial) meta.saldoInicial = {};
-  meta.saldoInicial[year] = valor_centimos;
-  await store.setDoc('meta', meta);
-}
-
-/**
- * Regista o saldo real observado (ancoragem). Apenas admin.
- * @param {Object} dados - { data, contaOrdem_centimos, contaPoupanca_centimos, notas }
- */
-export async function setSaldoConhecido(dados) {
-  let meta = await store.getDoc('meta', 'config');
-  if (!meta) meta = { id: 'config' };
+export async function atualizarSaldoConhecido({ dataISO, total_centimos, contaOrdem_centimos, contaPoupanca_centimos, fonte, notas }) {
+  const meta = (await store.getDoc('meta', 'config')) || { id: 'config' };
   meta.saldoConhecido = {
-    data: dados.data,
-    contaOrdem_centimos: dados.contaOrdem_centimos || 0,
-    contaPoupanca_centimos: dados.contaPoupanca_centimos || 0,
-    total_centimos: (dados.contaOrdem_centimos || 0) + (dados.contaPoupanca_centimos || 0),
-    notas: dados.notas || '',
-    registadoEm: Date.now(),
+    data: dataISO,
+    total_centimos,
+    contaOrdem_centimos: contaOrdem_centimos ?? null,
+    contaPoupanca_centimos: contaPoupanca_centimos ?? null,
+    fonte: fonte || '',
+    notas: notas || ''
   };
   await store.setDoc('meta', meta);
   return meta.saldoConhecido;
+}
+
+/**
+ * Marca início de gestão e define saldo inicial do ano de marco.
+ * @param {string} dataISO - "YYYY-MM-DD"
+ * @param {number} saldoInicial_centimos
+ */
+export async function marcarInicioGestao(dataISO, saldoInicial_centimos) {
+  const meta = (await store.getDoc('meta', 'config')) || { id: 'config' };
+  const ano = dataISO.slice(0, 4);
+
+  meta.dataInicioGestao = dataISO;
+  meta.saldoInicial = meta.saldoInicial || {};
+  meta.saldoInicial[ano] = saldoInicial_centimos;
+  await store.setDoc('meta', meta);
+
+  // Marcar recibos, despesas, outros pré-marco com excluirDoSaldo=true
+  const allReceipts = await store.listDocs('receipts');
+  for (const r of allReceipts) {
+    if (r.data && r.data < dataISO && !r.excluirDoSaldo) {
+      r.excluirDoSaldo = true;
+      await store.setDoc('receipts', r);
+    }
+  }
+  const allDespesas = await store.listDocs('pagamentosDespesa');
+  for (const d of allDespesas) {
+    if (d.data && d.data < dataISO && !d.excluirDoSaldo) {
+      d.excluirDoSaldo = true;
+      await store.setDoc('pagamentosDespesa', d);
+    }
+  }
+  const allOutros = await store.listDocs('outrosRecebimentos');
+  for (const o of allOutros) {
+    if (o.data && o.data < dataISO && !o.excluirDoSaldo) {
+      o.excluirDoSaldo = true;
+      await store.setDoc('outrosRecebimentos', o);
+    }
+  }
+
+  return { dataInicioGestao: dataISO, saldoInicial: saldoInicial_centimos };
 }
