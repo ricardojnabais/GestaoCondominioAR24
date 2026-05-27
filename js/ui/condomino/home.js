@@ -10,6 +10,7 @@ import * as store from '../../store/local-store.js';
 import * as router from '../router.js';
 import * as receipts from '../../modules/receipts.js';
 import * as comunicacoes from '../../modules/comunicacoes.js';
+import * as push from '../../modules/push.js';
 import { icon } from '../icons.js';
 import { formatMoney, currentMonthRef, monthsOfYear } from '../../utils/format.js';
 
@@ -111,6 +112,8 @@ export async function render(container) {
           </div>
         </div>
 
+        <div id="push-banner" style="display:none"></div>
+
         <div class="menu-tiles">
           <a class="menu-tile" data-route="condomino/recibos">
             <div class="mt-icon-wrap">${icon('ic-receipt', 'mt-icon')}</div>
@@ -149,6 +152,107 @@ export async function render(container) {
       router.navigate(el.dataset.route);
     });
   });
+
+  // Banner subscrição push (assíncrono · não bloqueia render)
+  renderPushBanner(container, tenantId, tenantName).catch(e => console.warn('push banner:', e));
+}
+
+async function renderPushBanner(container, tenantId, tenantName) {
+  const el = container.querySelector('#push-banner');
+  if (!el) return;
+
+  const st = await push.estado();
+
+  // Backend não configurado · esconder banner (admin ainda não preparou)
+  if (!st.configurado) return;
+
+  // Browser sem suporte
+  if (!st.suporte) {
+    el.style.display = 'block';
+    el.innerHTML = `
+      <div class="push-warn">
+        <strong>Aviso:</strong> este browser não suporta notificações.
+        Em iOS instala a app no ecrã principal (Partilhar → "Adicionar ao Ecrã Principal").
+      </div>`;
+    return;
+  }
+
+  // iPhone Safari não instalado como PWA · push não funciona
+  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+  if (isIOS && !st.pwaInstalada) {
+    el.style.display = 'block';
+    el.innerHTML = `
+      <div class="push-warn">
+        <strong>📱 Para receber notificações no iPhone:</strong>
+        toca em <strong>Partilhar</strong> ↑ no Safari e escolhe
+        <strong>"Adicionar ao Ecrã Principal"</strong>. Depois abre a app pelo ícone.
+      </div>`;
+    return;
+  }
+
+  // Já inscrito · botão discreto para desativar
+  if (st.inscrito && st.permissao === 'granted') {
+    el.style.display = 'block';
+    el.innerHTML = `
+      <div class="push-ok">
+        <span>✓ Notificações ativas neste dispositivo</span>
+        <button class="btn-link" id="push-off">Desativar</button>
+      </div>`;
+    el.querySelector('#push-off').addEventListener('click', async () => {
+      if (!confirm('Desativar notificações neste dispositivo?')) return;
+      const r = await push.dessubscrever(tenantId);
+      if (r.ok) renderPushBanner(container, tenantId, tenantName);
+    });
+    return;
+  }
+
+  // Permissão negada · indicação para reverter
+  if (st.permissao === 'denied') {
+    el.style.display = 'block';
+    el.innerHTML = `
+      <div class="push-warn">
+        Notificações foram bloqueadas. Vai a Definições do iOS → Notificações → AR24 e ativa.
+      </div>`;
+    return;
+  }
+
+  // Estado normal · CTA para subscrever
+  el.style.display = 'block';
+  el.innerHTML = `
+    <div class="push-cta">
+      <div class="push-cta-text">
+        <strong>🔔 Receber notificações</strong>
+        <span>Avisos de novas comunicações do condomínio.</span>
+      </div>
+      <button class="btn primary" id="push-on">Ativar</button>
+    </div>`;
+  el.querySelector('#push-on').addEventListener('click', async () => {
+    const btn = el.querySelector('#push-on');
+    btn.disabled = true; btn.textContent = 'A ativar…';
+    try {
+      const r = await push.subscrever({
+        tenantId, tenantName,
+        deviceLabel: detetarDevice()
+      });
+      if (r.ok) {
+        renderPushBanner(container, tenantId, tenantName);
+      } else {
+        alert('Não foi possível ativar: ' + r.error);
+        btn.disabled = false; btn.textContent = 'Ativar';
+      }
+    } catch (e) {
+      alert('Erro: ' + e.message);
+      btn.disabled = false; btn.textContent = 'Ativar';
+    }
+  });
+}
+
+function detetarDevice() {
+  const ua = navigator.userAgent;
+  if (/iPhone/.test(ua)) return 'iPhone';
+  if (/iPad/.test(ua)) return 'iPad';
+  if (/Android/.test(ua)) return 'Android';
+  return 'Web';
 }
 
 function nomeMes(m) {

@@ -9,6 +9,7 @@
 import * as comunicacoes from '../modules/comunicacoes.js';
 import * as store from '../store/local-store.js';
 import * as auth from '../auth/local-auth.js';
+import * as push from '../modules/push.js';
 
 let modalEl = null;
 let onSuccessCallback = null;
@@ -132,15 +133,90 @@ async function submit() {
     const c = await comunicacoes.criarPorAdmin(data, session?.operatorName || 'Administração');
     close();
 
+    let destinatariosLabel, destinatariosPush;
     if (tipo === 'institucional') {
-      alert(`Comunicado enviado a TODOS os condóminos.\n\n(Nota: cada condómino verá a mensagem na próxima vez que abrir a app. Email automático será implementado na migração para Firebase.)`);
+      destinatariosLabel = 'TODOS os condóminos';
+      destinatariosPush = 'todos';
     } else {
       const tenant = await store.getDoc('tenants', tenantId);
-      alert(`Mensagem enviada a ${tenant?.name || 'destinatário'}.\n\n(Nota: o condómino verá a mensagem na próxima vez que abrir a app.)`);
+      destinatariosLabel = tenant?.name || 'destinatário';
+      destinatariosPush = [tenantId];
     }
+
+    await mostrarPosCriacao(c, destinatariosLabel, destinatariosPush);
 
     if (onSuccessCallback) onSuccessCallback(c);
   } catch (e) {
     alert('Erro: ' + e.message);
+  }
+}
+
+async function mostrarPosCriacao(comunicacao, destinatariosLabel, destinatariosPush) {
+  // Verificar se push está configurado
+  const config = await store.getDoc('meta', 'config');
+  const pushConfigurado = !!config?.push?.apiUrl && !!config?.push?.adminApiKey;
+
+  const dlg = document.createElement('div');
+  dlg.className = 'modal-overlay';
+  dlg.innerHTML = `
+    <div class="modal">
+      <div class="modal-head">
+        <h3>✓ Comunicação Publicada</h3>
+        <button class="btn-close" id="pc-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <p>Comunicação enviada a <strong>${destinatariosLabel}</strong>.</p>
+        <p class="hint" style="font-size:12px">A mensagem fica visível na app dos condóminos.</p>
+
+        ${pushConfigurado ? `
+          <div class="post-actions" style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn primary" id="pc-push">🔔 Notificar por Push</button>
+            <button class="btn ghost" id="pc-skip">Saltar</button>
+          </div>
+          <div id="pc-result" style="margin-top:10px;font-size:13px"></div>
+        ` : `
+          <div class="post-actions" style="margin-top:18px;display:flex;gap:10px">
+            <button class="btn ghost" id="pc-skip">Fechar</button>
+          </div>
+          <p class="hint" style="margin-top:10px;font-size:11px">
+            Push notifications não está configurado · vai a Definições → Notificações Push.
+          </p>
+        `}
+      </div>
+    </div>
+  `;
+  document.body.appendChild(dlg);
+  const close = () => dlg.remove();
+  dlg.querySelector('#pc-close').addEventListener('click', close);
+  dlg.querySelector('#pc-skip').addEventListener('click', close);
+
+  const btnPush = dlg.querySelector('#pc-push');
+  if (btnPush) {
+    btnPush.addEventListener('click', async () => {
+      btnPush.disabled = true;
+      btnPush.textContent = 'A enviar…';
+      const elRes = dlg.querySelector('#pc-result');
+      try {
+        const res = await push.notificar({
+          title: comunicacao.assunto,
+          body: comunicacao.mensagem.length > 120
+            ? comunicacao.mensagem.slice(0, 120) + '…'
+            : comunicacao.mensagem,
+          url: '/?route=condomino/comunicacoes',
+          destinatarios: destinatariosPush
+        });
+        elRes.innerHTML = `
+          <div class="push-ok" style="margin:0">
+            ✓ Enviadas <strong>${res.enviados}</strong>
+            ${res.falhados > 0 ? ` · ${res.falhados} falharam` : ''}
+            ${res.removidos > 0 ? ` · ${res.removidos} subscrições expiradas removidas` : ''}
+          </div>`;
+        btnPush.textContent = '✓ Enviado';
+      } catch (e) {
+        elRes.innerHTML = `<div class="push-warn" style="margin:0">✗ ${e.message}</div>`;
+        btnPush.disabled = false;
+        btnPush.textContent = '🔔 Notificar por Push';
+      }
+    });
   }
 }
