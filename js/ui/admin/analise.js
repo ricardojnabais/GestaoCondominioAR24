@@ -282,17 +282,15 @@ function escapeHtml(s) {
 }
 
 function buildAtrasoRow(a) {
-  const pct = a.esperadoYTD_centimos > 0
-    ? Math.round(a.pagoYTD_centimos / a.esperadoYTD_centimos * 100)
-    : 0;
+  const partes = [];
+  if (a.quotas_centimos > 0) partes.push(`Quotas ${formatMoney(a.quotas_centimos)}`);
+  if (a.prestacoes_centimos > 0) partes.push(`Prestações ${formatMoney(a.prestacoes_centimos)}`);
+  if (a.arrastadas_centimos > 0) partes.push(`Arrastadas ${formatMoney(a.arrastadas_centimos)}`);
   return `
     <div class="atraso-row">
       <div class="ar-info">
         <div class="ar-name">${a.fraction} · ${a.tenantName}</div>
-        <div class="ar-bar">
-          <div class="ar-bar-fill" style="width:${pct}%"></div>
-        </div>
-        <div class="ar-stats">Pago ${formatMoney(a.pagoYTD_centimos)} de ${formatMoney(a.esperadoYTD_centimos)} (${pct}%)</div>
+        <div class="ar-stats">${partes.join(' · ')}</div>
       </div>
       <div class="ar-falta">−${formatMoney(a.emFalta_centimos)}</div>
     </div>

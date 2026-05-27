@@ -7,6 +7,7 @@
 
 import * as store from '../store/local-store.js';
 import * as receipts from './receipts.js';
+import * as emAberto from './em-aberto.js';
 import * as despesas from './despesas.js';
 import * as saldoBanco from './saldo-banco.js';
 import * as planos from './planos.js';
@@ -145,31 +146,39 @@ export async function evolucaoSaldo(ano) {
  * Top condóminos em atraso, ordenados pelo valor em falta.
  */
 export async function topAtrasos(ano, limit = 5) {
-  const tenants = await store.listDocs('tenants');
-  const currMonth = currentMonthRef();
-  const months = monthsOfYear(ano).filter(m => m <= currMonth);
-  const lista = [];
+  // Somar 3 dimensões da dívida por tenant
+  const [quotasAtraso, prestAtraso, dividasArr] = await Promise.all([
+    emAberto.quotasAtrasoAnoCorrente(ano),
+    emAberto.prestacoesAtraso(),
+    emAberto.dividasArrastadas(ano),
+  ]);
 
-  for (const t of tenants) {
-    const quotaMensal = t.rentByYear?.[ano] || 0;
-    let pago = 0;
-    let esperado = 0;
-    for (const m of months) {
-      pago += await receipts.valorPagoNoMes(t.id, m);
-      esperado += quotaMensal;
-    }
-    const emFalta = Math.max(0, esperado - pago);
-    if (emFalta > 0) {
-      lista.push({
-        tenantId: t.id,
-        tenantName: t.name,
-        fraction: t.fraction,
-        emFalta_centimos: emFalta,
-        pagoYTD_centimos: pago,
-        esperadoYTD_centimos: esperado
-      });
-    }
+  const porTenant = {};  // tenantId → { tenantName, fraction, quotas, prest, arrastadas, total }
+
+  for (const q of quotasAtraso) {
+    if (!porTenant[q.tenantId]) porTenant[q.tenantId] = { tenantName: q.tenantName, fraction: q.fraction, quotas: 0, prest: 0, arrastadas: 0 };
+    porTenant[q.tenantId].quotas += q.totalEmFalta;
   }
+  for (const p of prestAtraso) {
+    if (!porTenant[p.tenantId]) porTenant[p.tenantId] = { tenantName: p.tenantName, fraction: p.fraction, quotas: 0, prest: 0, arrastadas: 0 };
+    porTenant[p.tenantId].prest += p.totalPendente;
+  }
+  for (const d of dividasArr) {
+    if (!porTenant[d.tenantId]) porTenant[d.tenantId] = { tenantName: d.tenantName, fraction: d.fraction, quotas: 0, prest: 0, arrastadas: 0 };
+    porTenant[d.tenantId].arrastadas += d.valor_centimos;
+  }
+
+  const lista = Object.entries(porTenant).map(([tid, info]) => ({
+    tenantId: tid,
+    tenantName: info.tenantName,
+    fraction: info.fraction,
+    emFalta_centimos: info.quotas + info.prest + info.arrastadas,
+    quotas_centimos: info.quotas,
+    prestacoes_centimos: info.prest,
+    arrastadas_centimos: info.arrastadas,
+    pagoYTD_centimos: 0,  // legacy
+    esperadoYTD_centimos: 0,  // legacy
+  })).filter(x => x.emFalta_centimos > 0);
 
   lista.sort((a, b) => b.emFalta_centimos - a.emFalta_centimos);
   return lista.slice(0, limit);

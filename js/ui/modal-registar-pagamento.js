@@ -485,12 +485,85 @@ async function submit() {
   try {
     const recibo = await receipts.emitir(payload);
     close();
-    let msg = `Recibo ${recibo.recibo_numero} emitido.\nValor: ${formatMoney(recibo.valor_centimos)}.`;
-    if (saldoUsado > 0) msg += `\nSaldo usado: ${formatMoney(saldoUsado)}.`;
-    if (excesso > 0) msg += `\nExcesso (saldo a favor): ${formatMoney(excesso)}.`;
-    alert(msg);
+    await mostrarPosEmissao(recibo, tenant, { saldoUsado, excesso });
     if (onSuccessCallback) onSuccessCallback(recibo);
   } catch (e) {
     alert('Erro: ' + e.message);
   }
+}
+
+async function mostrarPosEmissao(recibo, tenant, info) {
+  const condominio = await store.getDoc('meta', 'condominio') || {};
+  const template = condominio?.templateEmailRecibo || templateEmailDefault();
+
+  // Substituir placeholders
+  const corpo = template
+    .replace(/{nome}/g, recibo.tenantName || tenant?.name || '')
+    .replace(/{fraction}/g, recibo.fraction || tenant?.fraction || '')
+    .replace(/{numero}/g, recibo.recibo_numero || '')
+    .replace(/{valor}/g, formatMoney(recibo.valor_centimos))
+    .replace(/{descricao}/g, recibo.descricao || '')
+    .replace(/{data}/g, recibo.data || '')
+    .replace(/{condominio}/g, condominio.nome || 'Condomínio AR24')
+    .replace(/{morada}/g, condominio.morada || 'Av. Amália Rodrigues, 24');
+  const assunto = `Recibo ${recibo.recibo_numero} · ${condominio.nome || 'Condomínio AR24'}`;
+  const email = tenant?.email || '';
+
+  let extra = '';
+  if (info.saldoUsado > 0) extra += `<div class="post-info">Saldo usado: ${formatMoney(info.saldoUsado)}</div>`;
+  if (info.excesso > 0) extra += `<div class="post-info">Excesso · saldo a favor: ${formatMoney(info.excesso)}</div>`;
+
+  const dlg = document.createElement('div');
+  dlg.className = 'modal-overlay';
+  dlg.innerHTML = `
+    <div class="modal">
+      <div class="modal-head">
+        <h3>✓ Recibo Emitido</h3>
+        <button class="btn-close" id="pe-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="post-success">
+          <div class="post-num">${recibo.recibo_numero}</div>
+          <div class="post-val">${formatMoney(recibo.valor_centimos)}</div>
+        </div>
+        ${extra}
+        <div class="post-actions" style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn" id="pe-pdf">📄 Ver PDF</button>
+          <button class="btn primary" id="pe-email" ${!email ? 'disabled title="O condómino não tem email registado"' : ''}>📧 Enviar por Email</button>
+          <button class="btn ghost" id="pe-ok">Fechar</button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(dlg);
+  const close = () => dlg.remove();
+  dlg.querySelector('#pe-close').addEventListener('click', close);
+  dlg.querySelector('#pe-ok').addEventListener('click', close);
+  dlg.querySelector('#pe-pdf').addEventListener('click', async () => {
+    const { exportarPDF } = await import('../modules/export-pdf.js');
+    await exportarPDF(recibo.id);
+  });
+  if (email) {
+    dlg.querySelector('#pe-email').addEventListener('click', () => {
+      const mailto = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
+      window.location.href = mailto;
+    });
+  }
+}
+
+function templateEmailDefault() {
+  return `Caro(a) {nome},
+
+Junto enviamos recibo nº {numero}, referente ao pagamento da fração {fraction}.
+
+Valor: {valor}
+Descrição: {descricao}
+Data: {data}
+
+Obrigado pelo pagamento.
+
+Cumprimentos,
+A Administração
+{condominio}
+{morada}`;
 }

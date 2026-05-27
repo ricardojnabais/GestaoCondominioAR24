@@ -3836,3 +3836,31 @@ select.ctrl-input { width: 160px; text-align: left; }
   line-height: 1.4;
 }
 .modal-alert-warn strong { color: #b27c00; }
+
+/* ─── Em Aberto v1.0.14 ────────────────────────────────────────────── */
+.ea-card-warn {
+  border-left: 4px solid #c0392b;
+  background: linear-gradient(135deg, #fff5f5 0%, #fffaf8 100%);
+}
+.ea-total-val.neg { color: #c0392b; }
+.ea-card-detail {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+.ea-meses-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.ea-mes-chip {
+  background: #ffe6e0;
+  color: #8a2c1c;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 10px;
+  letter-spacing: 0.3px;
+}

@@ -74,8 +74,8 @@ async function popularAnos() {
   const todasDespesas = await despesas.listar({ incluirCanceladas: false });
   const anosSet = new Set([anoSelecionado]);
   todasDespesas.forEach(d => {
-    if (d.date) {
-      const y = parseInt(d.date.slice(0, 4), 10);
+    if (d.data) {
+      const y = parseInt(d.data.slice(0, 4), 10);
       if (!isNaN(y)) anosSet.add(y);
     }
   });
@@ -88,7 +88,7 @@ async function renderMapa() {
   const area = containerRef.querySelector('#mapa-area');
   const rubricasList = (await rubricas.listar()).sort((a, b) => (a.ordem || 99) - (b.ordem || 99));
   const todasDespesas = await despesas.listar({ incluirCanceladas: false });
-  const despesasAno = todasDespesas.filter(d => d.date && d.date.slice(0, 4) === String(anoSelecionado));
+  const despesasAno = todasDespesas.filter(d => d.data && d.data.slice(0, 4) === String(anoSelecionado));
 
   // Construir matriz: matriz[mes][rubricaId] = soma_centimos
   const matriz = Array.from({ length: 12 }, () => ({}));
@@ -100,7 +100,7 @@ async function renderMapa() {
   const rubricasComDados = new Set();
 
   despesasAno.forEach(d => {
-    const mes = parseInt(d.date.slice(5, 7), 10) - 1;
+    const mes = parseInt(d.data.slice(5, 7), 10) - 1;
     if (mes < 0 || mes > 11) return;
     if (!matriz[mes][d.rubricaId]) matriz[mes][d.rubricaId] = 0;
     matriz[mes][d.rubricaId] += d.valor_centimos || 0;

@@ -88,6 +88,12 @@ export async function render(container) {
             <input type="text" id="s-tel" value="${escapeAttr(info.telefone)}" maxlength="20">
           </div>
 
+          <div class="field" style="margin-top:18px">
+            <label>Template de Email para Recibos</label>
+            <textarea id="s-email-tpl" rows="9" style="width:100%;font-family:'JetBrains Mono',monospace;font-size:12px;padding:10px;border:1.5px solid var(--border);border-radius:8px;resize:vertical;box-sizing:border-box">${escapeAttr(info.templateEmailRecibo || '')}</textarea>
+            <div class="hint">Variáveis disponíveis: {nome} {fraction} {numero} {valor} {descricao} {data} {condominio} {morada}</div>
+          </div>
+
           <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
             <button class="btn ghost" id="btn-reset">Repor</button>
             <button class="btn primary" id="btn-save">Guardar</button>
@@ -120,7 +126,8 @@ async function save() {
     nif: containerRef.querySelector('#s-nif').value.trim(),
     email: containerRef.querySelector('#s-email').value.trim(),
     iban: containerRef.querySelector('#s-iban').value.trim(),
-    telefone: containerRef.querySelector('#s-tel').value.trim()
+    telefone: containerRef.querySelector('#s-tel').value.trim(),
+    templateEmailRecibo: containerRef.querySelector('#s-email-tpl').value
   };
 
   if (!updates.nome || !updates.morada || !updates.nif) {

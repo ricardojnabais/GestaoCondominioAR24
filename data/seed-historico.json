@@ -8859,8 +8859,9 @@
       "numeroPrestacao": 1,
       "mesReferencia": "2025-04",
       "valor_centimos": 4947,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_02_2",
@@ -8869,8 +8870,9 @@
       "numeroPrestacao": 2,
       "mesReferencia": "2025-05",
       "valor_centimos": 4947,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_02_3",
@@ -8989,8 +8991,9 @@
       "numeroPrestacao": 1,
       "mesReferencia": "2025-04",
       "valor_centimos": 4295,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_01_2",
@@ -8999,8 +9002,9 @@
       "numeroPrestacao": 2,
       "mesReferencia": "2025-05",
       "valor_centimos": 4295,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_01_3",
@@ -9140,8 +9144,8 @@
       "tenantId": "cond_04",
       "numeroPrestacao": 3,
       "mesReferencia": "2025-06",
-      "valor_centimos": 4730,
-      "estado": "pendente",
+      "valor_centimos": 0,
+      "estado": "paga",
       "historico": true
     },
     {
@@ -9150,8 +9154,8 @@
       "tenantId": "cond_04",
       "numeroPrestacao": 4,
       "mesReferencia": "2025-07",
-      "valor_centimos": 4730,
-      "estado": "pendente",
+      "valor_centimos": 0,
+      "estado": "paga",
       "historico": true
     },
     {
@@ -9171,8 +9175,8 @@
       "tenantId": "cond_04",
       "numeroPrestacao": 6,
       "mesReferencia": "2025-09",
-      "valor_centimos": 4730,
-      "estado": "pendente",
+      "valor_centimos": 0,
+      "estado": "paga",
       "historico": true
     },
     {
@@ -9181,8 +9185,8 @@
       "tenantId": "cond_04",
       "numeroPrestacao": 7,
       "mesReferencia": "2025-10",
-      "valor_centimos": 4730,
-      "estado": "pendente",
+      "valor_centimos": 0,
+      "estado": "paga",
       "historico": true
     },
     {
@@ -9224,9 +9228,10 @@
       "tenantId": "cond_04",
       "numeroPrestacao": 11,
       "mesReferencia": "2026-02",
-      "valor_centimos": 4730,
-      "estado": "pendente",
-      "historico": true
+      "valor_centimos": 19095,
+      "estado": "em_atraso",
+      "historico": true,
+      "descricao": "Saldo em divida do plano (5€ Mar + 4 prest.)"
     },
     {
       "id": "prest_plano_elev_2025_cond_04_12",
@@ -9246,8 +9251,9 @@
       "numeroPrestacao": 1,
       "mesReferencia": "2025-04",
       "valor_centimos": 6469,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_03_2",
@@ -9256,8 +9262,9 @@
       "numeroPrestacao": 2,
       "mesReferencia": "2025-05",
       "valor_centimos": 6469,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_03_3",
@@ -9266,8 +9273,9 @@
       "numeroPrestacao": 3,
       "mesReferencia": "2025-06",
       "valor_centimos": 6469,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_03_4",
@@ -9276,8 +9284,9 @@
       "numeroPrestacao": 4,
       "mesReferencia": "2025-07",
       "valor_centimos": 6469,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_03_5",
@@ -9286,8 +9295,9 @@
       "numeroPrestacao": 5,
       "mesReferencia": "2025-08",
       "valor_centimos": 6469,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_03_6",
@@ -9296,8 +9306,9 @@
       "numeroPrestacao": 6,
       "mesReferencia": "2025-09",
       "valor_centimos": 6469,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_03_7",
@@ -9306,8 +9317,9 @@
       "numeroPrestacao": 7,
       "mesReferencia": "2025-10",
       "valor_centimos": 6469,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_03_8",
@@ -9316,8 +9328,9 @@
       "numeroPrestacao": 8,
       "mesReferencia": "2025-11",
       "valor_centimos": 6469,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_03_9",
@@ -9326,8 +9339,9 @@
       "numeroPrestacao": 9,
       "mesReferencia": "2025-12",
       "valor_centimos": 6469,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_03_10",
@@ -9336,8 +9350,9 @@
       "numeroPrestacao": 10,
       "mesReferencia": "2026-01",
       "valor_centimos": 6469,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_03_11",
@@ -9346,8 +9361,9 @@
       "numeroPrestacao": 11,
       "mesReferencia": "2026-02",
       "valor_centimos": 6469,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_03_12",
@@ -9433,8 +9449,9 @@
       "numeroPrestacao": 7,
       "mesReferencia": "2025-10",
       "valor_centimos": 4784,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_06_8",
@@ -9454,8 +9471,9 @@
       "numeroPrestacao": 9,
       "mesReferencia": "2025-12",
       "valor_centimos": 4784,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_06_10",
@@ -9464,8 +9482,9 @@
       "numeroPrestacao": 10,
       "mesReferencia": "2026-01",
       "valor_centimos": 4784,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_06_11",
@@ -9474,8 +9493,9 @@
       "numeroPrestacao": 11,
       "mesReferencia": "2026-02",
       "valor_centimos": 4784,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_06_12",
@@ -9484,8 +9504,9 @@
       "numeroPrestacao": 12,
       "mesReferencia": "2026-03",
       "valor_centimos": 4784,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_05_1",
@@ -9494,8 +9515,9 @@
       "numeroPrestacao": 1,
       "mesReferencia": "2025-04",
       "valor_centimos": 6578,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_05_2",
@@ -9504,8 +9526,9 @@
       "numeroPrestacao": 2,
       "mesReferencia": "2025-05",
       "valor_centimos": 6578,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_05_3",
@@ -9624,8 +9647,9 @@
       "numeroPrestacao": 1,
       "mesReferencia": "2025-04",
       "valor_centimos": 4784,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_08_2",
@@ -9634,8 +9658,9 @@
       "numeroPrestacao": 2,
       "mesReferencia": "2025-05",
       "valor_centimos": 4784,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_08_3",
@@ -9666,8 +9691,9 @@
       "numeroPrestacao": 5,
       "mesReferencia": "2025-08",
       "valor_centimos": 4784,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_08_6",
@@ -9687,8 +9713,9 @@
       "numeroPrestacao": 7,
       "mesReferencia": "2025-10",
       "valor_centimos": 4784,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_08_8",
@@ -9708,8 +9735,9 @@
       "numeroPrestacao": 9,
       "mesReferencia": "2025-12",
       "valor_centimos": 4784,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_08_10",
@@ -9729,8 +9757,9 @@
       "numeroPrestacao": 11,
       "mesReferencia": "2026-02",
       "valor_centimos": 4784,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_08_12",
@@ -9750,8 +9779,9 @@
       "numeroPrestacao": 1,
       "mesReferencia": "2025-04",
       "valor_centimos": 6252,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_07_2",
@@ -9760,8 +9790,9 @@
       "numeroPrestacao": 2,
       "mesReferencia": "2025-05",
       "valor_centimos": 6252,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_07_3",
@@ -9770,8 +9801,9 @@
       "numeroPrestacao": 3,
       "mesReferencia": "2025-06",
       "valor_centimos": 6252,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_07_4",
@@ -9780,8 +9812,9 @@
       "numeroPrestacao": 4,
       "mesReferencia": "2025-07",
       "valor_centimos": 6252,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_07_5",
@@ -9790,8 +9823,9 @@
       "numeroPrestacao": 5,
       "mesReferencia": "2025-08",
       "valor_centimos": 6252,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_07_6",
@@ -9800,8 +9834,9 @@
       "numeroPrestacao": 6,
       "mesReferencia": "2025-09",
       "valor_centimos": 6252,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_07_7",
@@ -9810,8 +9845,9 @@
       "numeroPrestacao": 7,
       "mesReferencia": "2025-10",
       "valor_centimos": 6252,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_07_8",
@@ -9820,8 +9856,9 @@
       "numeroPrestacao": 8,
       "mesReferencia": "2025-11",
       "valor_centimos": 6252,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_07_9",
@@ -9830,8 +9867,9 @@
       "numeroPrestacao": 9,
       "mesReferencia": "2025-12",
       "valor_centimos": 6252,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_07_10",
@@ -9840,8 +9878,9 @@
       "numeroPrestacao": 10,
       "mesReferencia": "2026-01",
       "valor_centimos": 6252,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_07_11",
@@ -9850,8 +9889,9 @@
       "numeroPrestacao": 11,
       "mesReferencia": "2026-02",
       "valor_centimos": 6252,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_07_12",
@@ -9871,8 +9911,9 @@
       "numeroPrestacao": 1,
       "mesReferencia": "2025-04",
       "valor_centimos": 4730,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_10_2",
@@ -9903,8 +9944,9 @@
       "numeroPrestacao": 4,
       "mesReferencia": "2025-07",
       "valor_centimos": 4730,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_10_5",
@@ -9913,8 +9955,9 @@
       "numeroPrestacao": 5,
       "mesReferencia": "2025-08",
       "valor_centimos": 4730,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_10_6",
@@ -9923,8 +9966,9 @@
       "numeroPrestacao": 6,
       "mesReferencia": "2025-09",
       "valor_centimos": 4730,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_10_7",
@@ -9933,8 +9977,9 @@
       "numeroPrestacao": 7,
       "mesReferencia": "2025-10",
       "valor_centimos": 4730,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_10_8",
@@ -9954,8 +9999,9 @@
       "numeroPrestacao": 9,
       "mesReferencia": "2025-12",
       "valor_centimos": 4730,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_10_10",
@@ -9964,8 +10010,9 @@
       "numeroPrestacao": 10,
       "mesReferencia": "2026-01",
       "valor_centimos": 4730,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_10_11",
@@ -9974,8 +10021,9 @@
       "numeroPrestacao": 11,
       "mesReferencia": "2026-02",
       "valor_centimos": 4730,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_10_12",
@@ -9984,8 +10032,9 @@
       "numeroPrestacao": 12,
       "mesReferencia": "2026-03",
       "valor_centimos": 4730,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_09_1",
@@ -9994,8 +10043,9 @@
       "numeroPrestacao": 1,
       "mesReferencia": "2025-04",
       "valor_centimos": 6795,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_09_2",
@@ -10015,8 +10065,9 @@
       "numeroPrestacao": 3,
       "mesReferencia": "2025-06",
       "valor_centimos": 6795,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_09_4",
@@ -10025,8 +10076,9 @@
       "numeroPrestacao": 4,
       "mesReferencia": "2025-07",
       "valor_centimos": 6795,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_09_5",
@@ -10035,8 +10087,9 @@
       "numeroPrestacao": 5,
       "mesReferencia": "2025-08",
       "valor_centimos": 6795,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_09_6",
@@ -10045,8 +10098,9 @@
       "numeroPrestacao": 6,
       "mesReferencia": "2025-09",
       "valor_centimos": 6795,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_09_7",
@@ -10055,8 +10109,9 @@
       "numeroPrestacao": 7,
       "mesReferencia": "2025-10",
       "valor_centimos": 6795,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_09_8",
@@ -10065,8 +10120,9 @@
       "numeroPrestacao": 8,
       "mesReferencia": "2025-11",
       "valor_centimos": 6795,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_09_9",
@@ -10075,8 +10131,9 @@
       "numeroPrestacao": 9,
       "mesReferencia": "2025-12",
       "valor_centimos": 6795,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_09_10",
@@ -10085,8 +10142,9 @@
       "numeroPrestacao": 10,
       "mesReferencia": "2026-01",
       "valor_centimos": 6795,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_09_11",
@@ -10095,8 +10153,9 @@
       "numeroPrestacao": 11,
       "mesReferencia": "2026-02",
       "valor_centimos": 6795,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     },
     {
       "id": "prest_plano_elev_2025_cond_09_12",
@@ -10105,8 +10164,9 @@
       "numeroPrestacao": 12,
       "mesReferencia": "2026-03",
       "valor_centimos": 6795,
-      "estado": "pendente",
-      "historico": true
+      "estado": "paga",
+      "historico": true,
+      "pagoEm": 1780185600000.0
     }
   ],
   "orcamentos": [
