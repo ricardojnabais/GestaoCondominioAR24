@@ -485,6 +485,7 @@ async function submit() {
   try {
     const recibo = await receipts.emitir(payload);
     close();
+    const tenant = tenants.find(t => t.id === tenantId);
     await mostrarPosEmissao(recibo, tenant, { saldoUsado, excesso });
     if (onSuccessCallback) onSuccessCallback(recibo);
   } catch (e) {
@@ -540,8 +541,10 @@ async function mostrarPosEmissao(recibo, tenant, info) {
   dlg.querySelector('#pe-close').addEventListener('click', close);
   dlg.querySelector('#pe-ok').addEventListener('click', close);
   dlg.querySelector('#pe-pdf').addEventListener('click', async () => {
-    const { exportarPDF } = await import('../modules/export-pdf.js');
-    await exportarPDF(recibo.id);
+    const { gerarReciboPDF } = await import('../modules/export-pdf.js');
+    const { getSession } = await import('../auth/local-auth.js');
+    const session = getSession();
+    await gerarReciboPDF(recibo.id, session?.operatorName || '');
   });
   if (email) {
     dlg.querySelector('#pe-email').addEventListener('click', () => {
