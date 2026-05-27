@@ -20,15 +20,17 @@
         "emailContaCondominio": "condoamira24@gmail.com"
       },
       "saldoInicial": {
-        "2024": 289595
+        "2024": 0,
+        "2025": 0,
+        "2026": -1804885
       },
       "saldoConhecido": {
-        "data": "2026-05-25",
-        "total_centimos": 822612,
+        "data": "2026-05-27",
+        "total_centimos": 752178,
         "contaOrdem_centimos": 752178,
         "contaPoupanca_centimos": 70434,
-        "fonte": "BPI Net Empresas",
-        "manual": false
+        "fonte": "BPI Net Empresas · Conta à Ordem",
+        "notas": "Saldo CO em uso · poupança separada"
       },
       "nextNumberByYear": {
         "2024": 89,
@@ -10171,124 +10173,83 @@
   ],
   "orcamentos": [
     {
-      "id": "orc_2026_v1",
-      "ano": 2026,
+      "id": "orc-2026-e4bc1267",
+      "ano": "2026",
       "versao": 1,
       "estado": "aprovado",
-      "criadoEm": 1764547200000.0,
-      "aprovadoEm": 1765756800000.0,
-      "aprovadoPor": "Ricardo Cordeiro",
-      "arredondamento_centimos": 100,
-      "incrementoPercentual": 0,
-      "quotas": [
+      "criadoEm": 1765756800000.0,
+      "criadoPor": "Ricardo Nabais Cordeiro",
+      "aprovadoEm": 1767571200000.0,
+      "aprovadoPor": "Ricardo Nabais Cordeiro",
+      "saldoInicial_centimos": 321478,
+      "quotas": {
+        "incrementoPct": 0,
+        "arredondamento": "inteiro",
+        "quotasMensaisPorTenant": {
+          "cond_02": 3700,
+          "cond_01": 3200,
+          "cond_04": 3600,
+          "cond_03": 4800,
+          "cond_06": 3600,
+          "cond_05": 4900,
+          "cond_08": 3600,
+          "cond_07": 4700,
+          "cond_10": 3600,
+          "cond_09": 5100
+        },
+        "quotasMensaisAnoAnt": {
+          "cond_02": 3700,
+          "cond_01": 3200,
+          "cond_04": 3600,
+          "cond_03": 4800,
+          "cond_06": 3600,
+          "cond_05": 4900,
+          "cond_08": 3600,
+          "cond_07": 4700,
+          "cond_10": 3600,
+          "cond_09": 5100
+        }
+      },
+      "outrasReceitas": [
         {
-          "tenantId": "cond_02",
-          "permilage": 91,
-          "valorMensalAnterior": 3700,
-          "valorMensalNovo": 3700
+          "id": "4773b123",
+          "descricao": "Quotas extraordinárias elevador 2025",
+          "valor_centimos": 204525
         },
         {
-          "tenantId": "cond_01",
-          "permilage": 79,
-          "valorMensalAnterior": 3200,
-          "valorMensalNovo": 3200
+          "id": "b697d919",
+          "descricao": "Liquidação quotas extraordinárias (Sílvia)",
+          "valor_centimos": 19095
         },
         {
-          "tenantId": "cond_04",
-          "permilage": 87,
-          "valorMensalAnterior": 3600,
-          "valorMensalNovo": 3600
+          "id": "b64de8fb",
+          "descricao": "Devolução Reabilita+",
+          "valor_centimos": 651900
         },
         {
-          "tenantId": "cond_03",
-          "permilage": 119,
-          "valorMensalAnterior": 4800,
-          "valorMensalNovo": 4800
-        },
-        {
-          "tenantId": "cond_06",
-          "permilage": 88,
-          "valorMensalAnterior": 3600,
-          "valorMensalNovo": 3600
-        },
-        {
-          "tenantId": "cond_05",
-          "permilage": 121,
-          "valorMensalAnterior": 4900,
-          "valorMensalNovo": 4900
-        },
-        {
-          "tenantId": "cond_08",
-          "permilage": 88,
-          "valorMensalAnterior": 3600,
-          "valorMensalNovo": 3600
-        },
-        {
-          "tenantId": "cond_07",
-          "permilage": 115,
-          "valorMensalAnterior": 4700,
-          "valorMensalNovo": 4700
-        },
-        {
-          "tenantId": "cond_10",
-          "permilage": 87,
-          "valorMensalAnterior": 3600,
-          "valorMensalNovo": 3600
-        },
-        {
-          "tenantId": "cond_09",
-          "permilage": 125,
-          "valorMensalAnterior": 5100,
-          "valorMensalNovo": 5100
+          "id": "c384deb0",
+          "descricao": "Liquidação quotas em atraso 2025 (Sílvia)",
+          "valor_centimos": 14900
         }
       ],
-      "despesas": [
-        {
-          "rubricaId": "rub_edp",
-          "orcado_centimos": 85352,
-          "realizado_centimos_anoAnterior": 77593
+      "despesas": {
+        "incrementoPctMassa": 0,
+        "porRubrica": {
+          "rub_edp": 85352,
+          "rub_agua": 23416,
+          "rub_schindler": 140968,
+          "rub_allianz": 84031,
+          "rub_banc": 9972,
+          "rub_limpeza": 120000,
+          "rub_outras": 10000,
+          "rub_obras": 324835,
+          "rub_plano_schindler": 602326
         },
-        {
-          "rubricaId": "rub_agua",
-          "orcado_centimos": 23416,
-          "realizado_centimos_anoAnterior": 21287
-        },
-        {
-          "rubricaId": "rub_schindler",
-          "orcado_centimos": 140968,
-          "realizado_centimos_anoAnterior": 128153
-        },
-        {
-          "rubricaId": "rub_allianz",
-          "orcado_centimos": 84031,
-          "realizado_centimos_anoAnterior": 76392
-        },
-        {
-          "rubricaId": "rub_banc",
-          "orcado_centimos": 9972,
-          "realizado_centimos_anoAnterior": 9972
-        },
-        {
-          "rubricaId": "rub_limpeza",
-          "orcado_centimos": 120000,
-          "realizado_centimos_anoAnterior": 116400
-        },
-        {
-          "rubricaId": "rub_outras",
-          "orcado_centimos": 10000,
-          "realizado_centimos_anoAnterior": 0
-        },
-        {
-          "rubricaId": "rub_obras",
-          "orcado_centimos": 324835,
-          "realizado_centimos_anoAnterior": 0
-        },
-        {
-          "rubricaId": "rub_plano_schindler",
-          "orcado_centimos": 602326,
-          "realizado_centimos_anoAnterior": 0
-        }
-      ]
+        "realizadoAnoAnt": {},
+        "manuais": []
+      },
+      "fundoReserva_centimos": 0,
+      "observacoes": "Orçamento aprovado em Assembleia Geral · réplica do ficheiro contabilístico do condomínio."
     }
   ],
   "outrosRecebimentos": [
