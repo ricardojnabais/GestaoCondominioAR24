@@ -1,16 +1,13 @@
 /**
  * Configuração Firebase · v1.x
  *
- * 1. Cria o projeto Firebase com ricardojnabais@gmail.com
- * 2. Adiciona Web App e copia a configuração
- * 3. Cola a config em `firebaseConfig` abaixo
- * 4. (Opcional) Configura App Check com reCAPTCHA v3 · cola o site key abaixo
- *
- * O Firebase SDK só é descarregado se a config estiver preenchida.
+ * Exporta `firebaseReady` · promise que resolve quando o Firebase está
+ * inicializado (ou resolve null se a config não estiver preenchida).
+ * O local-store.js faz `await firebaseReady` antes de decidir o backend,
+ * garantindo a ordem correta de inicialização.
  */
 
-// ─── PREENCHER COM A CONFIG DO TEU PROJETO FIREBASE ─────────────────
-// Console Firebase → Project Settings → Your apps → Web SDK config
+// ─── CONFIG DO PROJETO FIREBASE ─────────────────────────────────────
 const firebaseConfig = {
   apiKey: "AIzaSyBndtz0BVV1v5MLmELUiNlk0w0L__EvH80",
   authDomain: "ar24-b1a18.firebaseapp.com",
@@ -20,17 +17,17 @@ const firebaseConfig = {
   appId: "1:906665528152:web:5f5a662a7c94bd4788f32d"
 };
 
-// reCAPTCHA v3 site key · obtém em https://www.google.com/recaptcha/admin
-// Ativa App Check. Deixa "PREENCHER..." para desativar.
+// reCAPTCHA v3 site key · App Check. "PREENCHER..." desativa.
 const RECAPTCHA_V3_SITE_KEY = "6LfY6_8sAAAAANv1m-FHPvOyTPhf-WmNSmg4ixPr";
 
-// ─── Bootstrap defensivo ─────────────────────────────────────────────
-const configValida = !firebaseConfig.apiKey.startsWith('PREENCHER');
+// ─── Bootstrap · exporta promise para garantir ordem ─────────────────
+async function bootstrapFirebase() {
+  const configValida = !firebaseConfig.apiKey.startsWith('PREENCHER');
+  if (!configValida) {
+    console.log('[Firebase] Config ainda não preenchida · backend localStorage');
+    return null;
+  }
 
-if (!configValida) {
-  console.log('[Firebase] Config ainda não preenchida · backend localStorage');
-} else {
-  // Imports dinâmicos · SDK só é descarregado quando precisamos
   const [
     { initializeApp },
     firestore,
@@ -45,14 +42,12 @@ if (!configValida) {
 
   const app = initializeApp(firebaseConfig);
 
-  // Firestore com cache offline persistente · multi-tab safe
   const db = firestore.initializeFirestore(app, {
     localCache: firestore.persistentLocalCache({
       tabManager: firestore.persistentMultipleTabManager()
     })
   });
 
-  // App Check
   if (RECAPTCHA_V3_SITE_KEY && !RECAPTCHA_V3_SITE_KEY.startsWith('PREENCHER')) {
     try {
       appCheckMod.initializeAppCheck(app, {
@@ -65,26 +60,17 @@ if (!configValida) {
     }
   }
 
-  // Firebase Auth (admin Google Sign-In)
   const auth = authMod.getAuth(app);
-  // Persistência local · não perde sessão ao fechar browser
   await authMod.setPersistence(auth, authMod.browserLocalPersistence);
 
   window.__firebase = {
-    app,
-    db,
-    auth,
+    app, db, auth,
     firestoreFns: {
-      collection: firestore.collection,
-      doc: firestore.doc,
-      getDoc: firestore.getDoc,
-      getDocs: firestore.getDocs,
-      setDoc: firestore.setDoc,
-      deleteDoc: firestore.deleteDoc,
-      writeBatch: firestore.writeBatch,
-      onSnapshot: firestore.onSnapshot,
-      query: firestore.query,
-      where: firestore.where
+      collection: firestore.collection, doc: firestore.doc,
+      getDoc: firestore.getDoc, getDocs: firestore.getDocs,
+      setDoc: firestore.setDoc, deleteDoc: firestore.deleteDoc,
+      writeBatch: firestore.writeBatch, onSnapshot: firestore.onSnapshot,
+      query: firestore.query, where: firestore.where
     },
     authFns: {
       GoogleAuthProvider: authMod.GoogleAuthProvider,
@@ -97,4 +83,11 @@ if (!configValida) {
   };
 
   console.log('[Firebase] Inicializado · projeto:', firebaseConfig.projectId);
+  return window.__firebase;
 }
+
+// Promise única · resolve quando Firebase pronto (ou null)
+export const firebaseReady = bootstrapFirebase().catch((e) => {
+  console.error('[Firebase] Bootstrap falhou:', e);
+  return null;
+});

@@ -13,19 +13,29 @@
  */
 
 import * as localImpl from './local-store-impl.js';
+import { firebaseReady } from './firebase-config.js';
 
 const BACKEND_KEY = 'ar24_storage_backend';
-const backend = (typeof localStorage !== 'undefined' && localStorage.getItem(BACKEND_KEY)) || 'local';
+
+// Aguardar inicialização do Firebase (garante window.__firebase pronto)
+await firebaseReady;
+
+// Decidir backend:
+//  1. Override explícito no localStorage (debug/fallback)
+//  2. Senão, se Firebase configurado → Firestore (default em produção)
+//  3. Senão → localStorage
+const override = (typeof localStorage !== 'undefined' && localStorage.getItem(BACKEND_KEY)) || null;
+const firebaseConfigurado = !!(typeof window !== 'undefined' && window.__firebase?.db);
+const backend = override || (firebaseConfigurado ? 'firestore' : 'local');
 
 let activeStore = localImpl;
 
 if (backend === 'firestore') {
   try {
     const firestoreStore = await import('./firestore-store.js');
-    // Bootstrap antes de exportar (popular cache via onSnapshot)
     await firestoreStore.bootstrap();
     activeStore = firestoreStore;
-    console.log('[Store] Backend ativo: Firestore');
+    console.log('[Store] Backend ativo: Firestore' + (override ? ' (override)' : ' (auto · Firebase configurado)'));
   } catch (e) {
     console.error('[Store] Firestore falhou · fallback para localStorage:', e);
   }

@@ -8,6 +8,7 @@
  */
 
 import * as auth from './auth/local-auth.js';
+import * as store from './store/local-store.js';
 import * as router from './ui/router.js';
 import { seedIfEmpty } from './store/seed-data.js';
 import { mountIconSprite } from './ui/icons.js';
@@ -50,8 +51,14 @@ async function main() {
   // 1. Montar SVG sprite (ícones disponíveis para toda a app)
   mountIconSprite();
 
-  // 2. Seed inicial (se ainda não houver dados)
-  await seedIfEmpty();
+  // 2. Seed inicial · APENAS em modo localStorage.
+  //    Em Firestore, os dados já estão na cloud · nunca fazer seed
+  //    (evita popular a cloud com dados de teste num device novo).
+  if (store.getBackend() === 'firestore') {
+    console.log('[seed] Backend Firestore · seed ignorado (dados na cloud).');
+  } else {
+    await seedIfEmpty();
+  }
 
   // 3. Inicializar auth
   await auth.initAuth();
