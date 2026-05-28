@@ -78,6 +78,20 @@ export async function render(container) {
         <div id="preview-area"></div>
 
         <div id="msg-area"></div>
+
+        <div class="settings-card" style="margin-top:24px;border-color:var(--gold,#d4af37)">
+          <h3 style="margin:0 0 8px 0;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--primary)">Migração · Cloud Firestore</h3>
+          <p style="margin:0 0 12px 0;font-size:13px;color:var(--text)">
+            Migra os dados do localStorage deste device para o Firestore na cloud. Após a migração, todos os devices ficam sincronizados em tempo real.
+          </p>
+          <div id="migrar-estado" style="font-size:12px;color:var(--text-muted);margin-bottom:10px"></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn ghost" id="btn-backup-local">📥 Backup do localStorage</button>
+            <button class="btn primary" id="btn-migrar">☁ Migrar para Firestore</button>
+            <button class="btn ghost" id="btn-voltar-local" style="display:none">⟲ Voltar a localStorage</button>
+          </div>
+          <div id="migrar-log" style="margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:11px;background:#f9f6ee;border:1px solid #e8dfc8;border-radius:8px;padding:10px;max-height:280px;overflow:auto;display:none;white-space:pre-wrap"></div>
+        </div>
       </main>
     </div>
   `;
@@ -91,6 +105,107 @@ export async function render(container) {
     containerRef.querySelector('#file-input').click();
   });
   containerRef.querySelector('#file-input').addEventListener('change', onFilePicked);
+
+  // Migração Firestore
+  containerRef.querySelector('#btn-backup-local').addEventListener('click', backupOnlyClick);
+  containerRef.querySelector('#btn-migrar').addEventListener('click', migrarClick);
+  containerRef.querySelector('#btn-voltar-local').addEventListener('click', voltarLocalClick);
+  await actualizarEstadoMigracao();
+}
+
+async function actualizarEstadoMigracao() {
+  const elEstado = containerRef.querySelector('#migrar-estado');
+  const btnMigrar = containerRef.querySelector('#btn-migrar');
+  const btnVoltar = containerRef.querySelector('#btn-voltar-local');
+  if (!elEstado) return;
+
+  const backend = localStorage.getItem('ar24_storage_backend') || 'local';
+  const firebaseOk = !!window.__firebase?.db;
+
+  let msg = '';
+  if (backend === 'firestore') {
+    msg = '☁ Backend ativo: <strong>Firestore (cloud)</strong>. Pode voltar a localStorage abaixo.';
+    btnMigrar.style.display = 'none';
+    btnVoltar.style.display = '';
+  } else if (!firebaseOk) {
+    msg = '⚠ Firebase não está inicializado. Preenche <code>firebase-config.js</code> antes de migrar.';
+    btnMigrar.disabled = true;
+  } else {
+    msg = `🗄 Backend ativo: <strong>localStorage</strong>. Migração disponível.`;
+  }
+  elEstado.innerHTML = msg;
+}
+
+async function backupOnlyClick() {
+  try {
+    const { backupLocal } = await import('../../modules/migrar-firestore.js');
+    const meta = await backupLocal();
+    logMigracao(`✓ Backup descarregado · ${Object.values(meta.coleccoes).reduce((s,n)=>s+n,0)} docs totais`);
+  } catch (e) {
+    logMigracao(`✗ Erro: ${e.message}`);
+  }
+}
+
+async function migrarClick() {
+  if (!confirm('Iniciar migração para Firestore?\n\n1. Será criado um backup automático em JSON descarregado.\n2. Todos os dados do localStorage serão escritos no Firestore.\n3. O backend muda para Firestore e a app recarrega.\n\nContinuar?')) return;
+
+  const log = containerRef.querySelector('#migrar-log');
+  log.style.display = '';
+  log.textContent = '';
+
+  const btnMigrar = containerRef.querySelector('#btn-migrar');
+  btnMigrar.disabled = true;
+  btnMigrar.textContent = 'A migrar…';
+
+  try {
+    const { migrar, activarBackendFirestore } = await import('../../modules/migrar-firestore.js');
+    const resultado = await migrar((p) => {
+      logMigracao(`[${p.etapa}] ${p.msg}`);
+    });
+
+    logMigracao('');
+    logMigracao('─── Resultado ───');
+    logMigracao(`Backup: ${resultado.backupMeta.dataExport}`);
+    logMigracao(`Total escritos: ${resultado.totalEscritos}`);
+    logMigracao('');
+    logMigracao('Coleção · Local · Firestore');
+    for (const [col, n] of Object.entries(resultado.contagemLocal)) {
+      const f = resultado.contagemFirestore[col];
+      const ok = n === f ? '✓' : (f === -1 ? '⚠' : '✗');
+      logMigracao(`  ${ok} ${col.padEnd(22)} ${String(n).padStart(4)} → ${String(f).padStart(4)}`);
+    }
+
+    if (!resultado.ok) {
+      logMigracao('');
+      logMigracao(`⚠ ${resultado.inconsistencias.length} inconsistências encontradas. Verifica a tabela.`);
+      logMigracao('Recomendação: NÃO mudar de backend ainda. Investigar as colecções acima.');
+      btnMigrar.disabled = false;
+      btnMigrar.textContent = '☁ Migrar para Firestore';
+      return;
+    }
+
+    logMigracao('');
+    logMigracao('✓ Migração validada. A activar Firestore como backend em 3s…');
+    setTimeout(activarBackendFirestore, 3000);
+  } catch (e) {
+    logMigracao(`✗ ERRO: ${e.message}`);
+    console.error('Migração:', e);
+    btnMigrar.disabled = false;
+    btnMigrar.textContent = '☁ Migrar para Firestore';
+  }
+}
+
+async function voltarLocalClick() {
+  if (!confirm('Voltar a usar localStorage?\n\nOs dados em Firestore não são apagados. O backend volta a ler apenas do localStorage do device.\n\nNota: os dados no localStorage podem estar desatualizados se foram escritos em Firestore por outros devices.\n\nContinuar?')) return;
+  const { voltarBackendLocal } = await import('../../modules/migrar-firestore.js');
+  voltarBackendLocal();
+}
+
+function logMigracao(linha) {
+  const log = containerRef.querySelector('#migrar-log');
+  if (!log) return;
+  log.textContent += (log.textContent ? '\n' : '') + linha;
+  log.scrollTop = log.scrollHeight;
 }
 
 async function exportBackup() {

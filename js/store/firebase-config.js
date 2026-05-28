@@ -12,17 +12,17 @@
 // ─── PREENCHER COM A CONFIG DO TEU PROJETO FIREBASE ─────────────────
 // Console Firebase → Project Settings → Your apps → Web SDK config
 const firebaseConfig = {
-  apiKey: "AIzaSyBndtz0BVV1v5MLmELUiNlk0w0L__EvH80",
-  authDomain: "ar24-b1a18.firebaseapp.com",
-  projectId: "ar24-b1a18",
-  storageBucket: "ar24-b1a18.firebasestorage.app",
-  messagingSenderId: "906665528152",
-  appId: "1:906665528152:web:5f5a662a7c94bd4788f32d"
+  apiKey: "PREENCHER_APIKEY",
+  authDomain: "PREENCHER.firebaseapp.com",
+  projectId: "PREENCHER_PROJECTID",
+  storageBucket: "PREENCHER.appspot.com",
+  messagingSenderId: "PREENCHER_SENDER_ID",
+  appId: "PREENCHER_APPID"
 };
 
 // reCAPTCHA v3 site key · obtém em https://www.google.com/recaptcha/admin
 // Ativa App Check. Deixa "PREENCHER..." para desativar.
-const RECAPTCHA_V3_SITE_KEY = "6LfY6_8sAAAAANv1m-FHPvOyTPhf-WmNSmg4ixPr";
+const RECAPTCHA_V3_SITE_KEY = "PREENCHER_RECAPTCHA_SITEKEY";
 
 // ─── Bootstrap defensivo ─────────────────────────────────────────────
 const configValida = !firebaseConfig.apiKey.startsWith('PREENCHER');
