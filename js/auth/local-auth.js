@@ -1,17 +1,17 @@
 /**
- * LocalAuth · autenticação simulada usando localStorage.
- *
- * Simula o comportamento do Firebase Auth para a versão de teste.
- * API desenhada para ser substituível por Firebase Auth diretamente.
+ * LocalAuth · autenticação local (admin Firebase Google + condómino email/password).
  *
  * Estados possíveis:
- *  - admin:    operador autenticado pela "conta partilhada" (qualquer um dos 2 admins)
+ *  - admin:    operador autenticado via Firebase Auth Google Sign-In
  *  - condomino: condómino autenticado pelo seu email + password
  *  - null:     sem sessão
  *
- * NOTA DE SEGURANÇA: as passwords são guardadas em CLARO no localStorage.
- * Isto é aceitável para a versão de TESTE (dados ficam no browser do utilizador).
- * Em produção (Firebase), o Firebase Auth trata da encriptação automaticamente.
+ * SEGURANÇA · PASSWORDS:
+ * As passwords dos condóminos são guardadas como HASH PBKDF2-SHA256 (100k iter)
+ * com salt único de 16 bytes (ver password-hash.js). Texto plano NUNCA é persistido.
+ * Documentos legacy com `password` em texto plano são auto-migrados para hash
+ * no primeiro login bem-sucedido. Há também migração em massa disponível ao admin
+ * em Definições → Importar Dados → "Migrar passwords antigas para hash".
  */
 
 import * as store from '../store/local-store.js';
@@ -93,11 +93,42 @@ export async function loginCondomino(email, password) {
     throw new Error('Email não registado. Pede ao administrador para criar a tua conta.');
   }
   const user = users[0];
-  if (user.password !== password) {
-    throw new Error('Password incorreta.');
+
+  // Validação de password · 2 caminhos
+  let ok = false;
+  let migrar = false;
+
+  if (user.passwordHash && user.passwordSalt) {
+    // Novo formato: PBKDF2
+    const { verifyPassword } = await import('./password-hash.js');
+    ok = await verifyPassword(password, {
+      hash: user.passwordHash,
+      salt: user.passwordSalt,
+      algo: user.passwordAlgo
+    });
+  } else if (user.password !== undefined) {
+    // Formato legacy · texto plano. Validar e auto-migrar para hash.
+    ok = (user.password === password);
+    migrar = ok;
   }
-  if (user.disabled) {
-    throw new Error('Conta desativada. Contacta o administrador.');
+
+  if (!ok) throw new Error('Password incorreta.');
+  if (user.disabled) throw new Error('Conta desativada. Contacta o administrador.');
+
+  // Auto-migração silenciosa: passwords antigas em texto plano são convertidas em hash
+  if (migrar) {
+    try {
+      const { hashPassword } = await import('./password-hash.js');
+      const { hash, salt, algo } = await hashPassword(password);
+      user.passwordHash = hash;
+      user.passwordSalt = salt;
+      user.passwordAlgo = algo;
+      delete user.password;
+      delete user.passwordPlain;
+      console.log('[auth] Password migrada para hash:', user.email);
+    } catch (e) {
+      console.warn('[auth] Auto-migração de password falhou:', e);
+    }
   }
 
   // Lookup do tenant correspondente
@@ -149,9 +180,13 @@ export async function createUser(email, tempPassword) {
     throw new Error(`Já existe uma conta para "${email}".`);
   }
 
+  const { hashPassword } = await import('./password-hash.js');
+  const { hash, salt, algo } = await hashPassword(tempPassword);
   const user = {
     email,
-    password: tempPassword,
+    passwordHash: hash,
+    passwordSalt: salt,
+    passwordAlgo: algo,
     role: 'condomino',
     tenantId: tenants[0].id,
     createdAt: Date.now(),
@@ -160,7 +195,7 @@ export async function createUser(email, tempPassword) {
     disabled: false
   };
   await store.setDoc('users', user);
-  return user;
+  return { ...user, password: tempPassword }; // texto plano só na resposta
 }
 
 /**
@@ -173,7 +208,13 @@ export async function resetPassword(email, newTempPassword) {
   const users = await store.queryDocs('users', { email: email.trim().toLowerCase() });
   if (users.length === 0) throw new Error('Utilizador não encontrado.');
   const user = users[0];
-  user.password = newTempPassword;
+  const { hashPassword } = await import('./password-hash.js');
+  const { hash, salt, algo } = await hashPassword(newTempPassword);
+  user.passwordHash = hash;
+  user.passwordSalt = salt;
+  user.passwordAlgo = algo;
+  delete user.password;
+  delete user.passwordPlain;
   user.mustChangePassword = true;
   user.passwordResetAt = Date.now();
   user.passwordResetBy = currentSession.operatorName;
@@ -199,12 +240,34 @@ export async function changeOwnPassword(currentPassword, newPassword) {
   if (currentSession?.role !== 'condomino') {
     throw new Error('Acessível apenas a condóminos autenticados.');
   }
-  const user = await store.getDoc('users', currentSession.userId);
-  if (!user || user.password !== currentPassword) {
-    throw new Error('Password atual incorreta.');
+  if (!newPassword || newPassword.length < 4) {
+    throw new Error('A nova password tem de ter pelo menos 4 caracteres.');
   }
-  user.password = newPassword;
+  const user = await store.getDoc('users', currentSession.userId);
+  if (!user) throw new Error('Utilizador não encontrado.');
+
+  // Validar password atual (hash ou legacy)
+  let ok = false;
+  if (user.passwordHash && user.passwordSalt) {
+    const { verifyPassword } = await import('./password-hash.js');
+    ok = await verifyPassword(currentPassword, {
+      hash: user.passwordHash, salt: user.passwordSalt, algo: user.passwordAlgo
+    });
+  } else if (user.password !== undefined) {
+    ok = (user.password === currentPassword);
+  }
+  if (!ok) throw new Error('Password atual incorreta.');
+
+  // Guardar nova password como hash
+  const { hashPassword } = await import('./password-hash.js');
+  const { hash, salt, algo } = await hashPassword(newPassword);
+  user.passwordHash = hash;
+  user.passwordSalt = salt;
+  user.passwordAlgo = algo;
+  delete user.password;
+  delete user.passwordPlain;
   user.mustChangePassword = false;
+  user.passwordPrecisaReset = false;
   user.passwordChangedAt = Date.now();
   await store.setDoc('users', user);
   currentSession.mustChangePassword = false;

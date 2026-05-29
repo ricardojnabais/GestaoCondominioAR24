@@ -45,11 +45,20 @@ export async function render(container) {
 
         <div class="info-card" style="margin-bottom:18px">
           <p style="margin:0;font-size:13px;color:var(--text-muted)">
-            Cada condómino tem 1 conta · login com email + password. 
-            Password inicial = <strong>NIF</strong>. 
+            Cada condómino tem 1 conta · login com email + password.
+            Password inicial = <strong>NIF</strong>.
             Condóminos sem email não podem ter conta — adiciona o email primeiro.
           </p>
         </div>
+
+        <details style="margin-bottom:14px;background:#faf8f2;border:1px solid #e3dcc6;border-radius:10px;padding:8px 14px">
+          <summary style="cursor:pointer;font-size:12px;font-weight:600;color:#1a2740">🔐 Manutenção · segurança das passwords</summary>
+          <p style="margin:8px 0 4px 0;font-size:12px;color:var(--text)">
+            Versões anteriores guardavam passwords em texto plano. A partir desta versão, todas as novas passwords são guardadas como hash PBKDF2. Usa este botão para migrar passwords antigas existentes (operação idempotente).
+          </p>
+          <button class="btn ghost" id="btn-migrar-pwd" style="font-size:12px">Migrar passwords antigas para hash</button>
+          <div id="migrar-pwd-log" style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#6b5524;display:none"></div>
+        </details>
 
         <div id="lista"></div>
       </main>
@@ -61,6 +70,31 @@ export async function render(container) {
   container.querySelector('#brand').addEventListener('click', () => router.navigate('admin/home'));
   container.querySelector('#back-home').addEventListener('click', () => router.navigate('admin/home'));
   container.querySelector('#hamburger').addEventListener('click', () => router.navigate('admin/home'));
+
+  // Migração em massa de passwords legacy para hash
+  container.querySelector('#btn-migrar-pwd').addEventListener('click', async () => {
+    if (!confirm('Migrar todas as passwords em texto plano para hash PBKDF2?\n\nA operação é segura e idempotente · contas já protegidas são saltadas.\n\nContinuar?')) return;
+
+    const btn = container.querySelector('#btn-migrar-pwd');
+    const log = container.querySelector('#migrar-pwd-log');
+    btn.disabled = true;
+    btn.textContent = 'A migrar…';
+    log.style.display = '';
+    log.textContent = '';
+
+    try {
+      const res = await utilizadores.migrarPasswordsParaHash((p) => {
+        log.textContent = `${p.hashed + p.skipped}/${p.total} · ${p.current} · ${p.status}`;
+      });
+      log.innerHTML = `✓ Concluído · <strong>${res.hashed}</strong> migradas, <strong>${res.skipped}</strong> já protegidas (total ${res.total})`;
+      btn.textContent = 'Migrar passwords antigas para hash';
+      btn.disabled = false;
+    } catch (e) {
+      log.innerHTML = `✗ Erro: ${e.message}`;
+      btn.textContent = 'Migrar passwords antigas para hash';
+      btn.disabled = false;
+    }
+  });
 }
 
 async function renderList() {

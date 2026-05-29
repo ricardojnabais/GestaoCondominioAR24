@@ -14,6 +14,7 @@
  */
 
 import * as store from '../store/local-store.js';
+import { hashPassword } from '../auth/password-hash.js';
 
 /**
  * Listar todos os tenants com estado da conta (criada/sem conta).
@@ -35,7 +36,7 @@ export async function listarUtilizadores() {
 
 /**
  * Criar conta para um condómino.
- * Requer que o tenant tenha email definido.
+ * Password inicial = NIF · guardada como hash PBKDF2.
  */
 export async function criarConta(tenantId, operatorName) {
   const tenant = await store.getDoc('tenants', tenantId);
@@ -43,16 +44,23 @@ export async function criarConta(tenantId, operatorName) {
   if (!tenant.email?.trim()) {
     throw new Error('O condómino não tem email definido. Adiciona um email primeiro.');
   }
+  if (!tenant.nif) {
+    throw new Error('O condómino não tem NIF definido (necessário como password inicial).');
+  }
 
   const existing = await store.queryDocs('users', { tenantId });
   if (existing.length > 0) {
     throw new Error('Já existe uma conta para este condómino.');
   }
 
+  const { hash, salt, algo } = await hashPassword(String(tenant.nif));
+
   const doc = {
     id: `user_${tenantId}`,
     email: tenant.email.trim().toLowerCase(),
-    password: tenant.nif,           // password inicial = NIF
+    passwordHash: hash,
+    passwordSalt: salt,
+    passwordAlgo: algo,
     passwordPrecisaReset: true,
     tenantId,
     tenantName: tenant.name,
@@ -62,7 +70,9 @@ export async function criarConta(tenantId, operatorName) {
     disabled: false,
     lastLogin: null
   };
-  return await store.setDoc('users', doc);
+  await store.setDoc('users', doc);
+  // Retorna password só na resposta para a UI mostrar uma vez · NÃO guardada
+  return { ...doc, password: String(tenant.nif) };
 }
 
 /**
@@ -74,12 +84,19 @@ export async function reporPassword(userId, operatorName) {
   if (!u) throw new Error('Utilizador não encontrado.');
   const t = await store.getDoc('tenants', u.tenantId);
   if (!t) throw new Error('Condómino associado não encontrado.');
+  if (!t.nif) throw new Error('Condómino não tem NIF definido.');
 
-  u.password = t.nif;
+  const { hash, salt, algo } = await hashPassword(String(t.nif));
+  u.passwordHash = hash;
+  u.passwordSalt = salt;
+  u.passwordAlgo = algo;
+  delete u.password;       // limpar legacy texto plano se existia
+  delete u.passwordPlain;  // garantir limpeza
   u.passwordPrecisaReset = true;
   u.passwordResetEm = Date.now();
   u.passwordResetPor = operatorName || null;
-  return await store.setDoc('users', u);
+  await store.setDoc('users', u);
+  return { ...u, password: String(t.nif) }; // só para a UI mostrar
 }
 
 /**
@@ -91,11 +108,18 @@ export async function definirPassword(userId, novaPassword, operatorName) {
   }
   const u = await store.getDoc('users', userId);
   if (!u) throw new Error('Utilizador não encontrado.');
-  u.password = novaPassword;
+
+  const { hash, salt, algo } = await hashPassword(novaPassword);
+  u.passwordHash = hash;
+  u.passwordSalt = salt;
+  u.passwordAlgo = algo;
+  delete u.password;
+  delete u.passwordPlain;
   u.passwordPrecisaReset = false;
   u.passwordResetEm = Date.now();
   u.passwordResetPor = operatorName || null;
-  return await store.setDoc('users', u);
+  await store.setDoc('users', u);
+  return { ...u, password: novaPassword }; // só para a UI mostrar
 }
 
 /**
@@ -120,4 +144,45 @@ export async function reactivar(userId) {
   u.disabledEm = null;
   u.disabledPor = null;
   return await store.setDoc('users', u);
+}
+
+/**
+ * Migração em massa · converte passwords em texto plano (legacy) para hash PBKDF2.
+ *
+ * Útil quando se sobe a v1.0.26 e há contas antigas com `password` em texto plano.
+ * Operação idempotente: contas que já têm `passwordHash` são ignoradas.
+ *
+ * @param {function} onProgress - callback({total, hashed, skipped, current})
+ * @returns {Promise<{total, hashed, skipped}>}
+ */
+export async function migrarPasswordsParaHash(onProgress = () => {}) {
+  const users = await store.listDocs('users');
+  let hashed = 0;
+  let skipped = 0;
+
+  for (const u of users) {
+    if (u.passwordHash && u.passwordSalt) {
+      skipped++;
+      onProgress({ total: users.length, hashed, skipped, current: u.email, status: 'skip' });
+      continue;
+    }
+    if (!u.password) {
+      // Sem password legacy nem hash · ignora
+      skipped++;
+      onProgress({ total: users.length, hashed, skipped, current: u.email, status: 'no-password' });
+      continue;
+    }
+    const { hash, salt, algo } = await hashPassword(String(u.password));
+    u.passwordHash = hash;
+    u.passwordSalt = salt;
+    u.passwordAlgo = algo;
+    delete u.password;
+    delete u.passwordPlain;
+    u.passwordMigradoEm = Date.now();
+    await store.setDoc('users', u);
+    hashed++;
+    onProgress({ total: users.length, hashed, skipped, current: u.email, status: 'migrated' });
+  }
+
+  return { total: users.length, hashed, skipped };
 }
