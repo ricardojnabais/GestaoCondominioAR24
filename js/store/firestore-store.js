@@ -14,6 +14,7 @@
 const FIRESTORE_COLLECTIONS = [
   'meta',
   'tenants',
+  'users',
   'receipts',
   'pagamentosDespesa',
   'rubricas',

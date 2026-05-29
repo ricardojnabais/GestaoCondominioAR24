@@ -13,7 +13,7 @@
 import * as localImpl from '../store/local-store-impl.js';
 
 const COLLECTIONS = [
-  'meta', 'tenants', 'receipts', 'pagamentosDespesa', 'rubricas',
+  'meta', 'tenants', 'users', 'receipts', 'pagamentosDespesa', 'rubricas',
   'planos', 'prestacoes', 'outrosRecebimentos', 'movimentosBPI',
   'comunicacoes', 'orcamentos'
 ];
