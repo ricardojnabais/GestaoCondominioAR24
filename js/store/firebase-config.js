@@ -68,6 +68,7 @@ async function bootstrapFirebase() {
     firestoreFns: {
       collection: firestore.collection, doc: firestore.doc,
       getDoc: firestore.getDoc, getDocs: firestore.getDocs,
+      getDocFromServer: firestore.getDocFromServer,
       setDoc: firestore.setDoc, deleteDoc: firestore.deleteDoc,
       writeBatch: firestore.writeBatch, onSnapshot: firestore.onSnapshot,
       query: firestore.query, where: firestore.where

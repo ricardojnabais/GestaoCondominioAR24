@@ -38,26 +38,38 @@ export async function listarUtilizadores() {
  * Criar conta para um condómino.
  * Password inicial = NIF · guardada como hash PBKDF2.
  */
+/**
+ * Valida que o email do tenant não é um placeholder óbvio.
+ * Lança erro com mensagem clara se inválido.
+ */
+function validarEmailTenant(email) {
+  const e = (email || '').trim().toLowerCase();
+  if (!e) throw new Error('O condómino não tem email definido. Adiciona um email primeiro.');
+  if (!e.includes('@') || !e.includes('.')) throw new Error('O email do condómino parece inválido: "' + email + '".');
+  if (e.endsWith('@example.com') || e.endsWith('@example.pt') || e.includes('example.com')) {
+    throw new Error('O email do condómino é um placeholder ("' + email + '"). Corrige o email no painel de Condóminos antes de criar a conta.');
+  }
+  return e;
+}
+
 export async function criarConta(tenantId, operatorName) {
   const tenant = await store.getDoc('tenants', tenantId);
   if (!tenant) throw new Error('Condómino não encontrado.');
-  if (!tenant.email?.trim()) {
-    throw new Error('O condómino não tem email definido. Adiciona um email primeiro.');
-  }
+  const emailValidado = validarEmailTenant(tenant.email);
   if (!tenant.nif) {
     throw new Error('O condómino não tem NIF definido (necessário como password inicial).');
   }
 
   const existing = await store.queryDocs('users', { tenantId });
   if (existing.length > 0) {
-    throw new Error('Já existe uma conta para este condómino.');
+    throw new Error('Já existe uma conta para este condómino. Apaga primeiro se queres recriar.');
   }
 
   const { hash, salt, algo } = await hashPassword(String(tenant.nif));
 
   const doc = {
     id: `user_${tenantId}`,
-    email: tenant.email.trim().toLowerCase(),
+    email: emailValidado,
     passwordHash: hash,
     passwordSalt: salt,
     passwordAlgo: algo,
@@ -71,8 +83,40 @@ export async function criarConta(tenantId, operatorName) {
     lastLogin: null
   };
   await store.setDoc('users', doc);
+
+  // Verificação pós-write · confirma que o doc chegou ao servidor Firestore
+  // (não fica apenas no cache local que pode ser revertido se a regra rejeitar)
+  if (store.verifyDocOnServer) {
+    const confirmado = await store.verifyDocOnServer('users', doc.id);
+    if (!confirmado) {
+      throw new Error('A conta foi escrita localmente mas não foi confirmada no servidor.\n\nPossíveis causas: regras Firestore, sessão Firebase expirada, App Check.\n\nVerifica a consola (F12) para detalhes e tenta novamente.');
+    }
+  }
+
   // Retorna password só na resposta para a UI mostrar uma vez · NÃO guardada
   return { ...doc, password: String(tenant.nif) };
+}
+
+/**
+ * Apaga definitivamente uma conta de condómino.
+ * Operação irreversível · não confunde com desativar (que mantém o doc).
+ * @param {string} userId - ID do doc users (ex: user_cond_05)
+ * @param {string} operatorName - operador que apaga (para log)
+ * @returns {Promise<Object>} info do doc apagado (para confirmação UI)
+ */
+export async function apagarConta(userId, operatorName) {
+  const u = await store.getDoc('users', userId);
+  if (!u) throw new Error('Conta não encontrada (já apagada?).');
+  await store.deleteDoc('users', userId);
+
+  // Verifica que sumiu mesmo do servidor
+  if (store.verifyDocOnServer) {
+    const aindaExiste = await store.verifyDocOnServer('users', userId);
+    if (aindaExiste) {
+      throw new Error('A conta foi apagada localmente mas continua no servidor.\n\nVerifica a consola e regras Firestore.');
+    }
+  }
+  return { email: u.email, tenantName: u.tenantName, apagadoEm: Date.now(), apagadoPor: operatorName };
 }
 
 /**

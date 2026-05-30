@@ -56,6 +56,15 @@ export const importarSnapshot = (...a) =>
   activeStore.importarSnapshot ? activeStore.importarSnapshot(...a) : activeStore.importAll(...a);
 export const clearAll = (...a) => activeStore.clearAll(...a);
 
+// verifyDocOnServer · só existe em Firestore (no localStorage retorna true sempre,
+// porque a "verificação no servidor" não se aplica)
+export const verifyDocOnServer = async (col, id) => {
+  if (typeof activeStore.verifyDocOnServer === 'function') {
+    return activeStore.verifyDocOnServer(col, id);
+  }
+  return true; // localStorage · operação sempre confirmada localmente
+};
+
 // Utilitários do selector
 export function getBackend() { return backend; }
 export function setBackend(name) {

@@ -212,3 +212,25 @@ export async function clearAll() {
 if (typeof window !== 'undefined') {
   window.__firestoreStore = { listDocs, getDoc, setDoc, deleteDoc, queryDocs, exportAll, importAll, clearAll, bootstrap };
 }
+
+/**
+ * Verifica DIRECTAMENTE no servidor Firestore (bypass cache local) se um doc existe.
+ * Útil após writes críticos para confirmar persistência (regras podem rejeitar e o
+ * cache local mostra "ok" temporariamente).
+ *
+ * @param {string} col - nome da coleção
+ * @param {string} id - id do doc
+ * @returns {Promise<boolean>} true se existe no servidor
+ */
+export async function verifyDocOnServer(col, id) {
+  try {
+    const { doc, getDocFromServer } = window.__firebase.firestoreFns;
+    const db = window.__firebase.db;
+    const snap = await getDocFromServer(doc(db, col, id));
+    return snap.exists();
+  } catch (e) {
+    console.warn('[verifyDocOnServer] erro:', e.message);
+    // Se falhar a verificação (rede, etc.) não bloqueia · retorna true (best-effort)
+    return true;
+  }
+}

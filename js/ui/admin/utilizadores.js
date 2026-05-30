@@ -150,6 +150,7 @@ function buildRow({ tenant, user }) {
       ${isDisabled
         ? `<button class="btn" data-action="reativar" data-id="${user.id}">Reativar</button>`
         : `<button class="btn danger" data-action="desativar" data-id="${user.id}">Desativar</button>`}
+      <button class="btn danger" data-action="apagar" data-id="${user.id}" title="Apagar conta definitivamente (irreversível)">Apagar</button>
     `;
   }
 
@@ -196,10 +197,20 @@ async function handleAction(action, id) {
       await utilizadores.desativar(id, operatorName);
     } else if (action === 'reativar') {
       await utilizadores.reactivar(id);
+    } else if (action === 'apagar') {
+      // Confirmação dupla por ser destrutivo e irreversível
+      const u = await utilizadores.listarUtilizadores();
+      const alvo = u.find(x => x.user?.id === id);
+      const nome = alvo?.tenant?.name || 'este condómino';
+      const email = alvo?.user?.email || '—';
+      if (!confirm(`APAGAR DEFINITIVAMENTE a conta de:\n\n  ${nome}\n  ${email}\n\nA conta será removida do servidor. Para voltar a permitir o acesso, terás de a criar de novo.\n\nIRREVERSÍVEL. Continuar?`)) return;
+      const info = await utilizadores.apagarConta(id, operatorName);
+      alert(`Conta apagada.\n\n  ${info.tenantName}\n  ${info.email}\n\nO condómino pode agora ser recriado com email corrigido.`);
     }
     renderList();
   } catch (e) {
-    alert('Erro: ' + e.message);
+    alert('⚠️ Operação falhou\n\n' + e.message);
+    console.error('[utilizadores]', e);
   }
 }
 
