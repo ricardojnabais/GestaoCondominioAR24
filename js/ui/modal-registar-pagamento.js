@@ -506,7 +506,9 @@ async function mostrarPosEmissao(recibo, tenant, info) {
     .replace(/{descricao}/g, recibo.descricao || '')
     .replace(/{data}/g, recibo.data || '')
     .replace(/{condominio}/g, condominio.nome || 'Condomínio AR24')
-    .replace(/{morada}/g, condominio.morada || 'Av. Amália Rodrigues, 24');
+    .replace(/{morada}/g, condominio.morada || 'Av. Amália Rodrigues, 24')
+    .replace(/{iban}/g, condominio.iban || '— IBAN não definido —')
+    .replace(/{email_condominio}/g, condominio.email || '');
   const assunto = `Recibo ${recibo.recibo_numero} · ${condominio.nome || 'Condomínio AR24'}`;
   const email = tenant?.email || '';
 
@@ -557,15 +559,20 @@ async function mostrarPosEmissao(recibo, tenant, info) {
 function templateEmailDefault() {
   return `Caro(a) {nome},
 
-Junto enviamos recibo nº {numero}, referente ao pagamento da fração {fraction}.
+Junto envio o recibo n.º {numero}, referente a {descricao}, no valor de {valor}, emitido a {data}.
 
-Valor: {valor}
-Descrição: {descricao}
-Data: {data}
+Para sua referência:
+• Fração: {fraction}
+• Condomínio: {condominio}
 
-Obrigado pelo pagamento.
+Para pagamentos por transferência bancária, utilize:
+• IBAN: {iban}
+• Titular: {condominio}
+• Referência: indicar a fração ({fraction}) e o mês de referência
 
-Cumprimentos,
+Em caso de dúvida, contacte a administração através de {email_condominio}.
+
+Com os melhores cumprimentos,
 A Administração
 {condominio}
 {morada}`;

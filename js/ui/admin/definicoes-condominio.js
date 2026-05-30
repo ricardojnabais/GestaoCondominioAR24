@@ -79,8 +79,8 @@ export async function render(container) {
           </div>
 
           <div class="field">
-            <label>IBAN (opcional)</label>
-            <input type="text" id="s-iban" value="${escapeAttr(info.iban)}" maxlength="34" placeholder="PT50...">
+            <label>IBAN (opcional · formato: PT50 XXXX XXXX XXXX XXXX XXXX X)</label>
+            <input type="text" id="s-iban" value="${escapeAttr(info.iban)}" maxlength="50" placeholder="PT50 0010 0000 0000 0000 0000 0">
           </div>
 
           <div class="field">
@@ -91,7 +91,7 @@ export async function render(container) {
           <div class="field" style="margin-top:18px">
             <label>Template de Email para Recibos</label>
             <textarea id="s-email-tpl" rows="9" style="width:100%;font-family:'JetBrains Mono',monospace;font-size:12px;padding:10px;border:1.5px solid var(--border);border-radius:8px;resize:vertical;box-sizing:border-box">${escapeAttr(info.templateEmailRecibo || '')}</textarea>
-            <div class="hint">Variáveis disponíveis: {nome} {fraction} {numero} {valor} {descricao} {data} {condominio} {morada}</div>
+            <div class="hint">Variáveis disponíveis: {nome} {fraction} {numero} {valor} {descricao} {data} {condominio} {morada} {iban} {email_condominio}</div>
           </div>
 
           <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
@@ -118,6 +118,10 @@ export async function render(container) {
 }
 
 async function save() {
+  // Normaliza o IBAN: remove espaços extra mas preserva grupos legíveis
+  const ibanRaw = containerRef.querySelector('#s-iban').value.trim();
+  const ibanNorm = ibanRaw.replace(/\s+/g, ' ').toUpperCase();
+
   const updates = {
     nome: containerRef.querySelector('#s-nome').value.trim(),
     morada: containerRef.querySelector('#s-morada').value.trim(),
@@ -125,7 +129,7 @@ async function save() {
     localidade: containerRef.querySelector('#s-loc').value.trim(),
     nif: containerRef.querySelector('#s-nif').value.trim(),
     email: containerRef.querySelector('#s-email').value.trim(),
-    iban: containerRef.querySelector('#s-iban').value.trim(),
+    iban: ibanNorm,
     telefone: containerRef.querySelector('#s-tel').value.trim(),
     templateEmailRecibo: containerRef.querySelector('#s-email-tpl').value
   };
@@ -140,11 +144,16 @@ async function save() {
     return;
   }
 
+  console.log('[definicoes] A guardar:', { ...updates, templateEmailRecibo: '...' + updates.templateEmailRecibo.length + ' chars' });
+
   try {
-    await condominioInfo.atualizar(updates);
+    const resultado = await condominioInfo.atualizar(updates);
+    console.log('[definicoes] Guardado · resultado:', resultado);
     showMsg('✓ Definições guardadas.', 'ok');
   } catch (e) {
-    showMsg('Erro: ' + e.message, 'error');
+    console.error('[definicoes] Erro ao guardar:', e);
+    showMsg('⚠ Erro: ' + e.message, 'error');
+    alert('⚠️ Não foi possível guardar\n\n' + e.message + '\n\nVer detalhes na consola (F12).');
   }
 }
 
