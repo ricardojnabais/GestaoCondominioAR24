@@ -12,6 +12,7 @@
 import * as store from '../../store/local-store.js';
 import * as router from '../router.js';
 import { icon } from '../icons.js';
+import * as auditoria from '../../modules/auditoria-recibos.js';
 
 let containerRef = null;
 let snapshotPendente = null;
@@ -92,6 +93,26 @@ export async function render(container) {
           </div>
           <div id="migrar-log" style="margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:11px;background:#f9f6ee;border:1px solid #e8dfc8;border-radius:8px;padding:10px;max-height:280px;overflow:auto;display:none;white-space:pre-wrap"></div>
         </div>
+
+        <div class="settings-card" style="margin-top:24px;border-color:#2d8659">
+          <h3 style="margin:0 0 8px 0;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#2d8659">Auditoria · Recibos 2026</h3>
+          <p style="margin:0 0 12px 0;font-size:13px;color:var(--text)">
+            Os recibos de <strong>2026</strong> podem ser exportados em formato de auditoria (Excel idêntico ao usado pelo auditor externo).
+            Para garantir que os dados em Firestore coincidem com a auditoria, há um botão de <strong>alinhamento canónico</strong> que substitui
+            os 64 recibos de 2026 pelo dataset oficial (inclui o recibo nº 27 ao Município da Amadora · Reabilita+).
+          </p>
+          <div id="aud-estado" style="font-size:12px;color:var(--text-muted);margin-bottom:10px">A verificar estado…</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn primary" id="btn-export-auditoria">📊 Exportar Excel Auditoria 2026</button>
+            <button class="btn ghost" id="btn-comparar-audit">🔍 Comparar com dataset</button>
+            <button class="btn danger" id="btn-alinhar-audit">⚠ Alinhar recibos 2026 com dataset</button>
+          </div>
+          <p style="margin:10px 0 0 0;font-size:11px;color:var(--text-muted)">
+            <strong>Nota:</strong> a exportação anual normal (em <em>Análise</em>) só está disponível para anos ≥ 2026.
+            Anos anteriores são considerados histórico não auditável pelo sistema.
+          </p>
+          <div id="aud-log" style="margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:11px;background:#f4faf6;border:1px solid #d4e6db;border-radius:8px;padding:10px;max-height:280px;overflow:auto;display:none;white-space:pre-wrap"></div>
+        </div>
       </main>
     </div>
   `;
@@ -110,7 +131,139 @@ export async function render(container) {
   containerRef.querySelector('#btn-backup-local').addEventListener('click', backupOnlyClick);
   containerRef.querySelector('#btn-migrar').addEventListener('click', migrarClick);
   containerRef.querySelector('#btn-voltar-local').addEventListener('click', voltarLocalClick);
+
+  // Auditoria 2026
+  containerRef.querySelector('#btn-export-auditoria').addEventListener('click', exportAuditoriaClick);
+  containerRef.querySelector('#btn-comparar-audit').addEventListener('click', compararAuditoriaClick);
+  containerRef.querySelector('#btn-alinhar-audit').addEventListener('click', alinharAuditoriaClick);
+
   await actualizarEstadoMigracao();
+  await actualizarEstadoAuditoria();
+}
+
+// ─────────────── AUDITORIA ───────────────
+
+function logAud(text) {
+  const el = containerRef.querySelector('#aud-log');
+  el.style.display = '';
+  el.textContent += text + '\n';
+  el.scrollTop = el.scrollHeight;
+}
+
+async function actualizarEstadoAuditoria() {
+  const el = containerRef.querySelector('#aud-estado');
+  if (!el) return;
+  try {
+    const r = await auditoria.compararComDataset();
+    let msg = `📋 Dataset canónico: ${r.totalCanonico} recibos · Atualmente em Firestore: ${r.totalAtual}`;
+    if (r.totalAtual === r.totalCanonico && r.divergem === 0 && r.apenasAtual === 0) {
+      msg = `✓ ${msg} · alinhado`;
+      el.style.color = '#2d8659';
+    } else {
+      const detalhes = [];
+      if (r.apenasAtual > 0) detalhes.push(`${r.apenasAtual} extra atual`);
+      if (r.apenasDataset > 0) detalhes.push(`${r.apenasDataset} em falta`);
+      if (r.divergem > 0) detalhes.push(`${r.divergem} divergem`);
+      msg = `⚠ ${msg} · ${detalhes.join(', ')}`;
+      el.style.color = '#c0392b';
+    }
+    el.innerHTML = msg;
+  } catch (e) {
+    el.textContent = '⚠ Erro: ' + e.message;
+    el.style.color = '#c0392b';
+  }
+}
+
+async function exportAuditoriaClick() {
+  const btn = containerRef.querySelector('#btn-export-auditoria');
+  btn.disabled = true; btn.textContent = 'A gerar…';
+  try {
+    const filename = await auditoria.exportarAuditoria2026();
+    logAud(`✓ Exportado: ${filename}`);
+  } catch (e) {
+    logAud(`✗ Erro: ${e.message}`);
+    alert('Erro a exportar: ' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = '📊 Exportar Excel Auditoria 2026';
+  }
+}
+
+async function compararAuditoriaClick() {
+  const btn = containerRef.querySelector('#btn-comparar-audit');
+  btn.disabled = true; btn.textContent = 'A comparar…';
+  try {
+    const r = await auditoria.compararComDataset();
+    logAud(`── Comparação ──`);
+    logAud(`Dataset canónico: ${r.totalCanonico} recibos`);
+    logAud(`Atual em Firestore: ${r.totalAtual} recibos`);
+    logAud(`Iguais: ${r.iguais}`);
+    logAud(`Divergem: ${r.divergem}`);
+    logAud(`Só no atual (extra): ${r.apenasAtual}`);
+    logAud(`Só no canónico (em falta): ${r.apenasDataset}`);
+    if (r.divergem > 0) {
+      logAud(`\nDivergências (primeiras ${r.divergemDetalhe.length}):`);
+      for (const d of r.divergemDetalhe) {
+        logAud(`  ${d.recibo}: ${JSON.stringify(d.diffs)}`);
+      }
+    }
+    if (r.totalAtual === r.totalCanonico && r.divergem === 0 && r.apenasAtual === 0) {
+      logAud('\n✓ ESTADO ALINHADO · não é preciso fazer nada');
+    } else {
+      logAud('\n⚠ DESALINHADO · usa "Alinhar recibos 2026 com dataset" para corrigir');
+    }
+    await actualizarEstadoAuditoria();
+  } catch (e) {
+    logAud(`✗ Erro: ${e.message}`);
+  } finally {
+    btn.disabled = false; btn.textContent = '🔍 Comparar com dataset';
+  }
+}
+
+async function alinharAuditoriaClick() {
+  const r1 = await auditoria.compararComDataset();
+  const aviso = `⚠ ALINHAMENTO DESTRUTIVO\n\n` +
+    `Dataset canónico: ${r1.totalCanonico} recibos\n` +
+    `Atualmente em Firestore: ${r1.totalAtual} recibos\n\n` +
+    `O sistema vai:\n` +
+    `  • Apagar ${r1.apenasAtual} recibo(s) que não estão no dataset\n` +
+    `  • Sobrescrever ${r1.totalCanonico} com a versão canónica\n` +
+    `  • Manter os recibos de anos anteriores intactos\n\n` +
+    `IRREVERSÍVEL. Faz backup antes se quiseres ponto de retorno.\n\n` +
+    `Continuar?`;
+  if (!confirm(aviso)) return;
+  if (!confirm('Confirmas? Esta operação NÃO pode ser desfeita.')) return;
+
+  const btn = containerRef.querySelector('#btn-alinhar-audit');
+  btn.disabled = true; btn.textContent = 'A alinhar…';
+  const logEl = containerRef.querySelector('#aud-log');
+  logEl.style.display = '';
+  logEl.textContent = '── Alinhamento ──\n';
+
+  try {
+    const stats = await auditoria.alinharRecibos2026((p) => {
+      if (p.stage === 'loading') logAud(p.detail);
+      else if (p.stage === 'reading') logAud(p.detail);
+      else if (p.stage === 'cleaning') logEl.textContent = logEl.textContent.replace(/\nApagados: \d+.*\n?$/, '') + `\nApagados: ${p.current}/${p.total} · ${p.detail || ''}`;
+      else if (p.stage === 'writing') logEl.textContent = logEl.textContent.replace(/\nEscritos: \d+.*\n?$/, '') + `\nEscritos: ${p.current}/${p.total} · ${p.detail || ''}`;
+      else if (p.stage === 'done') logAud('\n' + p.detail);
+    });
+    logAud(`\n── Resultado ──`);
+    logAud(`Lidos do dataset: ${stats.lidos}`);
+    logAud(`Apagados (extra): ${stats.apagados}`);
+    logAud(`Escritos: ${stats.escritos}`);
+    if (stats.erros.length > 0) {
+      logAud(`\n⚠ Erros: ${stats.erros.length}`);
+      for (const e of stats.erros.slice(0, 10)) logAud(`  ${e}`);
+    } else {
+      logAud('\n✓ ALINHAMENTO COMPLETO · sem erros');
+    }
+    await actualizarEstadoAuditoria();
+  } catch (e) {
+    logAud(`\n✗ FALHA: ${e.message}`);
+    alert('Alinhamento falhou: ' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = '⚠ Alinhar recibos 2026 com dataset';
+  }
 }
 
 async function actualizarEstadoMigracao() {

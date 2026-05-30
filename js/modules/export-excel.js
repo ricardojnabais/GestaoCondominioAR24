@@ -48,7 +48,15 @@ function centavosToEur(c) { return Math.round(c || 0) / 100; }
 
 // ───────────────────────── EXPORT ANUAL ─────────────────────────
 
+// Marco de auditoria · ano em que a app passou a ser fonte de verdade.
+// Recibos/despesas de anos anteriores são históricos importados, não auditáveis pelo
+// sistema. Exportações para esses anos são bloqueadas.
+const ANO_AUDITORIA_MIN = 2026;
+
 export async function exportarAno(ano) {
+  if (ano < ANO_AUDITORIA_MIN) {
+    throw new Error(`Exportação não disponível para ${ano}. A aplicação só audita dados a partir de ${ANO_AUDITORIA_MIN}. Para histórico de ${ano}, usa o ficheiro de arquivo externo.`);
+  }
   if (!window.ExcelJS) throw new Error('ExcelJS não está disponível.');
   const wb = new window.ExcelJS.Workbook();
   wb.creator = 'Gestão do Condomínio AR24';
@@ -69,6 +77,9 @@ export async function exportarAno(ano) {
 }
 
 export async function exportarOrcamentoAno(ano) {
+  if (ano < ANO_AUDITORIA_MIN) {
+    throw new Error(`Exportação não disponível para ${ano}. A aplicação só audita dados a partir de ${ANO_AUDITORIA_MIN}.`);
+  }
   if (!window.ExcelJS) throw new Error('ExcelJS não está disponível.');
   const wb = new window.ExcelJS.Workbook();
   wb.creator = 'Gestão do Condomínio AR24';
