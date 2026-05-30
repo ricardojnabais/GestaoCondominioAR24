@@ -14,7 +14,17 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2025-05",
+      "2025-06",
+      "2025-07",
+      "2025-08",
+      "2025-09",
+      "2025-10",
+      "2025-11",
+      "2025-12"
+    ]
   },
   {
     "id": "rcb_002_2026",
@@ -28,10 +38,11 @@
     "valor_centimos": 227500,
     "descricao": "Obras Reparação",
     "extenso": "dois mil, duzentos e setenta e cinco euros",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_003_2026",
@@ -45,10 +56,11 @@
     "valor_centimos": 34650,
     "descricao": "Reparação Elevador",
     "extenso": "trezentos e quarenta e seis euros e cinquenta cêntimos",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_004_2026",
@@ -65,7 +77,16 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2025-06",
+      "2025-07",
+      "2025-08",
+      "2025-09",
+      "2025-10",
+      "2025-11",
+      "2025-12"
+    ]
   },
   {
     "id": "rcb_005_2026",
@@ -79,10 +100,11 @@
     "valor_centimos": 12700,
     "descricao": "Reparação Elevador",
     "extenso": "cento e vinte e sete euros",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_006_2026",
@@ -96,10 +118,11 @@
     "valor_centimos": 217500,
     "descricao": "Obras de Conservação",
     "extenso": "dois mil, cento e setenta e cinco euros",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_007_2026",
@@ -116,7 +139,17 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2025-05",
+      "2025-06",
+      "2025-07",
+      "2025-08",
+      "2025-09",
+      "2025-10",
+      "2025-11",
+      "2025-12"
+    ]
   },
   {
     "id": "rcb_008_2026",
@@ -130,10 +163,11 @@
     "valor_centimos": 64690,
     "descricao": "Reparação Elevador",
     "extenso": "seiscentos e quarenta e seis euros e noventa cêntimos",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_009_2026",
@@ -147,10 +181,11 @@
     "valor_centimos": 297500,
     "descricao": "Obras de Conservação",
     "extenso": "dois mil, novecentos e setenta e cinco euros",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_010_2026",
@@ -167,7 +202,16 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2025-06",
+      "2025-07",
+      "2025-08",
+      "2025-09",
+      "2025-10",
+      "2025-11",
+      "2025-12"
+    ]
   },
   {
     "id": "rcb_011_2026",
@@ -181,10 +225,11 @@
     "valor_centimos": 47838,
     "descricao": "Reparação Elevador",
     "extenso": "quatrocentos e setenta e oito euros e trinta e oito cêntimos",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_012_2026",
@@ -198,10 +243,11 @@
     "valor_centimos": 220000,
     "descricao": "Obras de Conservação",
     "extenso": "dois mil e duzentos euros",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_013_2026",
@@ -218,7 +264,16 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2025-06",
+      "2025-07",
+      "2025-08",
+      "2025-09",
+      "2025-10",
+      "2025-11",
+      "2025-12"
+    ]
   },
   {
     "id": "rcb_014_2026",
@@ -232,10 +287,11 @@
     "valor_centimos": 38272,
     "descricao": "Reparação Elevador",
     "extenso": "trezentos e oitenta e dois euros e setenta e dois cêntimos",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_015_2026",
@@ -249,10 +305,11 @@
     "valor_centimos": 220000,
     "descricao": "Obras de Conservação",
     "extenso": "dois mil e duzentos euros",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_016_2026",
@@ -266,10 +323,11 @@
     "valor_centimos": 287500,
     "descricao": "Obras de Conservação",
     "extenso": "dois mil, oitocentos e setenta e cinco euros",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_017_2026",
@@ -286,7 +344,16 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2025-06",
+      "2025-07",
+      "2025-08",
+      "2025-09",
+      "2025-10",
+      "2025-11",
+      "2025-12"
+    ]
   },
   {
     "id": "rcb_018_2026",
@@ -300,10 +367,11 @@
     "valor_centimos": 47295,
     "descricao": "Reparação Elevador",
     "extenso": "quatrocentos e setenta e dois euros e noventa e cinco cêntimos",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_019_2026",
@@ -317,10 +385,11 @@
     "valor_centimos": 217500,
     "descricao": "Obras de Conservação",
     "extenso": "dois mil, cento e setenta e cinco euros",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_020_2026",
@@ -334,10 +403,11 @@
     "valor_centimos": 312500,
     "descricao": "Obras de Conservação",
     "extenso": "três mil, cento e vinte e cinco euros",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_021_2026",
@@ -351,10 +421,11 @@
     "valor_centimos": 68000,
     "descricao": "Reparação Elevador",
     "extenso": "seiscentos e oitenta euros",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_022_2026",
@@ -371,7 +442,16 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2025-06",
+      "2025-07",
+      "2025-08",
+      "2025-09",
+      "2025-10",
+      "2025-11",
+      "2025-12"
+    ]
   },
   {
     "id": "rcb_023_2026",
@@ -388,7 +468,16 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2025-06",
+      "2025-07",
+      "2025-08",
+      "2025-09",
+      "2025-10",
+      "2025-11",
+      "2025-12"
+    ]
   },
   {
     "id": "rcb_024_2026",
@@ -402,10 +491,11 @@
     "valor_centimos": 302500,
     "descricao": "Obras de Conservação",
     "extenso": "três mil e vinte e cinco euros",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_025_2026",
@@ -419,10 +509,11 @@
     "valor_centimos": 59202,
     "descricao": "",
     "extenso": "quinhentos e noventa e dois euros e dois cêntimos",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_026_2026",
@@ -439,7 +530,12 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2026-01",
+      "2026-02",
+      "2026-03"
+    ]
   },
   {
     "id": "rcb_027_2026",
@@ -453,11 +549,12 @@
     "valor_centimos": 651900,
     "descricao": "Processo REABILITA 1124/+/2025",
     "extenso": "seis mil quinhentos e dezanove euros",
-    "tipo": "comparticipacao",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "entidadeExterna": true,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_028_2026",
@@ -474,7 +571,12 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2026-01",
+      "2026-02",
+      "2026-03"
+    ]
   },
   {
     "id": "rcb_029_2026",
@@ -488,10 +590,11 @@
     "valor_centimos": 6576,
     "descricao": "Reparação Elevador",
     "extenso": "sessenta e cinco euros e setenta e seis cêntimos",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_030_2026",
@@ -505,10 +608,11 @@
     "valor_centimos": 42950,
     "descricao": "Reparação Elevador",
     "extenso": "quatrocentos e vinte e nove euros e cinquenta cêntimos",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_031_2026",
@@ -522,10 +626,11 @@
     "valor_centimos": 197500,
     "descricao": "Obras de Conservação",
     "extenso": "mil, novecentos e setenta e cinco euros",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_032_2026",
@@ -542,7 +647,12 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2026-01",
+      "2026-02",
+      "2026-03"
+    ]
   },
   {
     "id": "rcb_033_2026",
@@ -559,7 +669,16 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2025-06",
+      "2025-07",
+      "2025-08",
+      "2025-09",
+      "2025-10",
+      "2025-11",
+      "2025-12"
+    ]
   },
   {
     "id": "rcb_034_2026",
@@ -576,7 +695,12 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2026-01",
+      "2026-02",
+      "2026-03"
+    ]
   },
   {
     "id": "rcb_035_2026",
@@ -593,7 +717,10 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2026-03"
+    ]
   },
   {
     "id": "rcb_036_2026",
@@ -610,7 +737,12 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2026-01",
+      "2026-02",
+      "2026-03"
+    ]
   },
   {
     "id": "rcb_037_2026",
@@ -627,7 +759,8 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_038_2026",
@@ -641,10 +774,11 @@
     "valor_centimos": 1900,
     "descricao": "Reparação Elevador",
     "extenso": "dezanove euros",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_039_2026",
@@ -661,7 +795,8 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_040_2026",
@@ -678,7 +813,12 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2026-01",
+      "2026-02",
+      "2026-03"
+    ]
   },
   {
     "id": "rcb_041_2026",
@@ -692,10 +832,11 @@
     "valor_centimos": 62516,
     "descricao": "Reparação Elevador",
     "extenso": "seiscentos e vinte e cinco euros e dezasseis cêntimos",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_042_2026",
@@ -712,7 +853,12 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2026-01",
+      "2026-02",
+      "2026-03"
+    ]
   },
   {
     "id": "rcb_043_2026",
@@ -729,7 +875,21 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2026-01",
+      "2026-02",
+      "2026-03",
+      "2026-04",
+      "2026-05",
+      "2026-06",
+      "2026-07",
+      "2026-08",
+      "2026-09",
+      "2026-10",
+      "2026-11",
+      "2026-12"
+    ]
   },
   {
     "id": "rcb_044_2026",
@@ -746,7 +906,10 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2026-03"
+    ]
   },
   {
     "id": "rcb_045_2026",
@@ -760,10 +923,11 @@
     "valor_centimos": 14850,
     "descricao": "Reparação Elevador",
     "extenso": "cento e quarenta e oito euros e cinquenta cêntimos",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_046_2026",
@@ -780,7 +944,10 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2026-04"
+    ]
   },
   {
     "id": "rcb_047_2026",
@@ -797,7 +964,10 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2026-04"
+    ]
   },
   {
     "id": "rcb_048_2026",
@@ -814,7 +984,10 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2026-04"
+    ]
   },
   {
     "id": "rcb_049_2026",
@@ -828,10 +1001,11 @@
     "valor_centimos": 4800,
     "descricao": "Reparação Elevador",
     "extenso": "quarenta e oito euros",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_050_2026",
@@ -848,7 +1022,10 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2026-04"
+    ]
   },
   {
     "id": "rcb_051_2026",
@@ -865,7 +1042,10 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2026-04"
+    ]
   },
   {
     "id": "rcb_052_2026",
@@ -879,10 +1059,11 @@
     "valor_centimos": 6300,
     "descricao": "Upgrade Video Porteiro",
     "extenso": "sessenta e três euros",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_053_2026",
@@ -896,10 +1077,11 @@
     "valor_centimos": 5700,
     "descricao": "Upgrade Video Porteiro",
     "extenso": "cinquenta e sete euros",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_054_2026",
@@ -916,7 +1098,10 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2026-05"
+    ]
   },
   {
     "id": "rcb_055_2026",
@@ -933,7 +1118,10 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2026-05"
+    ]
   },
   {
     "id": "rcb_056_2026",
@@ -950,7 +1138,10 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2026-05"
+    ]
   },
   {
     "id": "rcb_057_2026",
@@ -967,7 +1158,15 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2026-01",
+      "2026-02",
+      "2026-03",
+      "2026-04",
+      "2026-05",
+      "2026-06"
+    ]
   },
   {
     "id": "rcb_058_2026",
@@ -981,10 +1180,11 @@
     "valor_centimos": 2500,
     "descricao": "Upgrade Video porteiro",
     "extenso": "vinte e cinco euros",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   },
   {
     "id": "rcb_059_2026",
@@ -1001,7 +1201,10 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2026-05"
+    ]
   },
   {
     "id": "rcb_060_2026",
@@ -1018,7 +1221,10 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2026-04"
+    ]
   },
   {
     "id": "rcb_061_2026",
@@ -1035,7 +1241,10 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2026-05"
+    ]
   },
   {
     "id": "rcb_062_2026",
@@ -1052,7 +1261,10 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2026-05"
+    ]
   },
   {
     "id": "rcb_063_2026",
@@ -1069,7 +1281,10 @@
     "tipo": "quota",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": [
+      "2026-05"
+    ]
   },
   {
     "id": "rcb_064_2026",
@@ -1083,9 +1298,10 @@
     "valor_centimos": 6400,
     "descricao": "Reparação Elevador",
     "extenso": "sessenta e quatro euros",
-    "tipo": "quota",
+    "tipo": "outro",
     "excluirDoSaldo": false,
     "auditoria": true,
-    "auditoriaImportadoEm": "2026-05-30"
+    "auditoriaImportadoEm": "2026-05-30",
+    "mesReferencia": []
   }
 ]

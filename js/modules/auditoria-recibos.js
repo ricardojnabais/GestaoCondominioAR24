@@ -70,13 +70,28 @@ export async function alinharRecibos2026(onProgress = () => {}) {
     }
   }
 
-  // Inserir/sobrescrever os 63 do dataset
+  // Inserir/sobrescrever os recibos do dataset com merge inteligente:
+  // preservar campos próprios da app (pdfGeradoEm, pdfGeracoes, lastModifiedBy)
+  // e atualizar só os campos canónicos (data, valor, descricao, tipo, mesReferencia, etc.)
   onProgress({ stage: 'writing', total: dataset.length, current: 0, detail: 'A escrever recibos canónicos...' });
   i = 0;
   for (const r of dataset) {
     i++;
     try {
-      await store.setDoc('receipts', { ...r });
+      // Procurar doc atual com o mesmo id para preservar metadados da app
+      const atual = atuais2026.find(a => a.id === r.id) || {};
+      const camposPreservados = {
+        pdfGeradoEm: atual.pdfGeradoEm,
+        pdfGeradoPor: atual.pdfGeradoPor,
+        pdfGeracoes: atual.pdfGeracoes,
+        lastModifiedBy: atual.lastModifiedBy,
+        lastModifiedAt: atual.lastModifiedAt
+      };
+      // Filtra undefined
+      for (const k of Object.keys(camposPreservados)) {
+        if (camposPreservados[k] === undefined) delete camposPreservados[k];
+      }
+      await store.setDoc('receipts', { ...r, ...camposPreservados });
       stats.escritos++;
       onProgress({ stage: 'writing', total: dataset.length, current: i, action: 'escrito', detail: r.recibo_numero });
     } catch (e) {
@@ -192,22 +207,29 @@ async function downloadWorkbook(wb, filename) {
 }
 
 /**
- * Exporta Excel de auditoria · APENAS 2026.
+ * Exporta Excel de auditoria para o ano indicado.
  * Formato idêntico ao ficheiro de auditoria externo:
  *  Sheet 1 · Recibos (8 colunas: Nº, Data, Condómino, Fração, NIF, Descrição, Valor, Extenso)
  *  Sheet 2 · Resumo Mensal (4 colunas)
  *  Sheet 3 · Por Condómino (5 colunas)
  *  Sheet 4 · Condóminos (5 colunas)
+ *
+ * Apenas anos >= 2026 são auditáveis. Anos anteriores são históricos importados.
+ *
+ * @param {number} ano - ano a exportar (default: 2026)
  */
-export async function exportarAuditoria2026() {
+export async function exportarAuditoria(ano = ANO_AUDITORIA) {
   if (typeof ExcelJS === 'undefined') {
     throw new Error('ExcelJS não carregado. Recarrega a página.');
+  }
+  if (typeof ano !== 'number' || ano < ANO_AUDITORIA) {
+    throw new Error(`Exportação de auditoria só está disponível a partir de ${ANO_AUDITORIA}.`);
   }
 
   // Carregar dados
   const todos = await store.listDocs('receipts');
   const recibos = todos
-    .filter(r => r.ano === ANO_AUDITORIA)
+    .filter(r => r.ano === ano)
     .sort((a, b) => {
       // Ordenar por número de recibo (extrair os 3 dígitos)
       const na = parseInt(String(a.recibo_numero || '').replace(/[^0-9]/g, '').slice(0, 3), 10) || 0;
@@ -215,7 +237,7 @@ export async function exportarAuditoria2026() {
       return na - nb;
     });
 
-  if (recibos.length === 0) throw new Error('Não há recibos de 2026 para exportar.');
+  if (recibos.length === 0) throw new Error(`Não há recibos de ${ano} para exportar.`);
 
   const tenants = await store.listDocs('tenants');
   const tenantById = {};
@@ -231,7 +253,7 @@ export async function exportarAuditoria2026() {
   wsRec.getCell('A1').value = 'CONDOMÍNIO AV. AMÁLIA RODRIGUES, 24';
   wsRec.getCell('A1').font = { bold: true, size: 14, color: { argb: C.PRIMARY } };
   wsRec.mergeCells('A2:H2');
-  wsRec.getCell('A2').value = 'Histórico de Recibos Emitidos · Ano 2026 (Auditoria)';
+  wsRec.getCell('A2').value = `Histórico de Recibos Emitidos · Ano ${ano} (Auditoria)`;
   wsRec.getCell('A2').font = { italic: true, color: { argb: C.PRIMARY } };
   wsRec.mergeCells('A3:H3');
   const hoje = new Date();
@@ -278,7 +300,7 @@ export async function exportarAuditoria2026() {
   // ──────── SHEET 2 · RESUMO MENSAL ────────
   const wsRm = wb.addWorksheet('Resumo Mensal');
   wsRm.mergeCells('A1:D1');
-  wsRm.getCell('A1').value = 'Resumo Mensal · Ano 2026';
+  wsRm.getCell('A1').value = `Resumo Mensal · Ano ${ano}`;
   wsRm.getCell('A1').font = { bold: true, size: 14, color: { argb: C.PRIMARY } };
   wsRm.addRow([]);
   wsRm.addRow(['Mês', 'Nº Recibos', 'Total Recebido (€)', 'Média por Recibo (€)']);
@@ -315,7 +337,7 @@ export async function exportarAuditoria2026() {
   // ──────── SHEET 3 · POR CONDÓMINO ────────
   const wsPc = wb.addWorksheet('Por Condómino');
   wsPc.mergeCells('A1:E1');
-  wsPc.getCell('A1').value = 'Resumo por Condómino · Ano 2026';
+  wsPc.getCell('A1').value = `Resumo por Condómino · Ano ${ano}`;
   wsPc.getCell('A1').font = { bold: true, size: 14, color: { argb: C.PRIMARY } };
   wsPc.addRow([]);
   wsPc.addRow(['Condómino', 'Fração', 'NIF', 'Nº Recibos', 'Total Pago (€)']);
@@ -362,7 +384,7 @@ export async function exportarAuditoria2026() {
 
   const tenantsOrdenados = [...tenants].sort((a, b) => (a.fraction || '').localeCompare(b.fraction || ''));
   for (const t of tenantsOrdenados) {
-    const quota = (t.rentByYear || {})[ANO_AUDITORIA];
+    const quota = (t.rentByYear || {})[ano];
     wsCo.addRow([
       t.name || '',
       t.fraction || '',
@@ -377,7 +399,7 @@ export async function exportarAuditoria2026() {
   wsCo.views = [{ state: 'frozen', xSplit: 0, ySplit: 3 }];
 
   // Download
-  const filename = `auditoria-recibos-AR24-${hoje.toISOString().slice(0, 10)}.xlsx`;
+  const filename = `auditoria-recibos-AR24-${ano}-${hoje.toISOString().slice(0, 10)}.xlsx`;
   await downloadWorkbook(wb, filename);
   return filename;
 }

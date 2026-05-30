@@ -95,23 +95,32 @@ export async function render(container) {
         </div>
 
         <div class="settings-card" style="margin-top:24px;border-color:#2d8659">
-          <h3 style="margin:0 0 8px 0;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#2d8659">Auditoria · Recibos 2026</h3>
+          <h3 style="margin:0 0 8px 0;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#2d8659">Auditoria · Exportação Anual</h3>
           <p style="margin:0 0 12px 0;font-size:13px;color:var(--text)">
-            Os recibos de <strong>2026</strong> podem ser exportados em formato de auditoria (Excel idêntico ao usado pelo auditor externo).
-            Para garantir que os dados em Firestore coincidem com a auditoria, há um botão de <strong>alinhamento canónico</strong> que substitui
-            os 64 recibos de 2026 pelo dataset oficial (inclui o recibo nº 27 ao Município da Amadora · Reabilita+).
+            Exporta os recibos do ano selecionado em formato de auditoria (Excel com 4 folhas: Recibos · Resumo Mensal · Por Condómino · Condóminos).
+            Disponível a partir de <strong>2026</strong> (anos anteriores são histórico não auditável pelo sistema).
+          </p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <label style="font-size:13px;color:var(--text)">Ano:</label>
+            <select id="audit-ano" style="padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px"></select>
+            <button class="btn primary" id="btn-export-auditoria">📊 Exportar Excel Auditoria</button>
+          </div>
+          <div id="aud-export-log" style="margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#2d8659;display:none"></div>
+        </div>
+
+        <div class="settings-card" style="margin-top:18px;border-color:#d4af37">
+          <h3 style="margin:0 0 8px 0;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#b8941f">Alinhamento Canónico · Recibos 2026</h3>
+          <p style="margin:0 0 12px 0;font-size:13px;color:var(--text)">
+            Substitui os recibos de 2026 em Firestore pelos <strong>64 recibos canónicos</strong> do dataset oficial
+            (inclui o nº 27 ao Município da Amadora · Reabilita+). Operação destrutiva mas idempotente.
+            Recibos de outros anos <strong>não são tocados</strong>.
           </p>
           <div id="aud-estado" style="font-size:12px;color:var(--text-muted);margin-bottom:10px">A verificar estado…</div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn primary" id="btn-export-auditoria">📊 Exportar Excel Auditoria 2026</button>
             <button class="btn ghost" id="btn-comparar-audit">🔍 Comparar com dataset</button>
             <button class="btn danger" id="btn-alinhar-audit">⚠ Alinhar recibos 2026 com dataset</button>
           </div>
-          <p style="margin:10px 0 0 0;font-size:11px;color:var(--text-muted)">
-            <strong>Nota:</strong> a exportação anual normal (em <em>Análise</em>) só está disponível para anos ≥ 2026.
-            Anos anteriores são considerados histórico não auditável pelo sistema.
-          </p>
-          <div id="aud-log" style="margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:11px;background:#f4faf6;border:1px solid #d4e6db;border-radius:8px;padding:10px;max-height:280px;overflow:auto;display:none;white-space:pre-wrap"></div>
+          <div id="aud-log" style="margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:11px;background:#f9f6ee;border:1px solid #e8dfc8;border-radius:8px;padding:10px;max-height:280px;overflow:auto;display:none;white-space:pre-wrap"></div>
         </div>
       </main>
     </div>
@@ -132,13 +141,27 @@ export async function render(container) {
   containerRef.querySelector('#btn-migrar').addEventListener('click', migrarClick);
   containerRef.querySelector('#btn-voltar-local').addEventListener('click', voltarLocalClick);
 
-  // Auditoria 2026
+  // Auditoria · selector de ano (anos com recibos, >= 2026)
+  await popularAnosAuditoria();
   containerRef.querySelector('#btn-export-auditoria').addEventListener('click', exportAuditoriaClick);
   containerRef.querySelector('#btn-comparar-audit').addEventListener('click', compararAuditoriaClick);
   containerRef.querySelector('#btn-alinhar-audit').addEventListener('click', alinharAuditoriaClick);
 
   await actualizarEstadoMigracao();
   await actualizarEstadoAuditoria();
+}
+
+async function popularAnosAuditoria() {
+  const sel = containerRef.querySelector('#audit-ano');
+  if (!sel) return;
+  // Buscar anos com recibos · só >= 2026 (anos anteriores são históricos não auditáveis)
+  const recibos = await store.listDocs('receipts');
+  const anos = [...new Set(recibos.map(r => r.ano).filter(a => typeof a === 'number' && a >= 2026))].sort((a, b) => b - a);
+  // Garantir que o ano atual está sempre presente
+  const anoAtual = new Date().getFullYear();
+  if (anoAtual >= 2026 && !anos.includes(anoAtual)) anos.unshift(anoAtual);
+  if (anos.length === 0) anos.push(2026);
+  sel.innerHTML = anos.map(a => `<option value="${a}">${a}</option>`).join('');
 }
 
 // ─────────────── AUDITORIA ───────────────
@@ -176,15 +199,21 @@ async function actualizarEstadoAuditoria() {
 
 async function exportAuditoriaClick() {
   const btn = containerRef.querySelector('#btn-export-auditoria');
+  const sel = containerRef.querySelector('#audit-ano');
+  const ano = parseInt(sel.value, 10);
+  const logEl = containerRef.querySelector('#aud-export-log');
   btn.disabled = true; btn.textContent = 'A gerar…';
+  logEl.style.display = '';
+  logEl.textContent = `A exportar recibos de ${ano}…`;
   try {
-    const filename = await auditoria.exportarAuditoria2026();
-    logAud(`✓ Exportado: ${filename}`);
+    const filename = await auditoria.exportarAuditoria(ano);
+    logEl.textContent = `✓ Exportado: ${filename}`;
   } catch (e) {
-    logAud(`✗ Erro: ${e.message}`);
+    logEl.style.color = '#c0392b';
+    logEl.textContent = `✗ ${e.message}`;
     alert('Erro a exportar: ' + e.message);
   } finally {
-    btn.disabled = false; btn.textContent = '📊 Exportar Excel Auditoria 2026';
+    btn.disabled = false; btn.textContent = '📊 Exportar Excel Auditoria';
   }
 }
 
