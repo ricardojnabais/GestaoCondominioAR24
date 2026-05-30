@@ -57,11 +57,23 @@ export async function gerarReciboPDF(reciboId, operatorName) {
   const doc = new jsPDF('p', 'mm', 'a4');
   desenharRecibo(doc, recibo, tenant, cond, descricao);
 
-  // Registar emissão no recibo
-  recibo.pdfGeradoEm = Date.now();
-  recibo.pdfGeradoPor = operatorName || null;
-  recibo.pdfGeracoes = (recibo.pdfGeracoes || 0) + 1;
-  await store.setDoc('receipts', recibo);
+  // Registar emissão no recibo · APENAS quando o gerador é admin.
+  // O condómino não tem Firebase Auth e a regra Firestore de `receipts`
+  // exige request.auth != null para write, pelo que tentar gravar daria
+  // "missing or insufficient permissions" e bloqueava o download.
+  try {
+    const { getSession } = await import('../auth/local-auth.js');
+    const role = getSession()?.role;
+    if (role === 'admin') {
+      recibo.pdfGeradoEm = Date.now();
+      recibo.pdfGeradoPor = operatorName || null;
+      recibo.pdfGeracoes = (recibo.pdfGeracoes || 0) + 1;
+      await store.setDoc('receipts', recibo);
+    }
+  } catch (e) {
+    // Nunca bloquear a geração do PDF por causa do log de emissão.
+    console.warn('[export-pdf] Registo de emissão falhou (continua sem registar):', e.message);
+  }
 
   // Nome do ficheiro
   const reciboNum = (recibo.recibo_numero || 'sn').replace(/[/\\?%*:|"<>]/g, '_').replace(/ /g, '_');
