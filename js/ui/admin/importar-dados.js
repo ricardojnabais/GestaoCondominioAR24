@@ -138,12 +138,13 @@ export async function render(container) {
             apaga <strong>todos</strong> os recibos "H0xx" e repõe os <strong>64 canónicos (RCB 001–064)</strong>,
             quotas <strong>2.351,00 €</strong> (sem duplicar), garante as <strong>9 rúbricas</strong>
             (faz aparecer Schindler/Allianz/Banco no mapa), recebimento CMA <strong>6.519,00 €</strong>,
-            saldo inicial <strong>8.150,19 € @ 27/05</strong> e saldo real <strong>7.028,25 €</strong>.
+            saldo inicial <strong>7.521,78 € @ 27/05</strong> e saldo real <strong>7.028,25 €</strong>.
             Próximo recibo = <strong>RCB 065</strong>. Idempotente.
           </p>
           <p style="margin:0 0 12px 0;font-size:12px;color:#2d8659;background:#eef7f0;border-left:3px solid #2d8659;padding:8px 11px;border-radius:0 8px 8px 0">
-            ⚠ Apaga TODOS os recibos de 2026 não-canónicos (incl. os importados do Histórico).
-            <strong>Não altera</strong> as despesas já registadas (só garante que as rúbricas aparecem no mapa).
+            ⚠ Apaga TODOS os recibos de 2026 não-canónicos (incl. os importados do Histórico) e
+            <strong>repõe as despesas de 2026</strong> (histórico Jan–Mai + os 3 pagamentos de 28–29/05).
+            Recibos anteriores a 01/06 deixam de poder ser exportados.
           </p>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <button class="btn primary" id="btn-forcar-2026">⟳ Forçar dados 2026</button>
@@ -183,7 +184,7 @@ export async function render(container) {
 async function forcar2026Click() {
   const btn = containerRef.querySelector('#btn-forcar-2026');
   const logEl = containerRef.querySelector('#forcar-log');
-  if (!confirm('Forçar dados de 2026?\n\n• Recibos → apaga TODOS os "H0xx" e repõe os 64 canónicos (RCB 001–064), próximo = 65\n• Quotas → 2.351,00 € (matriz exacta, sem duplicação)\n• Rúbricas → garante as 9 (faz aparecer Schindler/Allianz/Banco no mapa)\n• Saldo → inicial 8.150,19 € @ 27/05 · saldo real 7.028,25 €\n• Recebimento CMA → 6.519,00 €\n\nNÃO altera as despesas já registadas. Idempotente. Continuar?')) return;
+  if (!confirm('Forçar dados de 2026?\n\n• Recibos → apaga TODOS os "H0xx" e repõe os 64 canónicos (RCB 001–064), próximo = 65\n• Quotas → 2.351,00 € (matriz exacta, sem duplicação)\n• Despesas → repõe histórico Jan–Mai (7.147,44 €) + 3 pagamentos recentes (493,53 €)\n• Saldo → inicial 7.521,78 € @ 27/05 · saldo real 7.028,25 €\n• Recibos antigos (< 01/06) deixam de exportar\n\nIdempotente. Continuar?')) return;
 
   btn.disabled = true;
   const txtOriginal = btn.textContent;
