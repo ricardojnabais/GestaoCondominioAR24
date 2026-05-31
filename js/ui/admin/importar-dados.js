@@ -134,16 +134,16 @@ export async function render(container) {
         <div class="settings-card" style="margin-top:18px;border-color:#2d8659">
           <h3 style="margin:0 0 8px 0;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#2d8659">Forçar Dados 2026 · Quotas + Despesas</h3>
           <p style="margin:0 0 12px 0;font-size:13px;color:var(--text)">
-            Põe 2026 a coincidir <strong>exactamente</strong> com o ficheiro de Contas e limpa duplicações:
-            apaga os recibos "H0xx" e repõe os <strong>64 canónicos (RCB 001–064)</strong>,
-            quotas recebidas <strong>2.351,00 €</strong> (sem duplicar),
-            despesas por rúbrica <strong>7.147,44 €</strong>, recebimento CMA Reabilita+
-            <strong>6.519,00 €</strong> na Análise, e próximo recibo = <strong>RCB 065</strong>.
-            Idempotente.
+            Põe 2026 a coincidir com o ficheiro de Contas e corrige tudo de uma vez:
+            apaga <strong>todos</strong> os recibos "H0xx" e repõe os <strong>64 canónicos (RCB 001–064)</strong>,
+            quotas <strong>2.351,00 €</strong> (sem duplicar), garante as <strong>9 rúbricas</strong>
+            (faz aparecer Schindler/Allianz/Banco no mapa), recebimento CMA <strong>6.519,00 €</strong>,
+            saldo inicial <strong>8.150,19 € @ 27/05</strong> e saldo real <strong>7.028,25 €</strong>.
+            Próximo recibo = <strong>RCB 065</strong>. Idempotente.
           </p>
           <p style="margin:0 0 12px 0;font-size:12px;color:#2d8659;background:#eef7f0;border-left:3px solid #2d8659;padding:8px 11px;border-radius:0 8px 8px 0">
-            ⚠ Apaga TODOS os recibos de 2026 não-canónicos (ex.: os importados do Histórico) e repõe TODAS as
-            despesas de 2026. As quotas 2026 passam a ser servidas só pelo ledger (sem duplicação possível).
+            ⚠ Apaga TODOS os recibos de 2026 não-canónicos (incl. os importados do Histórico).
+            <strong>Não altera</strong> as despesas já registadas (só garante que as rúbricas aparecem no mapa).
           </p>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <button class="btn primary" id="btn-forcar-2026">⟳ Forçar dados 2026</button>
@@ -183,7 +183,7 @@ export async function render(container) {
 async function forcar2026Click() {
   const btn = containerRef.querySelector('#btn-forcar-2026');
   const logEl = containerRef.querySelector('#forcar-log');
-  if (!confirm('Forçar dados de 2026?\n\n• Recibos → apaga os "H0xx" e repõe os 64 canónicos (RCB 001–064), próximo = 65\n• Quotas → 2.351,00 € (matriz exacta, sem duplicação)\n• Despesas → 7.147,44 € (repõe TODAS as despesas 2026)\n• Recebimento CMA → 6.519,00 €\n\nOperação idempotente. Continuar?')) return;
+  if (!confirm('Forçar dados de 2026?\n\n• Recibos → apaga TODOS os "H0xx" e repõe os 64 canónicos (RCB 001–064), próximo = 65\n• Quotas → 2.351,00 € (matriz exacta, sem duplicação)\n• Rúbricas → garante as 9 (faz aparecer Schindler/Allianz/Banco no mapa)\n• Saldo → inicial 8.150,19 € @ 27/05 · saldo real 7.028,25 €\n• Recebimento CMA → 6.519,00 €\n\nNÃO altera as despesas já registadas. Idempotente. Continuar?')) return;
 
   btn.disabled = true;
   const txtOriginal = btn.textContent;
@@ -193,10 +193,10 @@ async function forcar2026Click() {
   const log = (m) => { logEl.textContent += m + '\n'; logEl.scrollTop = logEl.scrollHeight; };
 
   try {
-    const resumo = await forcar2026.forcarTudo({ reporDespesas: true, log });
+    const resumo = await forcar2026.forcarTudo({ log });
     log('');
-    log(`RESUMO · quotas ${eur(resumo.quotasRecebidas_centimos)} · despesas ${eur(resumo.despesas_centimos)} · CMA ${eur(resumo.recebimentoCMA_centimos)}`);
-    log('Recarrega a página de Quotas e Análise para ver os valores.');
+    log(`RESUMO · recibos canónicos ${resumo.recibosCanonicos} (apagados ${resumo.recibosApagados}) · quotas ${eur(resumo.quotasRecebidas_centimos)} · saldo real ${eur(resumo.saldoReal_centimos)}`);
+    log('Recarrega Quotas, Recibos, Análise e Banco para ver os valores.');
   } catch (e) {
     log('ERRO: ' + e.message);
     console.error(e);

@@ -63,7 +63,7 @@ export async function alinharRecibos2026(onProgress = () => {}) {
 
   onProgress({ stage: 'reading', detail: 'A ler recibos atuais em Firestore...' });
   const todos = await store.listDocs('receipts');
-  const atuais2026 = todos.filter(r => r.ano === ANO_AUDITORIA);
+  const atuais2026 = todos.filter(r => String(r.ano) === String(ANO_AUDITORIA));
   const idsCanonicos = new Set(dataset.map(r => r.id));
 
   // Apagar recibos 2026 que NÃO estão no dataset canónico
@@ -122,7 +122,7 @@ export async function alinharRecibos2026(onProgress = () => {}) {
 export async function compararComDataset() {
   const dataset = await carregarDataset();
   const todos = await store.listDocs('receipts');
-  const atuais2026 = todos.filter(r => r.ano === ANO_AUDITORIA);
+  const atuais2026 = todos.filter(r => String(r.ano) === String(ANO_AUDITORIA));
 
   const idsCanonicos = new Set(dataset.map(r => r.id));
   const idsAtuais = new Set(atuais2026.map(r => r.id));

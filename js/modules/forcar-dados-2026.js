@@ -24,7 +24,7 @@
 
 import * as store from '../store/local-store.js';
 import * as quotasLedger from './quotas-ledger.js';
-import * as auditoria from './auditoria-recibos.js';
+import * as saldoBanco from './saldo-banco.js';
 
 const ANO = '2026';
 
@@ -57,10 +57,27 @@ const DESPESAS_2026 = [
   { rubricaId: 'rub_plano_schindler', rubricaNome: 'Plano Pagamento Schindler',  mes: '2026-05', valor_centimos: 42796 },
 ];
 
-const RUBRICAS_EXTRA = [
-  { id: 'rub_plano_schindler', nome: 'Plano Pagamento Schindler', categoria: 'manut',    fixa: true,  criadaEm: 1577836800000, terminadaEm: null },
-  { id: 'rub_intervencoes',    nome: 'Intervenções Condomínio',   categoria: 'obras',    fixa: false, criadaEm: 1577836800000, terminadaEm: null },
+// As 9 rúbricas necessárias (id canónico + nome). O mapa de despesas só mostra
+// uma rúbrica se existir o DOCUMENTO da rúbrica; se faltar, as despesas ficam
+// "órfãs" e invisíveis (era o caso de Schindler, Allianz e Despesas Bancárias).
+const RUBRICAS_NECESSARIAS = [
+  { id: 'rub_edp',             nome: 'EDP Eletricidade',          categoria: 'energia',  fixa: false },
+  { id: 'rub_agua',            nome: 'Água',                      categoria: 'agua',     fixa: false },
+  { id: 'rub_elevador',        nome: 'Schindler Elevador',        categoria: 'manut',    fixa: true  },
+  { id: 'rub_seguros',         nome: 'Allianz Seguros',           categoria: 'seguros',  fixa: true  },
+  { id: 'rub_limpeza',         nome: 'Limpeza',                   categoria: 'limpeza',  fixa: true  },
+  { id: 'rub_banco',           nome: 'Despesas Bancárias',        categoria: 'banco',    fixa: true  },
+  { id: 'rub_plano_schindler', nome: 'Plano Pagamento Schindler', categoria: 'manut',    fixa: true  },
+  { id: 'rub_intervencoes',    nome: 'Intervenções Condomínio',   categoria: 'obras',    fixa: false },
+  { id: 'rub_outras',          nome: 'Outras',                    categoria: 'diversos', fixa: false },
 ];
+
+// Hard-code do saldo bancário (pedido explícito).
+const SALDO_DATA_INICIO   = '2026-05-27';
+const SALDO_INICIAL_CENT  = 815019; // 8.150,19 €  (anula a diferença)
+const SALDO_REAL_HOJE_CENT = 702825; // 7.028,25 €  (saldo real à data)
+const SALDO_REAL_DATA     = '2026-05-31';
+
 
 // Recebimento da CMA · Devolução Reabilita+ (folha "Exercício 2026", linha 9)
 const CMA_RECEBIMENTO = {
@@ -80,26 +97,40 @@ const CMA_RECEBIMENTO = {
 /**
  * Executa o forçar de dados.
  * @param {Object} opts
- * @param {boolean} [opts.reporDespesas=true] - repõe pagamentosDespesa 2026
- * @param {boolean} [opts.limparRecibos=true] - apaga recibos 2026 não-canónicos e repõe os 64 canónicos
- * @param {function} [opts.log] - callback de progresso
+ * @param {boolean} [opts.limparRecibos=true]  - apaga recibos 2026 não-canónicos (incl. "H0xx") e repõe os 64
+ * @param {boolean} [opts.forcarSaldo=true]    - hard-code do saldo (8.150,19 € a 27/05 · real 7.028,25 €)
+ * @param {boolean} [opts.reporDespesas=false] - SÓ se quiseres repor as despesas pelo ficheiro (substitui as existentes)
+ * @param {function} [opts.log]
  */
-export async function forcarTudo({ reporDespesas = true, limparRecibos = true, log = () => {} } = {}) {
+export async function forcarTudo({ limparRecibos = true, forcarSaldo = true, reporDespesas = false, log = () => {} } = {}) {
   const resumo = {};
 
-  // ── 0. LIMPEZA DURA dos recibos 2026 ──────────────────────────────────────
-  // Apaga TUDO o que tem ano 2026 e não é canónico (ex.: os 86 recibos "H0xx"
-  // importados do histórico) e repõe exactamente os 64 canónicos RCB 001–064.
-  // Recibos de 2024/2025 não são tocados.
+  // ── 0. LIMPEZA DURA dos recibos 2026 (incl. "H0xx" com ano string) ─────────
   if (limparRecibos) {
-    try {
-      const stats = await auditoria.alinharRecibos2026(() => {});
-      resumo.recibosApagados = stats.apagados;
-      resumo.recibosCanonicos = stats.escritos;
-      log(`✓ Recibos 2026 limpos · apagados ${stats.apagados} (ex.: H0xx) · repostos ${stats.escritos} canónicos (RCB 001–064)`);
-    } catch (e) {
-      log(`⚠ Limpeza de recibos falhou: ${e.message}`);
+    // Varredura própria robusta: apaga qualquer recibo de 2026 que NÃO seja canónico,
+    // detectando 2026 por ano (string OU número), por nº (…/ADM2026) ou pela data.
+    // Isto apanha os "H0xx/ADM2026" que tinham ano:"2026" (string) e escapavam ao filtro antigo.
+    const canon = await carregarCanonicos();
+    const idsCanon = new Set(canon.map(r => r.id));
+    const todos = await store.listDocs('receipts');
+    let apagados = 0;
+    for (const r of todos) {
+      if (idsCanon.has(r.id)) continue;
+      const e2026 =
+        String(r.ano) === ANO ||
+        /ADM2026/i.test(r.recibo_numero || '') ||
+        (typeof r.data === 'string' && r.data.startsWith(ANO));
+      if (e2026) { await store.deleteDoc('receipts', r.id); apagados++; }
     }
+    // Reescrever os 64 canónicos (auditoria-only)
+    let escritos = 0;
+    for (const r of canon) {
+      await store.setDoc('receipts', { ...r, ano: 2026, auditoria: true, excluirDeContagem: true, excluirDoSaldo: true });
+      escritos++;
+    }
+    resumo.recibosApagados = apagados;
+    resumo.recibosCanonicos = escritos;
+    log(`✓ Recibos 2026 limpos · apagados ${apagados} (incl. H0xx) · repostos ${escritos} canónicos (RCB 001–064)`);
   }
 
   // ── 1. Ledger de quotas 2026 (OVERWRITE · limpa qualquer duplicação) ───────
@@ -115,45 +146,45 @@ export async function forcarTudo({ reporDespesas = true, limparRecibos = true, l
     log(`✓ Quota mensal cond_03 = ${eur(quotasLedger.quotaMensal('cond_03'))}`);
   }
 
-  // ── 3. Rúbricas em falta ──────────────────────────────────────────────────
-  for (const r of RUBRICAS_EXTRA) {
+  // ── 3. Garantir os 9 documentos de rúbrica ────────────────────────────────
+  // Sem o doc da rúbrica, as despesas dessa rúbrica não aparecem no mapa
+  // (era o caso de Schindler, Allianz e Despesas Bancárias).
+  let rubCriadas = 0;
+  for (const r of RUBRICAS_NECESSARIAS) {
     const existe = await store.getDoc('rubricas', r.id);
-    if (!existe) { await store.setDoc('rubricas', r); log(`✓ Rúbrica criada · ${r.nome}`); }
+    if (!existe) {
+      await store.setDoc('rubricas', { ...r, criadaEm: 1577836800000, terminadaEm: null, criadaPor: 'forçar-dados-2026' });
+      rubCriadas++;
+    } else if (existe.terminadaEm) {
+      // reactivar para voltar a aparecer no mapa
+      existe.terminadaEm = null; existe.terminadaPor = null;
+      await store.setDoc('rubricas', existe);
+    }
   }
+  log(`✓ Rúbricas garantidas · ${RUBRICAS_NECESSARIAS.length} (criadas agora: ${rubCriadas})`);
 
-  // ── 4. Despesas 2026 por rúbrica ──────────────────────────────────────────
+  // ── 4. (Opcional) Repor despesas 2026 pelo ficheiro ───────────────────────
   if (reporDespesas) {
-    // Remover despesas 2026 anteriores (evita duplicação e garante o total exacto)
     const todas = await store.listDocs('pagamentosDespesa');
-    const antigas2026 = todas.filter(d => (d.ano === ANO) || (d.data && d.data.startsWith(ANO)));
+    const antigas2026 = todas.filter(d => String(d.ano) === ANO || (d.data && d.data.startsWith(ANO)));
     for (const d of antigas2026) await store.deleteDoc('pagamentosDespesa', d.id);
-    log(`· removidas ${antigas2026.length} despesas 2026 anteriores`);
-
-    let totalDesp = 0;
-    let n = 0;
+    let totalDesp = 0, n = 0;
     for (const item of DESPESAS_2026) {
       const id = `desp_2026_${item.rubricaId}_${item.mes.replace('-', '')}`;
       await store.setDoc('pagamentosDespesa', {
-        id,
-        rubricaId: item.rubricaId,
-        rubricaNome: item.rubricaNome,
-        ano: ANO,
-        data: `${item.mes}-28`,
+        id, rubricaId: item.rubricaId, rubricaNome: item.rubricaNome, ano: ANO,
+        data: `${item.mes}-15`, // dia 15 · fica antes do marco de 27/05 (não afecta o saldo)
         valor_centimos: item.valor_centimos,
-        descricao: `${item.rubricaNome} · ${item.mes}`,
-        fornecedor: item.rubricaNome,
-        metodoPagamento: 'transferencia',
-        cancelada: false,
-        estornoDe: null,
-        registadoPor: 'forçar-dados-2026',
-        origem: 'Contas_Condominio · Despesas 2026',
-        createdAt: Date.now(),
+        descricao: `${item.rubricaNome} · ${item.mes}`, fornecedor: item.rubricaNome,
+        metodoPagamento: 'transferencia', cancelada: false, estornoDe: null,
+        registadoPor: 'forçar-dados-2026', origem: 'Contas_Condominio · Despesas 2026', createdAt: Date.now(),
       });
       totalDesp += item.valor_centimos; n++;
     }
-    resumo.despesas_centimos = totalDesp;
-    resumo.nDespesas = n;
+    resumo.despesas_centimos = totalDesp; resumo.nDespesas = n;
     log(`✓ Despesas 2026 repostas · ${n} lançamentos · total = ${eur(totalDesp)}`);
+  } else {
+    log('· Despesas 2026 mantidas (não repostas). Rúbricas garantidas acima fazem-nas aparecer no mapa.');
   }
 
   // ── 5. Recebimento CMA na Análise ─────────────────────────────────────────
@@ -167,8 +198,26 @@ export async function forcarTudo({ reporDespesas = true, limparRecibos = true, l
   await store.setDoc('meta', meta);
   log(`✓ Próximo recibo 2026 = RCB 065/ADM2026`);
 
-  // ── 7. Garantir 64 canónicos auditoria-only ───────────────────────────────
-  const recs = await store.queryDocs('receipts', { ano: ANO });
+  // ── 7. HARD-CODE do saldo bancário ────────────────────────────────────────
+  if (forcarSaldo) {
+    // saldo inicial 8.150,19 € à data 27/05 + marca movimentos anteriores como excluirDoSaldo.
+    await saldoBanco.marcarInicioGestao(SALDO_DATA_INICIO, SALDO_INICIAL_CENT);
+    // saldo real conhecido (BPI) = 7.028,25 € → headline "Saldo Real BPI" e diferença = 0.
+    await saldoBanco.atualizarSaldoConhecido({
+      dataISO: SALDO_REAL_DATA,
+      total_centimos: SALDO_REAL_HOJE_CENT,
+      contaOrdem_centimos: SALDO_REAL_HOJE_CENT,
+      contaPoupanca_centimos: null,
+      fonte: 'hard-code',
+      notas: 'Saldo forçado a pedido · 7.028,25 € · método de cálculo normal a partir de 27/05',
+    });
+    resumo.saldoInicial_centimos = SALDO_INICIAL_CENT;
+    resumo.saldoReal_centimos = SALDO_REAL_HOJE_CENT;
+    log(`✓ Saldo: inicial ${eur(SALDO_INICIAL_CENT)} @ ${SALDO_DATA_INICIO} · real BPI ${eur(SALDO_REAL_HOJE_CENT)}`);
+  }
+
+  // ── 8. Garantir 64 canónicos auditoria-only ───────────────────────────────
+  const recs = await store.queryDocs('receipts', { ano: 2026 });
   let ajustados = 0;
   for (const r of recs) {
     if (r.auditoria && (!r.excluirDeContagem || !r.excluirDoSaldo)) {
@@ -181,6 +230,13 @@ export async function forcarTudo({ reporDespesas = true, limparRecibos = true, l
 
   log('— CONCLUÍDO —');
   return resumo;
+}
+
+/** Carrega os 64 recibos canónicos do dataset bundled. */
+async function carregarCanonicos() {
+  const res = await fetch('./data/recibos-auditoria-2026.json');
+  if (!res.ok) throw new Error('Não foi possível carregar recibos-auditoria-2026.json');
+  return res.json();
 }
 
 function eur(c) { return (c / 100).toFixed(2).replace('.', ',') + ' €'; }
