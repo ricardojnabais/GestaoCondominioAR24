@@ -449,7 +449,9 @@ function logMigracao(linha) {
 
 async function exportBackup() {
   try {
-    const dump = store.exportAll();
+    const dump = await store.exportAll();
+    const totalDocs = Object.values(dump).reduce((s, v) => s + (Array.isArray(v) ? v.length : 0), 0);
+    if (totalDocs === 0) throw new Error('backup vazio — verifica que estás ligado ao Firestore.');
     const json = JSON.stringify(dump, null, 2);
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -458,7 +460,7 @@ async function exportBackup() {
     a.download = `backup-AR24-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    showMsg('✓ Backup exportado.', 'ok');
+    showMsg(`✓ Backup exportado · ${totalDocs} documentos.`, 'ok');
   } catch (e) {
     showMsg('Erro ao exportar: ' + e.message, 'error');
   }
