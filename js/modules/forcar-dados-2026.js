@@ -24,6 +24,7 @@
 
 import * as store from '../store/local-store.js';
 import * as quotasLedger from './quotas-ledger.js';
+import * as auditoria from './auditoria-recibos.js';
 
 const ANO = '2026';
 
@@ -80,12 +81,28 @@ const CMA_RECEBIMENTO = {
  * Executa o forçar de dados.
  * @param {Object} opts
  * @param {boolean} [opts.reporDespesas=true] - repõe pagamentosDespesa 2026
+ * @param {boolean} [opts.limparRecibos=true] - apaga recibos 2026 não-canónicos e repõe os 64 canónicos
  * @param {function} [opts.log] - callback de progresso
  */
-export async function forcarTudo({ reporDespesas = true, log = () => {} } = {}) {
+export async function forcarTudo({ reporDespesas = true, limparRecibos = true, log = () => {} } = {}) {
   const resumo = {};
 
-  // ── 1. Ledger de quotas 2026 ──────────────────────────────────────────────
+  // ── 0. LIMPEZA DURA dos recibos 2026 ──────────────────────────────────────
+  // Apaga TUDO o que tem ano 2026 e não é canónico (ex.: os 86 recibos "H0xx"
+  // importados do histórico) e repõe exactamente os 64 canónicos RCB 001–064.
+  // Recibos de 2024/2025 não são tocados.
+  if (limparRecibos) {
+    try {
+      const stats = await auditoria.alinharRecibos2026(() => {});
+      resumo.recibosApagados = stats.apagados;
+      resumo.recibosCanonicos = stats.escritos;
+      log(`✓ Recibos 2026 limpos · apagados ${stats.apagados} (ex.: H0xx) · repostos ${stats.escritos} canónicos (RCB 001–064)`);
+    } catch (e) {
+      log(`⚠ Limpeza de recibos falhou: ${e.message}`);
+    }
+  }
+
+  // ── 1. Ledger de quotas 2026 (OVERWRITE · limpa qualquer duplicação) ───────
   await quotasLedger.forcarMatriz();
   resumo.quotasRecebidas_centimos = await quotasLedger.totalRecebido2026();
   log(`✓ Quotas 2026 forçadas · recebido = ${eur(resumo.quotasRecebidas_centimos)}`);

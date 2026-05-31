@@ -80,14 +80,15 @@ export async function getLedger() {
 }
 
 /**
- * Valor de quota pago por um condómino num mês de 2026 (cêntimos).
- * Devolve null se o ledger ainda não existe (o chamador faz fallback ao método antigo).
+ * Valor de quota pago por um condómino num mês (cêntimos).
+ *  - 2026: SEMPRE servido pelo ledger (0 se ainda não foi forçado).
+ *    Nunca lê recibos → impossível duplicar.
+ *  - Outros anos: devolve null (o chamador usa o cálculo legado por recibos).
  */
 export async function valorPagoNoMes2026(tenantId, mesRef) {
   if (!mesRef || !mesRef.startsWith(ANO)) return null;
   const ledger = await getLedger();
-  if (!ledger || !ledger.pagamentos) return null;
-  return ledger.pagamentos[tenantId]?.[mesRef] || 0;
+  return ledger?.pagamentos?.[tenantId]?.[mesRef] || 0;
 }
 
 /** Quota mensal de referência de um condómino (cêntimos). */
@@ -110,8 +111,16 @@ export async function registarPagamento(tenantId, meses, valorTotal_centimos) {
 
   let ledger = await getLedger();
   if (!ledger) {
-    // Inicializa a partir da matriz forçada para nunca perder o histórico base.
-    ledger = await forcarMatriz({ silent: true });
+    // v1.0.35 · cria ledger VAZIO (NUNCA a matriz inteira).
+    // Inicializar com a matriz forçada aqui era o que causava a duplicação
+    // (matriz 1× + pagamento 1× = 2× em todos os meses).
+    ledger = {
+      id: LEDGER_ID, ano: ANO,
+      quotaMensal: { ...QUOTA_MENSAL_2026 },
+      pagamentos: {},
+      criadoEm: new Date().toISOString(),
+      origem: 'criado por registo de pagamento',
+    };
   }
   if (!ledger.pagamentos[tenantId]) ledger.pagamentos[tenantId] = {};
 

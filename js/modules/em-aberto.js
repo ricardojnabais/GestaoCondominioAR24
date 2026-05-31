@@ -37,11 +37,13 @@ export async function quotasAtrasoAnoCorrente(ano = new Date().getFullYear()) {
   // Construir matriz cobertura: tenantId → 'YYYY-MM' → valor_cent pago
   const cobertura = {};
 
-  // v1.0.34 · 2026 vem do ledger explícito (não dos recibos canónicos).
-  const ledger2026 = anoStr === quotasLedger.ANO ? await quotasLedger.getLedger() : null;
-  if (ledger2026?.pagamentos) {
-    for (const [tid, meses] of Object.entries(ledger2026.pagamentos)) {
-      cobertura[tid] = { ...meses };
+  // v1.0.35 · 2026 vem SEMPRE do ledger explícito (nunca dos recibos → sem duplicação).
+  if (anoStr === quotasLedger.ANO) {
+    const ledger2026 = await quotasLedger.getLedger();
+    if (ledger2026?.pagamentos) {
+      for (const [tid, meses] of Object.entries(ledger2026.pagamentos)) {
+        cobertura[tid] = { ...meses };
+      }
     }
   } else {
     const receipts = await store.listDocs('receipts');
