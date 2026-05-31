@@ -88,8 +88,9 @@ export async function movimentosMensais(ano) {
   for (let i = 0; i < months.length; i++) {
     const m = months[i];
     // Receitas: recibos do mês (data do recibo, não mesReferencia)
+    // Recibos marcados "histórico/auditoria-only" são ignorados nesta análise
     const recs = (await store.queryDocs('receipts', { ano }))
-      .filter(r => !r.cancelado && r.data && r.data.startsWith(m));
+      .filter(r => !r.cancelado && !r.excluirDeContagem && r.data && r.data.startsWith(m));
     const receitasMes = recs.reduce((s, r) => s + (r.valor_centimos || 0), 0);
 
     const outros = (await store.queryDocs('outrosRecebimentos', { ano }))

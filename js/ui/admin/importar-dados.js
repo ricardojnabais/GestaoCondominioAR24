@@ -13,6 +13,7 @@ import * as store from '../../store/local-store.js';
 import * as router from '../router.js';
 import { icon } from '../icons.js';
 import * as auditoria from '../../modules/auditoria-recibos.js';
+import * as forcar2026 from '../../modules/forcar-dados-2026.js';
 
 let containerRef = null;
 let snapshotPendente = null;
@@ -115,12 +116,38 @@ export async function render(container) {
             (inclui o nº 27 ao Município da Amadora · Reabilita+). Operação destrutiva mas idempotente.
             Recibos de outros anos <strong>não são tocados</strong>.
           </p>
+          <p style="margin:0 0 12px 0;font-size:12px;color:#b8941f;background:#fdf6e9;border-left:3px solid #d4af37;padding:8px 11px;border-radius:0 8px 8px 0">
+            ⚠ <strong>Comportamento histórico/auditoria-only:</strong> os 64 recibos canónicos têm flags
+            <code>excluirDoSaldo</code> e <code>excluirDeContagem</code> a <code>true</code>.
+            <strong>Mantêm-se visíveis no histórico</strong> e na exportação de auditoria, mas
+            <strong>não contam</strong> para tabela Quotas, Análise mensal, Saldo bancário, nem Orçamento realizado.
+            Recibos novos emitidos via app (pós-alinhamento) contam normalmente.
+          </p>
           <div id="aud-estado" style="font-size:12px;color:var(--text-muted);margin-bottom:10px">A verificar estado…</div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <button class="btn ghost" id="btn-comparar-audit">🔍 Comparar com dataset</button>
             <button class="btn danger" id="btn-alinhar-audit">⚠ Alinhar recibos 2026 com dataset</button>
           </div>
           <div id="aud-log" style="margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:11px;background:#f9f6ee;border:1px solid #e8dfc8;border-radius:8px;padding:10px;max-height:280px;overflow:auto;display:none;white-space:pre-wrap"></div>
+        </div>
+
+        <div class="settings-card" style="margin-top:18px;border-color:#2d8659">
+          <h3 style="margin:0 0 8px 0;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#2d8659">Forçar Dados 2026 · Quotas + Despesas</h3>
+          <p style="margin:0 0 12px 0;font-size:13px;color:var(--text)">
+            Põe 2026 a coincidir <strong>exactamente</strong> com o ficheiro de Contas:
+            quotas recebidas <strong>2.351,00 €</strong> (matriz da folha "Quotas 2026"),
+            despesas por rúbrica <strong>7.147,44 €</strong>, recebimento CMA Reabilita+
+            <strong>6.519,00 €</strong> na Análise, e próximo recibo = <strong>RCB 065</strong>.
+            Idempotente.
+          </p>
+          <p style="margin:0 0 12px 0;font-size:12px;color:#2d8659;background:#eef7f0;border-left:3px solid #2d8659;padding:8px 11px;border-radius:0 8px 8px 0">
+            ⚠ Repõe TODAS as despesas de 2026 (substitui lançamentos manuais existentes deste ano para
+            garantir o total sem duplicações). As quotas pagas passam a contar pelo novo modelo a partir daqui.
+          </p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn primary" id="btn-forcar-2026">⟳ Forçar dados 2026</button>
+          </div>
+          <div id="forcar-log" style="margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:11px;background:#f3faf5;border:1px solid #cfe9d8;border-radius:8px;padding:10px;max-height:280px;overflow:auto;display:none;white-space:pre-wrap"></div>
         </div>
       </main>
     </div>
@@ -146,10 +173,39 @@ export async function render(container) {
   containerRef.querySelector('#btn-export-auditoria').addEventListener('click', exportAuditoriaClick);
   containerRef.querySelector('#btn-comparar-audit').addEventListener('click', compararAuditoriaClick);
   containerRef.querySelector('#btn-alinhar-audit').addEventListener('click', alinharAuditoriaClick);
+  containerRef.querySelector('#btn-forcar-2026').addEventListener('click', forcar2026Click);
 
   await actualizarEstadoMigracao();
   await actualizarEstadoAuditoria();
 }
+
+async function forcar2026Click() {
+  const btn = containerRef.querySelector('#btn-forcar-2026');
+  const logEl = containerRef.querySelector('#forcar-log');
+  if (!confirm('Forçar dados de 2026?\n\n• Quotas → 2.351,00 € (matriz exacta)\n• Despesas → 7.147,44 € (repõe TODAS as despesas 2026)\n• Recebimento CMA → 6.519,00 €\n• Próximo recibo → RCB 065\n\nOperação idempotente. Continuar?')) return;
+
+  btn.disabled = true;
+  const txtOriginal = btn.textContent;
+  btn.textContent = 'A forçar…';
+  logEl.style.display = 'block';
+  logEl.textContent = '';
+  const log = (m) => { logEl.textContent += m + '\n'; logEl.scrollTop = logEl.scrollHeight; };
+
+  try {
+    const resumo = await forcar2026.forcarTudo({ reporDespesas: true, log });
+    log('');
+    log(`RESUMO · quotas ${eur(resumo.quotasRecebidas_centimos)} · despesas ${eur(resumo.despesas_centimos)} · CMA ${eur(resumo.recebimentoCMA_centimos)}`);
+    log('Recarrega a página de Quotas e Análise para ver os valores.');
+  } catch (e) {
+    log('ERRO: ' + e.message);
+    console.error(e);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = txtOriginal;
+  }
+}
+
+function eur(c) { return ((c || 0) / 100).toFixed(2).replace('.', ',') + ' €'; }
 
 async function popularAnosAuditoria() {
   const sel = containerRef.querySelector('#audit-ano');

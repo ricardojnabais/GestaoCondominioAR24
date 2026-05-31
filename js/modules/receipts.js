@@ -12,6 +12,7 @@
 
 import * as store from '../store/local-store.js';
 import * as numeracao from './numeracao.js';
+import * as quotasLedger from './quotas-ledger.js';
 import { todayISO } from '../utils/format.js';
 
 /**
@@ -85,6 +86,19 @@ export async function emitir(data) {
   };
 
   const saved = await store.setDoc('receipts', doc);
+
+  // v1.0.34 · recibos de quota REAIS (não auditoria-only) actualizam o ledger 2026.
+  // A quota coberta = valor recebido + saldo usado − excesso (igual a quotaCobertaPorRecibo).
+  if (data.tipo === 'quota' && !doc.excluirDeContagem && !doc.auditoria) {
+    try {
+      const quotaCoberta = (doc.valor_centimos || 0)
+        + (doc.saldoUsado_centimos || 0)
+        - (doc.excesso_centimos || 0);
+      await quotasLedger.registarPagamento(doc.tenantId, doc.mesReferencia, quotaCoberta);
+    } catch (e) {
+      console.warn('[receipts] Falhou actualizar ledger de quotas:', e);
+    }
+  }
 
   // Se for de prestações, marcar cada uma como paga
   if (data.tipo === 'prestacao' && data.prestacoesIds) {
@@ -264,6 +278,11 @@ function quotaCobertaPorRecibo(recibo) {
  * Ex: recibo de 216€ (quotaCoberta) por Jan-Jun (6 meses) → 36€ atribuído a cada mês.
  */
 export async function valorPagoNoMes(tenantId, mesRef) {
+  // v1.0.34 · 2026 é servido pelo ledger explícito (fonte de verdade forçada).
+  // Outros anos mantêm o cálculo derivado dos recibos.
+  const doLedger = await quotasLedger.valorPagoNoMes2026(tenantId, mesRef);
+  if (doLedger !== null) return doLedger;
+
   const recs = await recibosDeCondominoNoMes(tenantId, mesRef);
   return recs.reduce((sum, r) => {
     const meses = (r.mesReferencia || []).length || 1;

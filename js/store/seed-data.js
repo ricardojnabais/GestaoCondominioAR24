@@ -16,7 +16,7 @@ const ADMIN_EMAILS = [
 const TENANTS_SEED = [
   { id: 'cond_01', name: 'João Vaz',                fraction: 'R/C Esquerdo',  nif: '129465380', permilage: 79,  rentByYear: { '2026': 3200 }, email: '' },
   { id: 'cond_02', name: 'Filipe Solha',            fraction: 'R/C Direito',   nif: '219481342', permilage: 91,  rentByYear: { '2026': 3700 }, email: 'fsolha@gmail.com' },
-  { id: 'cond_03', name: 'Leonel Venâncio',         fraction: '1.º Esquerdo',  nif: '209959746', permilage: 119, rentByYear: { '2026': 4700 }, email: 'leonelvenancio@gmail.com' },
+  { id: 'cond_03', name: 'Leonel Venâncio',         fraction: '1.º Esquerdo',  nif: '209959746', permilage: 119, rentByYear: { '2026': 4800 }, email: 'leonelvenancio@gmail.com' },
   { id: 'cond_04', name: 'Sílvia Gonçalves',        fraction: '1.º Direito',   nif: '195084381', permilage: 87,  rentByYear: { '2026': 3600 }, email: 'spsg.silvia@gmail.com' },
   { id: 'cond_05', name: 'Ricardo Nabais Cordeiro', fraction: '2.º Esquerdo',  nif: '214490041', permilage: 121, rentByYear: { '2026': 4900 }, email: 'ricardojnabais@gmail.com' },
   { id: 'cond_06', name: 'António Figueiredo',      fraction: '2.º Direito',   nif: '101744137', permilage: 88,  rentByYear: { '2026': 3600 }, email: 'antoniopalmafigueiredo45@gmail.com' },
@@ -45,7 +45,7 @@ const META_SEED = {
   nextNumberByYear: {
     '2024': 89,
     '2025': 147,
-    '2026': 56
+    '2026': 65
   },
   parametros: {
     inflacaoDefault: 0.10,
@@ -61,6 +61,8 @@ const RUBRICAS_SEED = [
   { id: 'rub_seguros',   nome: 'Allianz Seguros',   categoria: 'seguros',   fixa: true,  criadaEm: 1577836800000, terminadaEm: null },
   { id: 'rub_limpeza',   nome: 'Limpeza',           categoria: 'limpeza',   fixa: true,  criadaEm: 1577836800000, terminadaEm: null },
   { id: 'rub_banco',     nome: 'Despesas Bancárias',categoria: 'banco',     fixa: true,  criadaEm: 1577836800000, terminadaEm: null },
+  { id: 'rub_plano_schindler', nome: 'Plano Pagamento Schindler', categoria: 'manut', fixa: true, criadaEm: 1577836800000, terminadaEm: null },
+  { id: 'rub_intervencoes',    nome: 'Intervenções Condomínio',   categoria: 'obras', fixa: false, criadaEm: 1577836800000, terminadaEm: null },
   { id: 'rub_outras',    nome: 'Outras',            categoria: 'diversos',  fixa: false, criadaEm: 1577836800000, terminadaEm: null }
 ];
 

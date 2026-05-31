@@ -1,15 +1,27 @@
 /**
- * Auditoria de Recibos · v1.0.31
+ * Auditoria de Recibos · v1.0.33
  *
  * Duas funções principais:
  *  1. alinharRecibos2026() · substitui TODOS os recibos com ano=2026 em Firestore
- *     pelos 63 recibos canónicos do dataset de auditoria (data/recibos-auditoria-2026.json).
- *     Operação destrutiva mas idempotente (re-executável).
+ *     pelos 64 recibos canónicos do dataset de auditoria (data/recibos-auditoria-2026.json).
+ *     Operação destrutiva mas idempotente (re-executável). Merge inteligente preserva
+ *     metadados da app (pdfGeradoEm, pdfGeracoes).
  *
- *  2. exportarAuditoria2026() · gera um Excel idêntico ao formato de auditoria
- *     externa (4 sheets: Recibos, Resumo Mensal, Por Condómino, Condóminos).
- *     Apenas dados 2026 · anos anteriores são ignorados por se considerarem
- *     históricos não auditáveis pelo sistema.
+ *  2. exportarAuditoria(ano) · gera Excel idêntico ao formato de auditoria externa
+ *     (4 sheets: Recibos, Resumo Mensal, Por Condómino, Condóminos).
+ *     Disponível para anos >= 2026.
+ *
+ * IMPORTANTE · COMPORTAMENTO HISTÓRICO/AUDITORIA-ONLY:
+ *  Os 64 recibos canónicos têm flags excluirDoSaldo=true e excluirDeContagem=true.
+ *  Servem como REGISTO HISTÓRICO/AUDITORIA · mantêm-se na lista, mantêm a numeração,
+ *  mas NÃO contam para:
+ *    - Tabela Quotas (em-aberto.js · não marcam meses como pagos)
+ *    - Análise mensal (analise.js · não somam para receitas mensais)
+ *    - Saldo bancário (saldo-banco.js · não somam para saldo)
+ *    - Orçamento realizado (orcamento.js · não somam para realizado vs orçado)
+ *
+ *  Recibos emitidos após v1.0.33 (não-canónicos) NÃO têm estas flags por defeito,
+ *  pelo que contam normalmente. A app é a fonte de verdade para emissões pós-go-live.
  */
 
 import * as store from '../store/local-store.js';

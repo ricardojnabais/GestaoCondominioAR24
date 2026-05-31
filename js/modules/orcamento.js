@@ -284,8 +284,9 @@ export async function execucaoSumario(ano) {
   if (!orc) return null;
   const totais = calcularTotais(orc);
   const realizadoDespesas = await despesas.totalAno(ano);
+  // Recibos marcados "histórico/auditoria-only" não contam para realizado vs orçado
   const recs = (await store.queryDocs('receipts', { ano }))
-    .filter(r => !r.cancelado)
+    .filter(r => !r.cancelado && !r.excluirDeContagem)
     .reduce((s, r) => s + (r.valor_centimos || 0), 0);
   const outros = (await store.queryDocs('outrosRecebimentos', { ano }))
     .filter(o => !o.cancelado)

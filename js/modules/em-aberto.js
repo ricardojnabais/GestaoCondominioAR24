@@ -7,6 +7,7 @@
  */
 
 import * as store from '../store/local-store.js';
+import * as quotasLedger from './quotas-ledger.js';
 
 /**
  * Dívidas arrastadas explícitas registadas no meta.
@@ -32,19 +33,30 @@ export async function dividasArrastadas(anoCorrente = new Date().getFullYear()) 
 export async function quotasAtrasoAnoCorrente(ano = new Date().getFullYear()) {
   const anoStr = String(ano);
   const tenants = await store.listDocs('tenants');
-  const receipts = await store.listDocs('receipts');
 
   // Construir matriz cobertura: tenantId → 'YYYY-MM' → valor_cent pago
   const cobertura = {};
-  receipts.forEach(r => {
-    if (r.cancelado || r.tipo !== 'quota') return;
-    if (!Array.isArray(r.mesReferencia) || r.mesReferencia.length === 0) return;
-    const valPorMes = (r.valor_centimos || 0) / r.mesReferencia.length;
-    r.mesReferencia.forEach(mref => {
-      if (!cobertura[r.tenantId]) cobertura[r.tenantId] = {};
-      cobertura[r.tenantId][mref] = (cobertura[r.tenantId][mref] || 0) + valPorMes;
+
+  // v1.0.34 · 2026 vem do ledger explícito (não dos recibos canónicos).
+  const ledger2026 = anoStr === quotasLedger.ANO ? await quotasLedger.getLedger() : null;
+  if (ledger2026?.pagamentos) {
+    for (const [tid, meses] of Object.entries(ledger2026.pagamentos)) {
+      cobertura[tid] = { ...meses };
+    }
+  } else {
+    const receipts = await store.listDocs('receipts');
+    receipts.forEach(r => {
+      // Recibos marcados como "histórico/auditoria-only" não contam para quotas
+      if (r.excluirDeContagem) return;
+      if (r.cancelado || r.tipo !== 'quota') return;
+      if (!Array.isArray(r.mesReferencia) || r.mesReferencia.length === 0) return;
+      const valPorMes = (r.valor_centimos || 0) / r.mesReferencia.length;
+      r.mesReferencia.forEach(mref => {
+        if (!cobertura[r.tenantId]) cobertura[r.tenantId] = {};
+        cobertura[r.tenantId][mref] = (cobertura[r.tenantId][mref] || 0) + valPorMes;
+      });
     });
-  });
+  }
 
   const hoje = new Date();
   const mesCorrente = (ano === hoje.getFullYear()) ? hoje.getMonth() + 1 : 12;
