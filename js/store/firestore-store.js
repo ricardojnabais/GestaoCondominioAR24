@@ -146,9 +146,20 @@ function generateId() {
  */
 export async function exportAll() {
   await bootstrap();
+  // v1.0.39 · ler do SERVIDOR (não da cache local) para garantir backup COMPLETO.
+  // A leitura por cache podia devolver coleções parciais (ex.: 113 de 427 recibos)
+  // se a sincronização ainda não tivesse terminado.
+  const f = window.__firebase?.firestoreFns;
+  const db = window.__firebase?.db;
   const out = {};
   for (const col of FIRESTORE_COLLECTIONS) {
-    out[col] = ensureCache(col);
+    try {
+      const snap = await f.getDocsFromServer(f.collection(db, col));
+      out[col] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    } catch (e) {
+      console.warn(`[backup] ${col}: falha a ler do servidor, uso cache. ${e.message}`);
+      out[col] = ensureCache(col);
+    }
   }
   return out;
 }
