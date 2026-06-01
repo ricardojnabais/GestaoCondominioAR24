@@ -7,6 +7,7 @@ import * as firebaseAuth from '../auth/firebase-auth.js';
 import * as store from '../store/local-store.js';
 import * as router from './router.js';
 import { icon } from './icons.js';
+import { APP_VERSION } from '../version.js';
 
 export async function render(container) {
   const meta = await store.getDoc('meta', 'config');
@@ -90,7 +91,7 @@ export async function render(container) {
 
         <div id="login-error" style="margin-top:12px;color:var(--red);font-size:13px;text-align:center;display:none"></div>
 
-        <div class="login-foot">Av. Amália Rodrigues 24 · 10 frações</div>
+        <div class="login-foot">Av. Amália Rodrigues 24 · 10 frações<br><span style="opacity:.6;font-size:11px">${APP_VERSION}</span></div>
       </div>
     </div>
   `;

@@ -7,6 +7,7 @@
  */
 
 import * as auth from '../auth/local-auth.js';
+import { APP_VERSION } from '../version.js';
 
 const routes = new Map();
 let currentRoute = null;
@@ -60,6 +61,18 @@ export async function navigate(path, params = {}) {
     currentRoute = path;
     currentCleanup = (typeof result === 'function') ? result
                      : (route.module.cleanup || null);
+    // Mostrar a versão na barra azul (header) de qualquer página · fonte única em version.js
+    try {
+      const header = container.querySelector('.header');
+      if (header && !header.querySelector('.app-version')) {
+        if (getComputedStyle(header).position === 'static') header.style.position = 'relative';
+        const v = document.createElement('span');
+        v.className = 'app-version';
+        v.textContent = APP_VERSION;
+        v.style.cssText = 'position:absolute;right:14px;bottom:6px;font-size:10px;font-weight:600;letter-spacing:.3px;color:rgba(255,255,255,.65);pointer-events:none;z-index:5';
+        header.appendChild(v);
+      }
+    } catch (_) {}
     // Atualizar URL hash para deep linking (sem reload)
     if (window.history && window.history.replaceState) {
       window.history.replaceState(null, '', '#' + path);
