@@ -162,3 +162,44 @@ export async function totalRecebido2026() {
   return Object.values(ledger.pagamentos)
     .reduce((s, m) => s + Object.values(m).reduce((a, b) => a + b, 0), 0);
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * ESTADO DA QUOTA MENSAL (v1.0.40)
+ * Dia-limite de pagamento = dia 8 do próprio mês.
+ *   - 'pago'         : pago na totalidade
+ *   - 'a_pagamento'  : dentro do prazo (dia 1 a 8 do mês), ainda não pago
+ *   - 'atraso'       : após o dia 8 (ou mês passado), ainda não pago
+ *   - 'futuro'       : mês ainda não começou
+ * ──────────────────────────────────────────────────────────────────────── */
+export const DIA_LIMITE_PAGAMENTO = 8;
+
+export const ESTADO_QUOTA = {
+  pago:        { label: 'Pago',        cor: '#047857', bg: 'rgba(16,185,129,.12)' },
+  a_pagamento: { label: 'A pagamento', cor: '#1d4ed8', bg: 'rgba(59,130,246,.12)' },
+  atraso:      { label: 'Em atraso',   cor: '#B91C1C', bg: 'rgba(239,68,68,.10)'  },
+  futuro:      { label: 'A vencer',    cor: '#6b7280', bg: 'transparent'          },
+};
+
+/**
+ * Calcula o estado de uma quota mensal tendo em conta a data-limite (dia 8).
+ * @param {number} pago_centimos  valor já pago no mês
+ * @param {number} quota_centimos quota esperada do mês
+ * @param {number} ano  ano (ex.: 2026)
+ * @param {number} mes  mês 1-12
+ * @param {Date}   hoje data de referência (default: agora)
+ */
+export function estadoQuotaMes({ pago_centimos = 0, quota_centimos = 0, ano, mes, hoje = new Date() }) {
+  if (quota_centimos > 0 && pago_centimos >= quota_centimos) return 'pago';
+  const inicio = new Date(ano, mes - 1, 1, 0, 0, 0, 0);
+  const limite = new Date(ano, mes - 1, DIA_LIMITE_PAGAMENTO, 23, 59, 59, 999);
+  if (hoje > limite) return 'atraso';        // passou o dia 8 (ou mês anterior)
+  if (hoje >= inicio) return 'a_pagamento';  // dia 1 a 8 do mês corrente
+  return 'futuro';                            // mês ainda não começou
+}
+
+/** Mesmo cálculo a partir de uma referência 'YYYY-MM'. */
+export function estadoQuotaMref({ pago_centimos, quota_centimos, mref, hoje = new Date() }) {
+  const ano = Number(mref.slice(0, 4));
+  const mes = Number(mref.slice(5, 7));
+  return estadoQuotaMes({ pago_centimos, quota_centimos, ano, mes, hoje });
+}

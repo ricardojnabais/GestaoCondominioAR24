@@ -9,6 +9,7 @@ import * as auth from '../../auth/local-auth.js';
 import * as store from '../../store/local-store.js';
 import * as router from '../router.js';
 import * as receipts from '../../modules/receipts.js';
+import * as quotasLedger from '../../modules/quotas-ledger.js';
 import * as planos from '../../modules/planos.js';
 import * as condominioInfo from '../../modules/condominio-info.js';
 import { icon } from '../icons.js';
@@ -35,16 +36,18 @@ export async function render(container) {
 
   // Status de cada mês
   let pagoYTD = 0, esperadoYTD = 0;
+  let totalAtraso = 0, totalAPagamento = 0;
   const matriz = [];
   for (const m of months) {
     const pago = await receipts.valorPagoNoMes(tenantId, m);
     const mesNum = parseInt(m.split('-')[1], 10);
-    let status;
-    if (m > curr) status = 'futuro';
-    else if (pago >= quotaMensal) status = 'pago';
-    else if (pago > 0) status = 'parcial';
-    else status = 'em-falta';
+    // v1.0.40 · estado com tolerância do dia 8
+    const status = quotasLedger.estadoQuotaMref({
+      pago_centimos: pago, quota_centimos: quotaMensal, mref: m,
+    });
     matriz.push({ mes: m, mesNum, mesNome: MES_NOMES[mesNum - 1], pago, status });
+    if (status === 'atraso')      totalAtraso += Math.max(0, quotaMensal - pago);
+    if (status === 'a_pagamento') totalAPagamento += Math.max(0, quotaMensal - pago);
     if (m <= curr) {
       pagoYTD += pago;
       esperadoYTD += quotaMensal;
@@ -54,13 +57,19 @@ export async function render(container) {
   // Planos do próprio (com prestações pendentes)
   const planosOwn = await listarPlanosCondomino(tenantId);
 
-  const emFalta = Math.max(0, esperadoYTD - pagoYTD);
   let statusGeral;
   if (saldo > 0) statusGeral = { label: 'Saldo a favor', val: formatMoney(saldo), cls: 'kpi-green' };
-  else if (emFalta > 0) statusGeral = { label: 'Em atraso', val: '−' + formatMoney(emFalta), cls: 'kpi-red' };
+  else if (totalAtraso > 0) statusGeral = { label: 'Em atraso', val: '−' + formatMoney(totalAtraso), cls: 'kpi-red' };
+  else if (totalAPagamento > 0) statusGeral = { label: 'A pagamento (até dia 8)', val: formatMoney(totalAPagamento), cls: 'kpi-blue' };
   else statusGeral = { label: 'Em dia', val: '✓', cls: 'kpi-green' };
 
   container.innerHTML = `
+    <style>
+      .mes-a-pagamento { background: rgba(59,130,246,.12); border-color: #1d4ed8; }
+      .mes-a-pagamento .mc-icon { color: #1d4ed8; }
+      .mes-a-pagamento .mc-val  { color: #1d4ed8; font-weight: 600; }
+      .kpi-blue { color: #1d4ed8 !important; }
+    </style>
     <div class="app">
       <header class="header">
         <div class="brand" id="brand">
@@ -158,17 +167,18 @@ export async function render(container) {
 }
 
 function buildMesCell(m) {
-  let icon, valor;
-  switch (m.status) {
-    case 'pago':     icon = '✓'; valor = formatMoney(m.pago); break;
-    case 'parcial':  icon = '~'; valor = formatMoney(m.pago); break;
-    case 'em-falta': icon = '✕'; valor = ''; break;
-    case 'futuro':   icon = '·'; valor = ''; break;
-  }
+  const map = {
+    pago:        { cls: 'mes-pago',        icon: '✓' },
+    a_pagamento: { cls: 'mes-a-pagamento', icon: '€' },
+    atraso:      { cls: 'mes-em-falta',    icon: '✕' },
+    futuro:      { cls: 'mes-futuro',      icon: '·' },
+  };
+  const cfg = map[m.status] || map.futuro;
+  const valor = m.pago > 0 ? formatMoney(m.pago) : '';
   return `
-    <div class="mes-cell mes-${m.status}">
+    <div class="mes-cell ${cfg.cls}">
       <div class="mc-mes">${m.mesNome.slice(0, 3)}</div>
-      <div class="mc-icon">${icon}</div>
+      <div class="mc-icon">${cfg.icon}</div>
       <div class="mc-val">${valor}</div>
     </div>
   `;

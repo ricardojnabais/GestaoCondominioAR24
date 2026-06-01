@@ -13,6 +13,7 @@
 
 import * as store from '../../store/local-store.js';
 import * as receipts from '../../modules/receipts.js';
+import * as quotasLedger from '../../modules/quotas-ledger.js';
 import * as router from '../router.js';
 import * as modalRP from '../modal-registar-pagamento.js';
 import { icon } from '../icons.js';
@@ -69,10 +70,14 @@ export async function render(container) {
           </div>
           <div class="filter-group filter-legend">
             <span class="legend-item"><span class="dot ok"></span> Pago</span>
-            <span class="legend-item"><span class="dot warn"></span> Parcial</span>
-            <span class="legend-item"><span class="dot late"></span> Em falta</span>
+            <span class="legend-item"><span class="dot due"></span> A pagamento</span>
+            <span class="legend-item"><span class="dot late"></span> Em atraso</span>
             <span class="legend-item"><span class="dot idle"></span> A vencer</span>
           </div>
+          <style>
+            .q-cell.due { background: rgba(59,130,246,.12); color: #1d4ed8; }
+            .legend-item .dot.due { background: rgba(59,130,246,.25); border: 1px solid #1d4ed8; }
+          </style>
         </div>
 
         <div id="quotas-table"></div>
@@ -118,15 +123,13 @@ async function renderTable() {
       totalPago += pago;
       if (isPast) totalEsperado += quotaMensal;
 
-      let cls = 'q-cell ';
-      if (pago === 0) {
-        cls += isPast ? 'late' : 'idle';
-      } else if (pago >= quotaMensal) {
-        cls += 'ok';
-      } else {
-        cls += 'warn';
-      }
-      cells.push({ pago, quotaMensal, cls, m, isPast });
+      // v1.0.40 · estado com tolerância do dia 8 (pago / a_pagamento / atraso / futuro)
+      const estado = quotasLedger.estadoQuotaMref({
+        pago_centimos: pago, quota_centimos: quotaMensal, mref: m,
+      });
+      const mapaCls = { pago: 'ok', a_pagamento: 'due', atraso: 'late', futuro: 'idle' };
+      const cls = 'q-cell ' + (mapaCls[estado] || 'idle');
+      cells.push({ pago, quotaMensal, cls, m, isPast, estado });
     }
 
     // Saldo a favor (excesso − saldoUsado)

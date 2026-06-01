@@ -61,7 +61,6 @@ export async function quotasAtrasoAnoCorrente(ano = new Date().getFullYear()) {
   }
 
   const hoje = new Date();
-  const mesCorrente = (ano === hoje.getFullYear()) ? hoje.getMonth() + 1 : 12;
 
   const resultado = [];
   for (const t of tenants) {
@@ -71,12 +70,16 @@ export async function quotasAtrasoAnoCorrente(ano = new Date().getFullYear()) {
 
     let totalEmFalta = 0;
     const mesesFalta = [];
-    for (let m = 1; m <= mesCorrente; m++) {
+    for (let m = 1; m <= 12; m++) {
       const mref = `${anoStr}-${String(m).padStart(2, '0')}`;
       const pago = cobertura[t.id]?.[mref] || 0;
-      if (pago < quotaMensal - 100) { // tolerância 1€
-        const falta = quotaMensal - pago;
-        totalEmFalta += falta;
+      // v1.0.40 · só é "em atraso" depois do dia 8; o período 1-8 do mês corrente
+      // está "a pagamento" e NÃO entra nas dívidas.
+      const estado = quotasLedger.estadoQuotaMes({
+        pago_centimos: pago, quota_centimos: quotaMensal, ano, mes: m, hoje,
+      });
+      if (estado === 'atraso' && pago < quotaMensal - 100) { // tolerância 1€
+        totalEmFalta += quotaMensal - pago;
         mesesFalta.push(m);
       }
     }
