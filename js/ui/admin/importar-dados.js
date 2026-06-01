@@ -60,11 +60,12 @@ export async function render(container) {
         </div>
 
         <div class="settings-card" style="margin-bottom:14px">
-          <h3 style="margin:0 0 8px 0;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--primary)">Opção A · Histórico AR24 pré-validado</h3>
+          <h3 style="margin:0 0 8px 0;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted)">Opção A · Histórico AR24 (desativado)</h3>
           <p style="margin:0 0 10px 0;font-size:13px;color:var(--text-muted)">
-            Carrega o histórico real do condomínio Av. Amália Rodrigues 24 (2021-2026): quotas, despesas, planos extraordinários e dados em atraso.
+            Desativado por segurança. O histórico anterior a 2026 está no Google Drive do condomínio.
+            Reimportá-lo aqui voltaria a <strong>duplicar as quotas de 2026</strong> e a <strong>alterar o saldo</strong>, por isso o carregamento está bloqueado.
           </p>
-          <button class="btn primary" id="btn-load-historico">Carregar Histórico AR24</button>
+          <button class="btn" id="btn-load-historico" disabled style="opacity:.5;cursor:not-allowed">Carregar Histórico (desativado)</button>
         </div>
 
         <div class="settings-card" style="margin-bottom:14px">
@@ -468,15 +469,11 @@ async function exportBackup() {
 }
 
 async function carregarHistoricoAR24() {
-  try {
-    const res = await fetch('data/seed-historico.json');
-    if (!res.ok) throw new Error('Não foi possível carregar o histórico');
-    const json = await res.json();
-    snapshotPendente = json;
-    renderPreview(json, 'Histórico AR24 pré-validado');
-  } catch (e) {
-    showMsg('Erro: ' + e.message + '. Confirma que o ficheiro data/seed-historico.json está presente no servidor.', 'error');
-  }
+  // DESATIVADO (v1.0.42) por segurança. Importar o seed-historico reintroduziria
+  // os 86 recibos "H" (que duplicam as quotas de 2026), dados pré-2026 (que vivem
+  // no Google Drive do condomínio) e 71 movimentos BPI antigos que alterariam o saldo.
+  // Função mantida apenas como referência; não importa nada.
+  showMsg('Carregar Histórico está desativado por segurança. O histórico anterior a 2026 está no Google Drive do condomínio — reimportá-lo aqui voltaria a duplicar as quotas de 2026 e a alterar o saldo.', 'error');
 }
 
 function onFilePicked(e) {
