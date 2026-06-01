@@ -48,33 +48,22 @@ export async function render(container) {
         </div>
 
         <div class="settings-card" style="margin-bottom:14px">
-          <h3 style="margin:0 0 8px 0;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--primary)">⚠ Operação destrutiva</h3>
+          <h3 style="margin:0 0 8px 0;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--primary)">Cópia de segurança (backup)</h3>
           <p style="margin:0;font-size:13px;color:var(--text)">
-            Importar um snapshot substitui <strong>TODOS</strong> os dados atuais (recibos, despesas, planos, comunicações).
-            Os dados do condomínio (nome, IBAN, etc.) também são substituídos.
-            Faz <strong>Exportar Backup</strong> antes para garantires um ponto de retorno.
+            Guarda uma cópia completa dos dados (lida do servidor). No telemóvel, aparece o menu de partilha — escolhe o <strong>Google Drive</strong> ou <strong>Ficheiros</strong> para guardar.
           </p>
           <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
-            <button class="btn ghost" id="btn-export-backup">↓ Exportar Backup do estado atual</button>
+            <button class="btn primary" id="btn-export-backup">↓ Fazer backup</button>
           </div>
         </div>
 
         <div class="settings-card" style="margin-bottom:14px">
-          <h3 style="margin:0 0 8px 0;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted)">Opção A · Histórico AR24 (desativado)</h3>
+          <h3 style="margin:0 0 8px 0;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--primary)">Restaurar de um backup</h3>
           <p style="margin:0 0 10px 0;font-size:13px;color:var(--text-muted)">
-            Desativado por segurança. O histórico anterior a 2026 está no Google Drive do condomínio.
-            Reimportá-lo aqui voltaria a <strong>duplicar as quotas de 2026</strong> e a <strong>alterar o saldo</strong>, por isso o carregamento está bloqueado.
-          </p>
-          <button class="btn" id="btn-load-historico" disabled style="opacity:.5;cursor:not-allowed">Carregar Histórico (desativado)</button>
-        </div>
-
-        <div class="settings-card" style="margin-bottom:14px">
-          <h3 style="margin:0 0 8px 0;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--primary)">Opção B · Ficheiro local</h3>
-          <p style="margin:0 0 10px 0;font-size:13px;color:var(--text-muted)">
-            Aceita um JSON gerado por <code>Exportar Backup</code> ou outro snapshot compatível.
+            Só para recuperação. Importar um ficheiro <strong>substitui TODOS os dados atuais</strong>. Faz um backup antes.
           </p>
           <input type="file" id="file-input" accept=".json,application/json" style="display:none">
-          <button class="btn ghost" id="btn-pick-file">Escolher Ficheiro JSON…</button>
+          <button class="btn ghost" id="btn-pick-file">Escolher ficheiro de backup…</button>
           <span id="file-name" style="margin-left:8px;font-size:12px;color:var(--text-muted)"></span>
         </div>
 
@@ -82,25 +71,10 @@ export async function render(container) {
 
         <div id="msg-area"></div>
 
-        <div class="settings-card" style="margin-top:24px;border-color:var(--gold,#d4af37)">
-          <h3 style="margin:0 0 8px 0;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--primary)">Migração · Cloud Firestore</h3>
-          <p style="margin:0 0 12px 0;font-size:13px;color:var(--text)">
-            Migra os dados do localStorage deste device para o Firestore na cloud. Após a migração, todos os devices ficam sincronizados em tempo real.
-          </p>
-          <div id="migrar-estado" style="font-size:12px;color:var(--text-muted);margin-bottom:10px"></div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn ghost" id="btn-backup-local">📥 Backup do localStorage</button>
-            <button class="btn primary" id="btn-migrar">☁ Migrar para Firestore</button>
-            <button class="btn ghost" id="btn-voltar-local" style="display:none">⟲ Voltar a localStorage</button>
-          </div>
-          <div id="migrar-log" style="margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:11px;background:#f9f6ee;border:1px solid #e8dfc8;border-radius:8px;padding:10px;max-height:280px;overflow:auto;display:none;white-space:pre-wrap"></div>
-        </div>
-
         <div class="settings-card" style="margin-top:24px;border-color:#2d8659">
           <h3 style="margin:0 0 8px 0;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#2d8659">Auditoria · Exportação Anual</h3>
           <p style="margin:0 0 12px 0;font-size:13px;color:var(--text)">
             Exporta os recibos do ano selecionado em formato de auditoria (Excel com 4 folhas: Recibos · Resumo Mensal · Por Condómino · Condóminos).
-            Disponível a partir de <strong>2026</strong> (anos anteriores são histórico não auditável pelo sistema).
           </p>
           <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
             <label style="font-size:13px;color:var(--text)">Ano:</label>
@@ -108,49 +82,6 @@ export async function render(container) {
             <button class="btn primary" id="btn-export-auditoria">📊 Exportar Excel Auditoria</button>
           </div>
           <div id="aud-export-log" style="margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#2d8659;display:none"></div>
-        </div>
-
-        <div class="settings-card" style="margin-top:18px;border-color:#d4af37">
-          <h3 style="margin:0 0 8px 0;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#b8941f">Alinhamento Canónico · Recibos 2026</h3>
-          <p style="margin:0 0 12px 0;font-size:13px;color:var(--text)">
-            Substitui os recibos de 2026 em Firestore pelos <strong>64 recibos canónicos</strong> do dataset oficial
-            (inclui o nº 27 ao Município da Amadora · Reabilita+). Operação destrutiva mas idempotente.
-            Recibos de outros anos <strong>não são tocados</strong>.
-          </p>
-          <p style="margin:0 0 12px 0;font-size:12px;color:#b8941f;background:#fdf6e9;border-left:3px solid #d4af37;padding:8px 11px;border-radius:0 8px 8px 0">
-            ⚠ <strong>Comportamento histórico/auditoria-only:</strong> os 64 recibos canónicos têm flags
-            <code>excluirDoSaldo</code> e <code>excluirDeContagem</code> a <code>true</code>.
-            <strong>Mantêm-se visíveis no histórico</strong> e na exportação de auditoria, mas
-            <strong>não contam</strong> para tabela Quotas, Análise mensal, Saldo bancário, nem Orçamento realizado.
-            Recibos novos emitidos via app (pós-alinhamento) contam normalmente.
-          </p>
-          <div id="aud-estado" style="font-size:12px;color:var(--text-muted);margin-bottom:10px">A verificar estado…</div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn ghost" id="btn-comparar-audit">🔍 Comparar com dataset</button>
-            <button class="btn danger" id="btn-alinhar-audit">⚠ Alinhar recibos 2026 com dataset</button>
-          </div>
-          <div id="aud-log" style="margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:11px;background:#f9f6ee;border:1px solid #e8dfc8;border-radius:8px;padding:10px;max-height:280px;overflow:auto;display:none;white-space:pre-wrap"></div>
-        </div>
-
-        <div class="settings-card" style="margin-top:18px;border-color:#2d8659">
-          <h3 style="margin:0 0 8px 0;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#2d8659">Forçar Dados 2026 · Quotas + Despesas</h3>
-          <p style="margin:0 0 12px 0;font-size:13px;color:var(--text)">
-            Põe 2026 a coincidir com o ficheiro de Contas e corrige tudo de uma vez:
-            apaga <strong>todos</strong> os recibos "H0xx" e repõe os <strong>64 canónicos (RCB 001–064)</strong>,
-            quotas <strong>2.351,00 €</strong> (sem duplicar), garante as <strong>9 rúbricas</strong>
-            (faz aparecer Schindler/Allianz/Banco no mapa), recebimento CMA <strong>6.519,00 €</strong>,
-            saldo inicial <strong>7.521,78 € @ 27/05</strong> e saldo real <strong>7.028,25 €</strong>.
-            Próximo recibo = <strong>RCB 065</strong>. Idempotente.
-          </p>
-          <p style="margin:0 0 12px 0;font-size:12px;color:#2d8659;background:#eef7f0;border-left:3px solid #2d8659;padding:8px 11px;border-radius:0 8px 8px 0">
-            ⚠ Apaga TODOS os recibos de 2026 não-canónicos (incl. os importados do Histórico) e
-            <strong>repõe as despesas de 2026</strong> (histórico Jan–Mai + os 3 pagamentos de 28–29/05).
-            Recibos anteriores a 01/06 deixam de poder ser exportados.
-          </p>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn primary" id="btn-forcar-2026">⟳ Forçar dados 2026</button>
-          </div>
-          <div id="forcar-log" style="margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:11px;background:#f3faf5;border:1px solid #cfe9d8;border-radius:8px;padding:10px;max-height:280px;overflow:auto;display:none;white-space:pre-wrap"></div>
         </div>
       </main>
     </div>
@@ -160,26 +91,14 @@ export async function render(container) {
   containerRef.querySelector('#back-home').addEventListener('click', () => router.navigate('admin/home'));
 
   containerRef.querySelector('#btn-export-backup').addEventListener('click', exportBackup);
-  containerRef.querySelector('#btn-load-historico').addEventListener('click', carregarHistoricoAR24);
   containerRef.querySelector('#btn-pick-file').addEventListener('click', () => {
     containerRef.querySelector('#file-input').click();
   });
   containerRef.querySelector('#file-input').addEventListener('change', onFilePicked);
 
-  // Migração Firestore
-  containerRef.querySelector('#btn-backup-local').addEventListener('click', backupOnlyClick);
-  containerRef.querySelector('#btn-migrar').addEventListener('click', migrarClick);
-  containerRef.querySelector('#btn-voltar-local').addEventListener('click', voltarLocalClick);
-
   // Auditoria · selector de ano (anos com recibos, >= 2026)
   await popularAnosAuditoria();
   containerRef.querySelector('#btn-export-auditoria').addEventListener('click', exportAuditoriaClick);
-  containerRef.querySelector('#btn-comparar-audit').addEventListener('click', compararAuditoriaClick);
-  containerRef.querySelector('#btn-alinhar-audit').addEventListener('click', alinharAuditoriaClick);
-  containerRef.querySelector('#btn-forcar-2026').addEventListener('click', forcar2026Click);
-
-  await actualizarEstadoMigracao();
-  await actualizarEstadoAuditoria();
 }
 
 async function forcar2026Click() {
@@ -455,11 +374,27 @@ async function exportBackup() {
     const totalDocs = Object.values(dump).reduce((s, v) => s + (Array.isArray(v) ? v.length : 0), 0);
     if (totalDocs === 0) throw new Error('backup vazio — verifica que estás ligado ao Firestore.');
     const json = JSON.stringify(dump, null, 2);
+    const filename = `backup-AR24-${new Date().toISOString().slice(0, 10)}.json`;
+
+    // No telemóvel: abrir o menu de partilha para guardar direto no Drive/Ficheiros.
+    try {
+      const file = new File([json], filename, { type: 'application/json' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: 'Backup AR24' });
+        showMsg(`✓ Backup pronto · ${totalDocs} documentos. Escolhe o Google Drive no menu de partilha.`, 'ok');
+        return;
+      }
+    } catch (err) {
+      if (err && err.name === 'AbortError') { showMsg('Partilha cancelada.', 'error'); return; }
+      // qualquer outro erro de partilha → cai no descarregamento normal
+    }
+
+    // Computador (ou se a partilha não estiver disponível): descarregar ficheiro.
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `backup-AR24-${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
     showMsg(`✓ Backup exportado · ${totalDocs} documentos.`, 'ok');
