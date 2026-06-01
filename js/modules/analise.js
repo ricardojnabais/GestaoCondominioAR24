@@ -7,6 +7,7 @@
 
 import * as store from '../store/local-store.js';
 import * as receipts from './receipts.js';
+import * as quotasLedger from './quotas-ledger.js';
 import * as emAberto from './em-aberto.js';
 import * as despesas from './despesas.js';
 import * as saldoBanco from './saldo-banco.js';
@@ -21,30 +22,42 @@ const MESES_LBL = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','
 export async function kpisYTD(ano) {
   const tenants = await store.listDocs('tenants');
   const currMonth = currentMonthRef();
+  const hoje = new Date();
 
-  let esperadoYTD = 0;
-  let recebidoYTD = 0;
+  let esperadoYTD = 0;     // só meses já vencidos (passou o dia 8)
+  let recebidoYTD = 0;     // recebido em todos os meses decorridos (para "Receitas")
+  let recebidoVencido = 0; // recebido nos meses vencidos (para a taxa)
   let totalEmAtraso = 0;
   let condominosEmAtraso = 0;
 
   const months = monthsOfYear(ano).filter(m => m <= currMonth);
+  // Um mês está "vencido" quando já passou o dia-limite (dia 8).
+  const venceu = (mref) => {
+    const a = Number(mref.slice(0, 4)), mo = Number(mref.slice(5, 7));
+    return hoje > new Date(a, mo - 1, quotasLedger.DIA_LIMITE_PAGAMENTO, 23, 59, 59, 999);
+  };
 
   for (const t of tenants) {
     const quotaMensal = t.rentByYear?.[ano] || 0;
-    let pagoTotal = 0;
-    let esperadoTotal = 0;
+    let atrasoTenant = 0;
 
     for (const m of months) {
       const pago = await receipts.valorPagoNoMes(t.id, m);
-      pagoTotal += pago;
-      esperadoTotal += quotaMensal;
+      recebidoYTD += pago;
+
+      const estado = quotasLedger.estadoQuotaMref({
+        pago_centimos: pago, quota_centimos: quotaMensal, mref: m, hoje,
+      });
+      if (venceu(m)) {
+        esperadoYTD += quotaMensal;
+        recebidoVencido += Math.min(pago, quotaMensal);
+      }
+      // Só conta como dívida o que está mesmo em atraso (período 1-8 = a pagamento).
+      if (estado === 'atraso') atrasoTenant += Math.max(0, quotaMensal - pago);
     }
 
-    esperadoYTD += esperadoTotal;
-    recebidoYTD += pagoTotal;
-    const emFalta = Math.max(0, esperadoTotal - pagoTotal);
-    if (emFalta > 0) {
-      totalEmAtraso += emFalta;
+    if (atrasoTenant > 0) {
+      totalEmAtraso += atrasoTenant;
       condominosEmAtraso++;
     }
   }
@@ -60,8 +73,10 @@ export async function kpisYTD(ano) {
   // Saldo bancário atual
   const { saldo } = await saldoBanco.calcularSaldo(ano);
 
-  // Taxa de cobrança
-  const taxaCobranca = esperadoYTD > 0 ? Math.round(recebidoYTD / esperadoYTD * 100) : 100;
+  // Taxa de cobrança (sobre o que já venceu)
+  const taxaCobranca = esperadoYTD > 0
+    ? Math.min(100, Math.round(recebidoVencido / esperadoYTD * 100))
+    : 100;
 
   return {
     ano,

@@ -9,6 +9,7 @@ import * as auth from '../../auth/local-auth.js';
 import * as store from '../../store/local-store.js';
 import * as router from '../router.js';
 import * as receipts from '../../modules/receipts.js';
+import * as quotasLedger from '../../modules/quotas-ledger.js';
 import * as comunicacoes from '../../modules/comunicacoes.js';
 import * as push from '../../modules/push.js';
 import { icon } from '../icons.js';
@@ -33,21 +34,30 @@ export async function render(container) {
   const saldo = await receipts.saldoCondomino(tenantId);
   const currMes = currentMonthRef();
   const meses = monthsOfYear(ano).filter(m => m <= currMes);
-  let pagoYTD = 0, esperadoYTD = 0;
+  const hoje = new Date();
+  let pagoYTD = 0, totalAtraso = 0, totalAPagamento = 0;
   for (const m of meses) {
-    pagoYTD += await receipts.valorPagoNoMes(tenantId, m);
-    esperadoYTD += quotaMensal;
+    const pago = await receipts.valorPagoNoMes(tenantId, m);
+    pagoYTD += pago;
+    const estado = quotasLedger.estadoQuotaMref({
+      pago_centimos: pago, quota_centimos: quotaMensal, mref: m, hoje,
+    });
+    if (estado === 'atraso')      totalAtraso += Math.max(0, quotaMensal - pago);
+    if (estado === 'a_pagamento') totalAPagamento += Math.max(0, quotaMensal - pago);
   }
-  const emFalta = Math.max(0, esperadoYTD - pagoYTD);
   let statusLabel, statusCls, statusVal;
   if (saldo > 0) {
     statusLabel = 'Saldo a favor';
     statusCls = 'kpi-green';
     statusVal = formatMoney(saldo);
-  } else if (emFalta > 0) {
+  } else if (totalAtraso > 0) {
     statusLabel = 'Em atraso';
     statusCls = 'kpi-red';
-    statusVal = '−' + formatMoney(emFalta);
+    statusVal = '−' + formatMoney(totalAtraso);
+  } else if (totalAPagamento > 0) {
+    statusLabel = 'A pagamento (até dia 8)';
+    statusCls = 'kpi-blue';
+    statusVal = formatMoney(totalAPagamento);
   } else {
     statusLabel = 'Quotas em dia';
     statusCls = 'kpi-green';
@@ -65,6 +75,7 @@ export async function render(container) {
                     : 'kpi-red';
 
   container.innerHTML = `
+    <style>.kpi-blue { color: #1d4ed8 !important; }</style>
     <div class="app">
       <header class="header">
         <div class="brand">
