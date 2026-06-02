@@ -100,6 +100,7 @@ async function buildAdminItems() {
     { route: 'admin/despesas-mensal',icon: 'ic-dashboard',    label: 'Mapa Mensal de Despesas' },
     { route: 'admin/orcamento',      icon: 'ic-quota-in',     label: 'Orçamento' },
     { route: 'admin/comunicacoes',   icon: 'ic-chat',         label: 'Comunicações' },
+    { route: 'admin/manutencao',     icon: 'ic-settings',     label: 'Manutenção Periódica' },
     { sep: true, label: 'Definições' },
     { route: 'admin/condominos',     icon: 'ic-settings',     label: 'Condóminos' },
     { route: 'admin/utilizadores',   icon: 'ic-settings',     label: 'Acessos ao Portal' },

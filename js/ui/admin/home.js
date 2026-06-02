@@ -11,7 +11,8 @@ import * as comunicacoes from '../../modules/comunicacoes.js';
 import * as modalRP from '../modal-registar-pagamento.js';
 import * as modalND from '../modal-nova-despesa.js';
 import { icon } from '../icons.js';
-import { formatMoney } from '../../utils/format.js';
+import { formatMoney, formatDate } from '../../utils/format.js';
+import * as manut from '../../modules/manutencoes.js';
 
 export async function render(container) {
   const session = auth.getSession();
@@ -44,6 +45,8 @@ export async function render(container) {
         </div>
 
         <div class="home-kpis" id="home-kpis"><div class="kpi-loader">…</div></div>
+
+        <div id="home-manut"></div>
 
         <div class="menu-tiles">
           <a class="menu-tile" data-action="registar-pagamento">
@@ -82,6 +85,10 @@ export async function render(container) {
             <div class="mt-icon-wrap">${icon('ic-quota-in', 'mt-icon')}</div>
             <div class="mt-name">Orçamento</div>
           </a>
+          <a class="menu-tile" data-route="admin/manutencao">
+            <div class="mt-icon-wrap">${icon('ic-settings', 'mt-icon')}</div>
+            <div class="mt-name">Manutenção</div>
+          </a>
           <a class="menu-tile span-2" data-route="admin/comunicacoes">
             <div class="mt-icon-wrap">
               ${icon('ic-chat', 'mt-icon')}
@@ -99,6 +106,7 @@ export async function render(container) {
   `;
 
   await refreshSaldo(container);
+  await refreshManutencoes(container);
 
   container.querySelectorAll('.menu-tile').forEach(tile => {
     tile.addEventListener('click', () => {
@@ -170,3 +178,37 @@ async function refreshSaldo(container) {
     });
   });
 }
+async function refreshManutencoes(container) {
+  const el = container.querySelector('#home-manut');
+  if (!el) return;
+  let itens = [];
+  try { itens = await manut.proximas(4); } catch (_) { return; }
+  if (!itens.length) { el.innerHTML = ''; return; }
+
+  const linhas = itens.map(m => {
+    const info = manut.ESTADO_INFO[m.estado];
+    const dias = m.diasAte;
+    const quando = m.estado === 'vencida'
+      ? `vencida há ${Math.abs(dias)}d`
+      : (dias === 0 ? 'hoje' : `daqui a ${dias}d`);
+    return `<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--border, #eee)">
+      <span style="width:8px;height:8px;border-radius:50%;background:${info.cor};flex:0 0 auto"></span>
+      <span style="flex:1;font-size:14px">${escapeHtml(m.nome)}</span>
+      <span style="font-size:12px;color:${info.cor};font-weight:700;white-space:nowrap">${m.proxima ? formatDate(m.proxima) : '—'} · ${quando}</span>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = `
+    <a class="card" data-route="admin/manutencao" style="display:block;background:#fff;border-radius:14px;padding:14px 16px;margin:4px 0 8px;box-shadow:0 1px 3px rgba(0,0,0,.06);cursor:pointer">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">
+        <strong style="font-size:14px">Próximas manutenções</strong>
+        <span style="font-size:12px;color:var(--primary)">ver todas ›</span>
+      </div>
+      ${linhas}
+    </a>`;
+  el.querySelector('[data-route]')?.addEventListener('click', (e) => {
+    e.preventDefault(); router.navigate('admin/manutencao');
+  });
+}
+
+function escapeHtml(s) { return String(s || '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }

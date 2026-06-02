@@ -23,7 +23,8 @@ const FIRESTORE_COLLECTIONS = [
   'outrosRecebimentos',
   'movimentosBPI',
   'comunicacoes',
-  'orcamentos'
+  'orcamentos',
+  'manutencoes'
 ];
 
 // Cache em memória · espelha Firestore em tempo real via onSnapshot

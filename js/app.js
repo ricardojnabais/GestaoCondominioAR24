@@ -33,6 +33,7 @@ import * as adminImportarDados from './ui/admin/importar-dados.js';
 import * as adminNotificacoes from './ui/admin/notificacoes.js';
 import * as adminDespesasMensal from './ui/admin/despesas-mensal.js';
 import * as adminEmAberto from './ui/admin/em-aberto.js';
+import * as adminManutencao from './ui/admin/manutencao.js';
 import * as condominoHome from './ui/condomino/home.js';
 import * as condominoRecibos from './ui/condomino/recibos.js';
 import * as condominoConta from './ui/condomino/conta.js';
@@ -100,6 +101,7 @@ async function main() {
   router.register('admin/definicoes',      adminDefinicoesMenu,  { requiresAuth: 'admin' });
   router.register('admin/definicoes-dados', adminDefinicoesDados, { requiresAuth: 'admin' });
   router.register('admin/comunicacoes',    adminComunicacoes,    { requiresAuth: 'admin' });
+  router.register('admin/manutencao',       adminManutencao,      { requiresAuth: 'admin' });
   router.register('admin/utilizadores',    adminUtilizadores,    { requiresAuth: 'admin' });
   router.register('admin/condominos',      adminCondominos,      { requiresAuth: 'admin' });
   router.register('admin/importar-dados',  adminImportarDados,   { requiresAuth: 'admin' });
