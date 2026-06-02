@@ -5,4 +5,4 @@
  *
  * Ao publicar uma nova versão: atualizar AQUI e o CACHE_VERSION no sw.js.
  */
-export const APP_VERSION = 'v1.0.44';
+export const APP_VERSION = 'v1.0.45';

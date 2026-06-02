@@ -10,6 +10,7 @@
 
 import * as store from '../store/local-store.js';
 import * as outros from '../modules/outros-recebimentos.js';
+import * as receipts from '../modules/receipts.js';
 import * as auth from '../auth/local-auth.js';
 import { todayISO, formatMoney, parseMoney } from '../utils/format.js';
 
@@ -59,8 +60,19 @@ export async function open(opts = {}) {
 
         <div class="field">
           <label>Origem (opcional)</label>
-          <input type="text" id="nr-origem" placeholder="Quem pagou?">
+          <input type="text" id="nr-origem" placeholder="Quem pagou? ex: Câmara Municipal da Amadora">
         </div>
+
+        <div class="field">
+          <label>NIF de quem pagou (opcional)</label>
+          <input type="text" id="nr-nif" placeholder="ex: 501 234 567" inputmode="numeric">
+          <div class="hint">Sai no recibo, por baixo de "Recebi de".</div>
+        </div>
+
+        <label class="field" style="flex-direction:row;align-items:center;gap:10px;cursor:pointer;margin-top:4px">
+          <input type="checkbox" id="nr-recibo" checked style="width:18px;height:18px;flex:0 0 auto">
+          <span>Emitir <strong>recibo numerado</strong> (RCB) para este recebimento</span>
+        </label>
 
         <div class="field">
           <label>Associado a condómino (opcional)</label>
@@ -109,13 +121,38 @@ function bindEvents() {
       origem: modalEl.querySelector('#nr-origem').value.trim(),
       tenantId: modalEl.querySelector('#nr-tenant').value || null
     };
+    const emitirRecibo = modalEl.querySelector('#nr-recibo').checked;
+    const nif = modalEl.querySelector('#nr-nif').value.trim();
+    const btn = modalEl.querySelector('#nr-submit');
+    btn.disabled = true;
     try {
       const session = auth.getSession();
+      // 1) Entrada em outros recebimentos — é o que CONTA no saldo e na Análise.
       const r = await outros.registar(data, session?.operatorName);
+
+      // 2) (Opcional) Recibo numerado — só o documento, audit-only (não duplica).
+      let recibo = null;
+      if (emitirRecibo) {
+        recibo = await receipts.emitirRecebimento({
+          valor_centimos: data.valor_centimos,
+          descricao: data.descricao,
+          pagador: data.origem,
+          pagadorNif: nif,
+          data: data.data,
+          outroRecebimentoId: r.id
+        });
+        // Ligar a entrada ao recibo (para referência/auditoria).
+        try { await store.setDoc('outrosRecebimentos', { ...r, reciboNumero: recibo.recibo_numero }); }
+        catch (_) {}
+      }
+
       close();
-      alert(`Recebimento registado · ${formatMoney(r.valor_centimos)}`);
-      if (onSuccessCallback) onSuccessCallback(r);
+      alert(recibo
+        ? `Recebimento registado · ${formatMoney(r.valor_centimos)}\nRecibo ${recibo.recibo_numero} emitido.`
+        : `Recebimento registado · ${formatMoney(r.valor_centimos)}`);
+      if (onSuccessCallback) onSuccessCallback(recibo || r);
     } catch (e) {
+      btn.disabled = false;
       alert('Erro: ' + e.message);
     }
   });

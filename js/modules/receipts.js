@@ -303,3 +303,59 @@ export async function saldoCondomino(tenantId) {
     s + (r.excesso_centimos || 0) - (r.saldoUsado_centimos || 0)
   , 0);
 }
+
+/**
+ * v1.0.45 · Emite um recibo NUMERADO de um pagamento recebido que NÃO é quota
+ * (ex.: apoio da Câmara, reembolso de seguro, donativo).
+ *
+ * Importante — contabilidade: este recibo é APENAS o documento.
+ * Fica marcado audit-only (excluirDoSaldo + excluirDeContagem = true) para
+ * NÃO contar no saldo nem na Análise. O que conta é a entrada em
+ * `outrosRecebimentos` (criada no fluxo do modal). Assim, o dinheiro entra
+ * uma só vez na contabilidade — mesmo padrão do recibo histórico da Câmara.
+ *
+ * @param {Object} data
+ * @param {number} data.valor_centimos
+ * @param {string} data.descricao        - "referente a"
+ * @param {string} [data.pagador]        - quem pagou (vai para "Recebi de")
+ * @param {string} [data.pagadorNif]     - NIF de quem pagou (opcional, sai no PDF)
+ * @param {string} [data.data]           - ISO; default hoje
+ * @param {string} [data.outroRecebimentoId] - id da entrada outrosRecebimentos ligada
+ * @returns {Promise<Object>} recibo gravado
+ */
+export async function emitirRecebimento(data) {
+  if (!data.valor_centimos || data.valor_centimos <= 0) throw new Error('Valor inválido.');
+  if (!data.descricao || !data.descricao.trim()) throw new Error('Falta a descrição.');
+
+  const dataRecibo = data.data || todayISO();
+  const ano = dataRecibo.split('-')[0];
+  const { numero, formatado } = await numeracao.nextReceiptNumber(ano);
+
+  const doc = {
+    recibo_numero: formatado,
+    recibo_seq: numero,
+    ano,
+    tenantId: null,
+    tenantName: (data.pagador && data.pagador.trim()) || '—',
+    fraction: '—',
+    data: dataRecibo,
+    valor_centimos: data.valor_centimos,
+    excesso_centimos: 0,
+    saldoUsado_centimos: 0,
+    mesReferencia: [],
+    descricao: data.descricao.trim(),
+    tipo: 'recebimento',
+    pagadorNif: (data.pagadorNif || '').trim() || null,
+    planoId: null,
+    prestacoesIds: null,
+    cancelado: false,
+    estornoDe: null,
+    excluirDoSaldo: true,
+    excluirDeContagem: true,
+    recebimentoExterno: true,
+    outroRecebimentoId: data.outroRecebimentoId || null,
+    createdAt: Date.now()
+  };
+
+  return await store.setDoc('receipts', doc);
+}

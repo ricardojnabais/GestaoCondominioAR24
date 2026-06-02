@@ -121,7 +121,8 @@ function tipoLabel(tipo) {
     'quota': 'Quota mensal',
     'prestacao': 'Prestação de plano',
     'estorno': 'Estorno',
-    'outro': 'Outro recebimento'
+    'outro': 'Outro recebimento',
+    'recebimento': 'Recebimento'
   }[tipo] || tipo || '—';
 }
 

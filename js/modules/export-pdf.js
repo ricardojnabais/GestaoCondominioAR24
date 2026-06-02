@@ -24,6 +24,7 @@ const TIPO_LABEL = {
   quota: 'Quota mensal',
   prestacao: 'Prestação de Plano',
   outro: 'Outro recebimento',
+  recebimento: 'Recebimento',
   estorno: 'Estorno'
 };
 
@@ -42,7 +43,7 @@ export async function gerarReciboPDF(reciboId, operatorName) {
   const recibo = await store.getDoc('receipts', reciboId);
   if (!recibo) throw new Error('Recibo não encontrado.');
 
-  const tenant = await store.getDoc('tenants', recibo.tenantId);
+  const tenant = recibo.tenantId ? await store.getDoc('tenants', recibo.tenantId) : null;
   const cond = await condominioInfo.obter();
 
   // Construir descrição contextualizada
@@ -156,7 +157,7 @@ function desenharRecibo(doc, recibo, tenant, cond, descricao) {
   // NIF + Andar/Fração na mesma linha
   doc.setFont('helvetica', 'normal');
   doc.text('NIF', labelX, y);
-  doc.text(tenant?.nif || '', labelX + 12, y);
+  doc.text(tenant?.nif || recibo.pagadorNif || '', labelX + 12, y);
   doc.line(labelX + 12, y + 0.8, labelX + 60, y + 0.8);
 
   doc.text('Andar/Fração:', labelX + 75, y);

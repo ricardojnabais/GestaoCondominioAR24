@@ -9,6 +9,7 @@ import * as receipts from '../../modules/receipts.js';
 import * as store from '../../store/local-store.js';
 import * as router from '../router.js';
 import * as modalRP from '../modal-registar-pagamento.js';
+import * as modalNR from '../modal-novo-recebimento.js';
 import * as modalDR from '../modal-detalhe-recibo.js';
 import { icon } from '../icons.js';
 import { formatMoney, formatDate, formatMonth } from '../../utils/format.js';
@@ -51,6 +52,10 @@ export async function render(container) {
               ${icon('ic-quota-in', 'btn-icon-sm')}
               <span>Registar Pagamento</span>
             </button>
+            <button class="btn ghost" id="btn-new-receb" style="margin-left:8px">
+              ${icon('ic-receipt', 'btn-icon-sm')}
+              <span>Recibo de Recebimento</span>
+            </button>
           </div>
         </div>
 
@@ -69,6 +74,9 @@ export async function render(container) {
   container.querySelector('#logout-btn').addEventListener('click', () => router.navigate('admin/home'));
   container.querySelector('#btn-new').addEventListener('click', () => {
     modalRP.open({ onSuccess: () => renderList() });
+  });
+  container.querySelector('#btn-new-receb').addEventListener('click', () => {
+    modalNR.open({ onSuccess: () => renderList() });
   });
 }
 
@@ -102,6 +110,7 @@ async function renderFilters() {
         <option value="">— Todos —</option>
         <option value="quota" ${state.tipo === 'quota' ? 'selected' : ''}>Quotas</option>
         <option value="prestacao" ${state.tipo === 'prestacao' ? 'selected' : ''}>Prestações</option>
+        <option value="recebimento" ${state.tipo === 'recebimento' ? 'selected' : ''}>Recebimentos</option>
         <option value="estorno" ${state.tipo === 'estorno' ? 'selected' : ''}>Estornos</option>
       </select>
     </div>
@@ -164,6 +173,7 @@ async function renderList() {
 
 function buildRow(r) {
   const isEstorno = r.tipo === 'estorno';
+  const isReceb = r.tipo === 'recebimento';
   const isCancelled = r.cancelado;
   const meses = (r.mesReferencia || []).slice().sort();
   const mesesStr = meses.length === 1
@@ -174,6 +184,25 @@ function buildRow(r) {
   const sign = isEstorno ? 'out' : 'in';
   const cls = isCancelled ? 'mov cancelled' : 'mov';
   const valorCls = r.valor_centimos < 0 ? 'neg' : 'pos';
+
+  if (isReceb) {
+    return `
+    <div class="${cls}" data-id="${r.id}">
+      <div class="mov-ic ${sign}">${icon(ic, 'm-ic')}</div>
+      <div class="mov-txt">
+        <div class="mov-title">
+          ${isCancelled ? '<span class="badge-cancelled">CANCELADO</span> ' : ''}
+          RCB ${r.recibo_numero} · Recebimento
+        </div>
+        <div class="mov-meta">
+          ${formatDate(r.data)}${r.tenantName && r.tenantName !== '—' ? ' · ' + r.tenantName : ''}
+        </div>
+        <div class="mov-desc">${r.descricao || ''}</div>
+      </div>
+      <div class="mov-val ${valorCls}">${formatMoney(r.valor_centimos)}</div>
+    </div>
+  `;
+  }
 
   return `
     <div class="${cls}" data-id="${r.id}">
