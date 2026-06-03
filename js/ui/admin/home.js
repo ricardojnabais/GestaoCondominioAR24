@@ -86,8 +86,8 @@ export async function render(container) {
             <div class="mt-name">Orçamento</div>
           </a>
           <a class="menu-tile" data-route="admin/manutencao">
-            <div class="mt-icon-wrap">${icon('ic-settings', 'mt-icon')}</div>
-            <div class="mt-name">Manutenção</div>
+            <div class="mt-icon-wrap">${icon('ic-calendar', 'mt-icon')}</div>
+            <div class="mt-name">Agenda</div>
           </a>
           <a class="menu-tile span-2" data-route="admin/comunicacoes">
             <div class="mt-icon-wrap">
@@ -201,7 +201,7 @@ async function refreshManutencoes(container) {
   el.innerHTML = `
     <a class="card" data-route="admin/manutencao" style="display:block;background:#fff;border-radius:14px;padding:14px 16px;margin:4px 0 8px;box-shadow:0 1px 3px rgba(0,0,0,.06);cursor:pointer">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">
-        <strong style="font-size:14px">Próximas manutenções</strong>
+        <strong style="font-size:14px">Próximos na agenda</strong>
         <span style="font-size:12px;color:var(--primary)">ver todas ›</span>
       </div>
       ${linhas}

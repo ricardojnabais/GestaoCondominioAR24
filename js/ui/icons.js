@@ -121,6 +121,19 @@ export const ICON_SPRITE_HTML = `
       <text x="20" y="27" text-anchor="middle" font-family="Allura, cursive" font-size="20" fill="currentColor" font-weight="400">AR24</text>
     </symbol>
 
+    <!-- Calendário / Agenda -->
+    <symbol id="ic-calendar" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="12" y="16" width="40" height="36" rx="4"/>
+      <line x1="12" y1="26" x2="52" y2="26"/>
+      <line x1="22" y1="10" x2="22" y2="20"/>
+      <line x1="42" y1="10" x2="42" y2="20"/>
+      <line x1="22" y1="36" x2="26" y2="36"/>
+      <line x1="31" y1="36" x2="35" y2="36"/>
+      <line x1="40" y1="36" x2="44" y2="36"/>
+      <line x1="22" y1="44" x2="26" y2="44"/>
+      <line x1="31" y1="44" x2="35" y2="44"/>
+    </symbol>
+
   </defs>
 </svg>
 `;

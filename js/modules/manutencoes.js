@@ -42,7 +42,11 @@ export const MODELOS = [
   { nome: 'Extintores · inspeção visual',   categoria: 'Incêndio',   valor: 3, unidade: 'meses', diasAviso: 15,
     notas: 'Verificação rápida (pressão, selo, acesso). NP 4413.' },
   { nome: 'Extintores · recarga',           categoria: 'Incêndio',   valor: 5, unidade: 'anos',  diasAviso: 60,
-    notas: 'Recarga (pó químico / água+aditivo). NP 4413.' }
+    notas: 'Recarga (pó químico / água+aditivo). NP 4413.' },
+  { nome: 'Limpeza do prédio',              categoria: 'Limpeza',    valor: 1, unidade: 'semanas', diaSemana: 5, diasAviso: 2,
+    notas: 'Limpeza semanal das partes comuns.' },
+  { nome: 'Reunião de condomínio',          categoria: 'Assembleia', modo: 'pontual', diasAviso: 15,
+    notas: 'Assembleia de condóminos. Convocatória com antecedência mínima de 10 dias (Código Civil, art. 1432.º).' }
 ];
 
 export const WEEKDAYS = [
@@ -118,7 +122,9 @@ export async function listar() {
   return docs
     .filter(m => m.ativo !== false)
     .map(m => {
-      const proxima = calcularProxima(m.dataUltima, m.periodicidadeValor, m.periodicidadeUnidade, m.diaSemana);
+      const proxima = (m.modo === 'pontual')
+        ? (m.dataEvento || null)
+        : calcularProxima(m.dataUltima, m.periodicidadeValor, m.periodicidadeUnidade, m.diaSemana);
       return { ...m, proxima, estado: estado(proxima, m.diasAviso), diasAte: diasAte(proxima) };
     })
     .sort((a, b) => (a.proxima || '9999').localeCompare(b.proxima || '9999'));
@@ -131,12 +137,16 @@ export async function proximas(limite = 4) {
 }
 
 export async function criar(data) {
-  if (!data.nome || !data.nome.trim()) throw new Error('Falta o nome da manutenção.');
-  if (!data.dataUltima) throw new Error('Indica a data da última realização.');
+  if (!data.nome || !data.nome.trim()) throw new Error('Falta o nome.');
+  const modo = data.modo === 'pontual' ? 'pontual' : 'recorrente';
+  if (modo === 'pontual' && !data.dataEvento) throw new Error('Indica a data do evento.');
+  if (modo === 'recorrente' && !data.dataUltima) throw new Error('Indica a data da última realização.');
   const doc = {
     nome: data.nome.trim(),
     categoria: (data.categoria || '').trim(),
-    dataUltima: data.dataUltima,
+    modo,
+    dataEvento: modo === 'pontual' ? data.dataEvento : null,
+    dataUltima: data.dataUltima || null,
     periodicidadeValor: parseInt(data.periodicidadeValor, 10) || 1,
     periodicidadeUnidade: data.periodicidadeUnidade || 'meses',
     diaSemana: (data.diaSemana === '' || data.diaSemana == null) ? null : parseInt(data.diaSemana, 10),
@@ -150,11 +160,14 @@ export async function criar(data) {
 
 export async function atualizar(id, data) {
   const atual = await store.getDoc('manutencoes', id);
-  if (!atual) throw new Error('Manutenção não encontrada.');
+  if (!atual) throw new Error('Item não encontrado.');
+  const modo = data.modo === 'pontual' ? 'pontual' : (data.modo === 'recorrente' ? 'recorrente' : (atual.modo || 'recorrente'));
   const doc = {
     ...atual,
     nome: data.nome?.trim() ?? atual.nome,
     categoria: (data.categoria ?? atual.categoria ?? '').trim(),
+    modo,
+    dataEvento: modo === 'pontual' ? (data.dataEvento ?? atual.dataEvento ?? null) : null,
     dataUltima: data.dataUltima ?? atual.dataUltima,
     periodicidadeValor: parseInt(data.periodicidadeValor, 10) || atual.periodicidadeValor,
     periodicidadeUnidade: data.periodicidadeUnidade || atual.periodicidadeUnidade,
