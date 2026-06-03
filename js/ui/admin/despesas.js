@@ -112,6 +112,10 @@ async function renderList() {
 
   // Totais por rúbrica
   const agg = await despesas.totalPorRubrica(state.ano);
+  // Mostrar também as rúbricas ATIVAS (mesmo com 0€); as que têm pagamentos
+  // no ano já vêm de totalPorRubrica (mesmo que entretanto inativadas).
+  const ativasList = await rubricas.listar({ ativasApenas: true });
+  ativasList.forEach(r => { if (!agg[r.id]) agg[r.id] = { nome: r.nome, total: 0 }; });
   const totalAno = Object.values(agg).reduce((s, r) => s + r.total, 0);
 
   let aggHtml = '';

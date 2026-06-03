@@ -10,7 +10,7 @@ import { icon } from '../icons.js';
 import { formatDate } from '../../utils/format.js';
 
 let containerRef = null;
-let showTerminated = false;
+let filtro = 'ativas'; // 'ativas' | 'inativas' | 'todas'
 
 export async function render(container) {
   containerRef = container;
@@ -42,11 +42,13 @@ export async function render(container) {
         </div>
 
         <div class="filters">
-          <div class="filter-group filter-toggle">
-            <label class="checkbox-label">
-              <input type="checkbox" id="f-show-term">
-              <span>Mostrar rúbricas terminadas</span>
-            </label>
+          <div class="filter-group">
+            <label>Mostrar</label>
+            <select id="f-estado">
+              <option value="ativas">Ativas</option>
+              <option value="inativas">Inativas</option>
+              <option value="todas">Todas</option>
+            </select>
           </div>
         </div>
 
@@ -60,74 +62,73 @@ export async function render(container) {
   container.querySelector('#brand').addEventListener('click', () => router.navigate('admin/home'));
   container.querySelector('#back-home').addEventListener('click', () => router.navigate('admin/home'));
   container.querySelector('#hamburger').addEventListener('click', () => router.navigate('admin/home'));
-  container.querySelector('#f-show-term').addEventListener('change', (e) => {
-    showTerminated = e.target.checked;
+  container.querySelector('#f-estado').addEventListener('change', (e) => {
+    filtro = e.target.value;
     renderList();
   });
   container.querySelector('#btn-new').addEventListener('click', criarNova);
 }
 
 async function renderList() {
-  let list = await rubricas.listar();
-  if (!showTerminated) list = list.filter(r => !r.terminadaEm);
+  const all = await rubricas.listar();
+  let list;
+  if (filtro === 'ativas') list = all.filter(r => !r.terminadaEm);
+  else if (filtro === 'inativas') list = all.filter(r => r.terminadaEm);
+  else list = all;
 
-  const activas = list.filter(r => !r.terminadaEm);
-  const terminadas = list.filter(r => r.terminadaEm);
-
+  const el = containerRef.querySelector('#rubs-list');
   if (list.length === 0) {
-    containerRef.querySelector('#rubs-list').innerHTML = `
+    el.innerHTML = `
       <div class="placeholder">
-        <h3>Sem rúbricas</h3>
-        <p>Cria a primeira com "+ Nova rúbrica".</p>
-      </div>
-    `;
+        <h3>Sem rúbricas ${filtro === 'todas' ? '' : filtro}</h3>
+        <p>${filtro === 'inativas' ? 'Não há rúbricas inativas.' : 'Cria a primeira com "+ Nova rúbrica".'}</p>
+      </div>`;
     return;
   }
 
-  let html = '';
-  if (activas.length > 0) {
-    html += `<div class="section-title">Ativas (${activas.length})</div>`;
-    html += `<div class="rub-list">${activas.map(buildRow).join('')}</div>`;
-  }
-  if (terminadas.length > 0 && showTerminated) {
-    html += `<div class="section-title">Terminadas (${terminadas.length})</div>`;
-    html += `<div class="rub-list">${terminadas.map(buildRow).join('')}</div>`;
-  }
+  el.innerHTML = `<div class="rub-list">${list.map(buildRow).join('')}</div>`;
 
-  containerRef.querySelector('#rubs-list').innerHTML = html;
+  containerRef.querySelectorAll('[data-action="terminar"]').forEach(elm => {
+    elm.addEventListener('click', () => terminarRubrica(elm.dataset.id));
+  });
+  containerRef.querySelectorAll('[data-action="reactivar"]').forEach(elm => {
+    elm.addEventListener('click', () => reativarRubrica(elm.dataset.id));
+  });
+}
 
-  containerRef.querySelectorAll('[data-action="terminar"]').forEach(el => {
-    el.addEventListener('click', () => terminarRubrica(el.dataset.id));
-  });
-  containerRef.querySelectorAll('[data-action="reactivar"]').forEach(el => {
-    el.addEventListener('click', () => reativarRubrica(el.dataset.id));
-  });
+function fmtTs(ts) {
+  if (!ts) return null;
+  const d = new Date(ts);
+  return isNaN(d.getTime()) ? null : formatDate(d.toISOString().slice(0, 10));
 }
 
 function buildRow(r) {
   const isAtiva = !r.terminadaEm;
-  const createdAt = formatDate(new Date(r.criadaEm).toISOString().slice(0, 10));
-  const endedAt = r.terminadaEm
-    ? formatDate(new Date(r.terminadaEm).toISOString().slice(0, 10))
-    : null;
+  const createdAt = fmtTs(r.criadaEm);
+  const endedAt = fmtTs(r.terminadaEm);
+  const meta = [
+    createdAt ? `Criada em ${createdAt}${r.criadaPor ? ` por ${r.criadaPor}` : ''}` : '',
+    endedAt ? `Inativa desde ${endedAt}` : ''
+  ].filter(Boolean).join(' · ');
 
   return `
     <div class="rub-item ${isAtiva ? 'active' : 'terminated'}">
       <div class="rub-info">
-        <div class="rub-name-main">${r.nome}</div>
-        <div class="rub-meta">
-          Criada em ${createdAt}${r.criadaPor ? ` por ${r.criadaPor}` : ''}
-          ${endedAt ? ` · Terminada em ${endedAt}` : ''}
+        <div class="rub-name-main">${escapeHtml(r.nome)}
+          <span style="font-size:11px;font-weight:700;color:#fff;background:${isAtiva ? '#1e8449' : '#8a93a0'};padding:2px 8px;border-radius:10px;margin-left:6px">${isAtiva ? 'Ativa' : 'Inativa'}</span>
         </div>
+        ${meta ? `<div class="rub-meta">${meta}</div>` : ''}
       </div>
       <div class="rub-actions">
         ${isAtiva
-          ? `<button class="btn danger" data-action="terminar" data-id="${r.id}">Terminar</button>`
-          : `<button class="btn" data-action="reactivar" data-id="${r.id}">Reativar</button>`}
+          ? `<button class="btn danger" data-action="terminar" data-id="${r.id}">Desativar</button>`
+          : `<button class="btn" data-action="reactivar" data-id="${r.id}">Ativar</button>`}
       </div>
     </div>
   `;
 }
+
+function escapeHtml(s) { return String(s || '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
 
 async function criarNova() {
   const nome = prompt('Nome da nova rúbrica:');
@@ -142,7 +143,7 @@ async function criarNova() {
 }
 
 async function terminarRubrica(id) {
-  if (!confirm('Terminar esta rúbrica? Não desaparece — fica visível em filtros históricos mas deixa de estar disponível para novas despesas.')) return;
+  if (!confirm('Desativar esta rúbrica? Não desaparece nem afeta despesas históricas — apenas deixa de estar disponível para novas despesas e some das ativas.')) return;
   try {
     const session = auth.getSession();
     await rubricas.terminar(id, session?.operatorName);
@@ -153,7 +154,7 @@ async function terminarRubrica(id) {
 }
 
 async function reativarRubrica(id) {
-  if (!confirm('Reativar esta rúbrica? Volta a ficar disponível para novas despesas.')) return;
+  if (!confirm('Ativar esta rúbrica? Volta a ficar disponível para novas despesas.')) return;
   try {
     await rubricas.reactivar(id);
     renderList();
