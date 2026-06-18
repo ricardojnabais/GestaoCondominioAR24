@@ -210,6 +210,21 @@ export async function cancelar(planoId, motivo, operatorName) {
 }
 
 /**
+ * Concluir um plano (marca como 'concluido'). Não altera prestações.
+ */
+export async function concluir(planoId, operatorName) {
+  const p = await store.getDoc('planos', planoId);
+  if (!p) throw new Error('Plano não encontrado.');
+  if (p.estado === 'cancelado') throw new Error('Um plano cancelado não pode ser concluído.');
+  if (p.estado === 'concluido') throw new Error('O plano já estava concluído.');
+  p.estado = 'concluido';
+  p.concluidoEm = Date.now();
+  p.concluidoPor = operatorName || null;
+  await store.setDoc('planos', p);
+  return { plano: p };
+}
+
+/**
  * Listar planos.
  */
 export async function listar(filtros = {}) {

@@ -182,6 +182,7 @@ function buildHTML(plano, prog, porTenant) {
 
       <div class="modal-foot">
         <button class="btn ghost" id="pd-close-bottom">Fechar</button>
+        ${plano.estado === 'ativo' ? `<button class="btn primary" id="pd-concluir">Concluir Plano</button>` : ''}
         ${plano.estado === 'ativo' ? `<button class="btn danger" id="pd-cancelar">Cancelar Plano</button>` : ''}
       </div>
     </div>
@@ -192,6 +193,31 @@ function bindEvents(plano) {
   modalEl.querySelector('#pd-close').addEventListener('click', close);
   modalEl.querySelector('#pd-close-bottom').addEventListener('click', close);
   modalEl.addEventListener('click', (e) => { if (e.target === modalEl) close(); });
+
+  const concluirBtn = modalEl.querySelector('#pd-concluir');
+  if (concluirBtn) {
+    concluirBtn.addEventListener('click', async () => {
+      const porLiquidar = (prog.pendentes || 0) + (prog.emAtraso || 0);
+      const falta = (prog.valorTotalEsperado_centimos || 0) - (prog.valorPago_centimos || 0);
+      let msg = `Concluir o plano "${plano.nome}"?`;
+      if (porLiquidar > 0) {
+        msg += `\n\n⚠ Ainda há ${porLiquidar} prestação(ões) por liquidar (falta ${formatMoney(falta)}).`
+             + `\nAo concluir, o plano deixa de aparecer em "Em aberto" e essas prestações deixam de ser cobradas.`;
+      } else {
+        msg += `\n\nTodas as prestações estão pagas.`;
+      }
+      msg += `\n\nConfirmar?`;
+      if (!confirm(msg)) return;
+      try {
+        const session = auth.getSession();
+        await planos.concluir(plano.id, session?.operatorName);
+        alert('Plano concluído.');
+        await render();
+      } catch (e) {
+        alert('Erro: ' + e.message);
+      }
+    });
+  }
 
   const cancelBtn = modalEl.querySelector('#pd-cancelar');
   if (cancelBtn) {
