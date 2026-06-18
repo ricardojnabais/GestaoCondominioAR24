@@ -98,7 +98,8 @@ function buildHTML(plano, prog, porTenant) {
       const tooltip = parcial
         ? `Parcial · pago ${formatMoney(jaPago)} de ${formatMoney(p.valor_centimos)} · falta ${formatMoney(p.valor_centimos - jaPago)}`
         : `${ESTADO_LABEL[p.estado]} · ${formatMoney(p.valor_centimos)}`;
-      return `<td class="${cls}" title="${tooltip}">${formatMoney(p.valor_centimos, false)}</td>`;
+      const valorCelula = parcial ? (p.valor_centimos - jaPago) : p.valor_centimos;
+      return `<td class="${cls}" title="${tooltip}">${formatMoney(valorCelula, false)}</td>`;
     }).join('');
     const totalDevido = t.prests.reduce((s, p) => s + p.valor_centimos, 0);
     const totalPago = t.prests.reduce((s, p) => s + (p.estado === 'paga' ? (p.valor_centimos || 0) : (p.valorPago_centimos || 0)), 0);

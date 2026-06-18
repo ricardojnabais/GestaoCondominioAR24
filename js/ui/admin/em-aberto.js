@@ -52,7 +52,8 @@ export async function render(container) {
     </div>
   `;
 
-  container.querySelector('#back-home').addEventListener('click', () => router.navigate('home'));
+  container.querySelector('#back-home').addEventListener('click', () => router.navigate('admin/home'));
+  container.querySelector('#hamburger').addEventListener('click', () => router.navigate('admin/home'));
 
   await renderAll();
 }
