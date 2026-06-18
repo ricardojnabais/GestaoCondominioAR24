@@ -13,6 +13,7 @@
 import * as store from '../store/local-store.js';
 import * as numeracao from './numeracao.js';
 import * as quotasLedger from './quotas-ledger.js';
+import * as prestacoes from './prestacoes.js';
 import { todayISO } from '../utils/format.js';
 
 /**
@@ -100,20 +101,25 @@ export async function emitir(data) {
     }
   }
 
-  // Se for de prestações, marcar cada uma como paga
+  // Se for de prestações, aplicar o valor coberto às prestações (suporta PARCIAL)
   if (data.tipo === 'prestacao' && data.prestacoesIds) {
+    let restante = (doc.valor_centimos || 0)
+      + (doc.saldoUsado_centimos || 0)
+      - (doc.excesso_centimos || 0);
+    const alloc = [];
     for (const prestId of data.prestacoesIds) {
+      if (restante <= 0) break;
       try {
-        const p = await store.getDoc('prestacoes', prestId);
-        if (p && p.estado !== 'paga' && p.estado !== 'cancelada') {
-          p.estado = 'paga';
-          p.reciboId = saved.id;
-          p.pagoEm = Date.now();
-          await store.setDoc('prestacoes', p);
-        }
+        const r = await prestacoes.aplicarPagamento(prestId, restante, saved.id);
+        if (r.aplicado > 0) { alloc.push({ prestId, valor: r.aplicado }); restante -= r.aplicado; }
       } catch (e) {
-        console.warn(`Falhou marcar prestação ${prestId} como paga:`, e);
+        console.warn(`Falhou aplicar pagamento à prestação ${prestId}:`, e);
       }
+    }
+    // Guardar a alocação no recibo, para reverter com precisão no cancelamento
+    if (alloc.length) {
+      saved.prestacoesAlloc = alloc;
+      await store.setDoc('receipts', saved);
     }
   }
 
@@ -179,22 +185,31 @@ export async function cancelar(receiptId, motivo) {
   original.motivoCancelamento = motivo || 'Cancelado pelo administrador';
   await store.setDoc('receipts', original);
 
-  // Se era recibo de prestações, reverter o estado das prestações
+  // Se era recibo de prestações, reverter o que foi aplicado a cada prestação
   if (original.tipo === 'prestacao' && original.prestacoesIds) {
-    for (const prestId of original.prestacoesIds) {
-      try {
-        const p = await store.getDoc('prestacoes', prestId);
-        if (p && p.estado === 'paga' && p.reciboId === receiptId) {
-          // Voltar a pendente ou em_atraso baseado na data
-          const { currentMonthRef } = await import('../utils/format.js');
-          const mesAtual = currentMonthRef();
-          p.estado = (p.mesReferencia && p.mesReferencia < mesAtual) ? 'em_atraso' : 'pendente';
-          p.reciboId = null;
-          p.pagoEm = null;
-          await store.setDoc('prestacoes', p);
+    if (original.prestacoesAlloc && original.prestacoesAlloc.length) {
+      // Recibos novos: reverter o valor exato aplicado a cada prestação
+      for (const a of original.prestacoesAlloc) {
+        try { await prestacoes.reverterPagamento(a.prestId, a.valor); }
+        catch (e) { console.warn(`Falhou reverter prestação ${a.prestId}:`, e); }
+      }
+    } else {
+      // Recibos antigos (sem alocação registada): reverter totalmente
+      for (const prestId of original.prestacoesIds) {
+        try {
+          const p = await store.getDoc('prestacoes', prestId);
+          if (p && p.reciboId === receiptId) {
+            const { currentMonthRef } = await import('../utils/format.js');
+            const mesAtual = currentMonthRef();
+            p.estado = (p.mesReferencia && p.mesReferencia < mesAtual) ? 'em_atraso' : 'pendente';
+            p.reciboId = null;
+            p.pagoEm = null;
+            p.valorPago_centimos = 0;
+            await store.setDoc('prestacoes', p);
+          }
+        } catch (e) {
+          console.warn(`Falhou desmarcar prestação ${prestId}:`, e);
         }
-      } catch (e) {
-        console.warn(`Falhou desmarcar prestação ${prestId}:`, e);
       }
     }
   }

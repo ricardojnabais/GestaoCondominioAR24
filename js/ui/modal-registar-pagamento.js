@@ -284,12 +284,15 @@ async function refreshChips() {
     }
     grid.innerHTML = pend.map(p => {
       const isAtraso = p.estado === 'em_atraso';
+      const jaPago = p.valorPago_centimos || 0;
+      const falta = prestacoes.emFalta(p);
+      const parcial = jaPago > 0;
       const [y, m] = p.mesReferencia.split('-');
       const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
       return `
-        <button type="button" class="chip-month chip-prest ${isAtraso ? 'partial' : ''}" data-kind="prest" data-prest-id="${p.id}" data-month="${p.mesReferencia}" data-valor="${p.valor_centimos}" title="${isAtraso ? 'Em atraso · ' : ''}${formatMoney(p.valor_centimos)}">
-          <div>${meses[parseInt(m, 10) - 1]} ${y.slice(2)}</div>
-          <div style="font-size:10.5px;opacity:.8">${formatMoney(p.valor_centimos, false)}</div>
+        <button type="button" class="chip-month chip-prest ${isAtraso || parcial ? 'partial' : ''}" data-kind="prest" data-prest-id="${p.id}" data-month="${p.mesReferencia}" data-valor="${falta}" title="${isAtraso ? 'Em atraso · ' : ''}${parcial ? `Já pago ${formatMoney(jaPago)} de ${formatMoney(p.valor_centimos)} · ` : ''}Em falta ${formatMoney(falta)}">
+          <div>${meses[parseInt(m, 10) - 1]} ${y.slice(2)}${parcial ? ' · parcial' : ''}</div>
+          <div style="font-size:10.5px;opacity:.8">${formatMoney(falta, false)}</div>
         </button>
       `;
     }).join('');
@@ -363,16 +366,18 @@ async function refreshComputation() {
     }
   } else if (tipo === 'prestacao') {
     for (const chip of selectedChips) {
-      const v = parseInt(chip.dataset.valor, 10) || 0;
+      const v = parseInt(chip.dataset.valor, 10) || 0; // em falta
       const m = chip.dataset.month;
       esperado += v;
       const prest = prestacoesAtuais.find(p => p.id === chip.dataset.prestId);
       const numLabel = prest ? `Prestação ${prest.numeroPrestacao}/${prest.totalPrestacoes}` : 'Prestação';
       const isAtraso = prest?.estado === 'em_atraso';
+      const jaPago = prest?.valorPago_centimos || 0;
       rowsHtml.push(`
-        <div class="dp-row ${isAtraso ? 'dp-row-partial' : ''}">
+        <div class="dp-row ${isAtraso || jaPago > 0 ? 'dp-row-partial' : ''}">
           <div class="dp-row-info">
             <div class="dp-month">${formatMonth(m)} <span class="dp-tag" style="background:var(--primary)">${numLabel}</span>${isAtraso ? '<span class="dp-tag">em atraso</span>' : ''}</div>
+            ${jaPago > 0 ? `<div class="dp-detail">Já pago ${formatMoney(jaPago)} de ${formatMoney(prest.valor_centimos)}</div>` : ''}
           </div>
           <strong>${formatMoney(v)}</strong>
         </div>

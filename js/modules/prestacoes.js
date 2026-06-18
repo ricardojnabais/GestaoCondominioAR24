@@ -97,3 +97,63 @@ export async function totalEmDivida(tenantId) {
     .filter(p => p.estado === 'pendente' || p.estado === 'em_atraso')
     .reduce((s, p) => s + (p.valor_centimos || 0), 0);
 }
+
+/**
+ * v1.0.52 · Suporte a pagamento PARCIAL de prestações.
+ * Cada prestação acumula `valorPago_centimos`; só fica 'paga' quando coberta.
+ */
+
+/** Quanto falta pagar nesta prestação. */
+export function emFalta(p) {
+  return Math.max(0, (p.valor_centimos || 0) - (p.valorPago_centimos || 0));
+}
+
+/**
+ * Aplica até `valorDisponivel` a uma prestação. Devolve { aplicado }.
+ * Marca 'paga' só quando o total fica coberto; senão mantém pendente/em_atraso.
+ */
+export async function aplicarPagamento(prestacaoId, valorDisponivel, reciboId) {
+  const p = await store.getDoc('prestacoes', prestacaoId);
+  if (!p) throw new Error('Prestação não encontrada.');
+  if (p.estado === 'cancelada') return { aplicado: 0 };
+
+  const total = p.valor_centimos || 0;
+  const jaPago = p.valorPago_centimos || 0;
+  const falta = Math.max(0, total - jaPago);
+  const aplicar = Math.max(0, Math.min(valorDisponivel || 0, falta));
+  if (aplicar <= 0) return { aplicado: 0 };
+
+  p.valorPago_centimos = jaPago + aplicar;
+  p.reciboId = reciboId;
+  if (p.valorPago_centimos >= total) {
+    p.estado = 'paga';
+    p.pagoEm = Date.now();
+  } else {
+    // Pagamento parcial — continua em dívida (pendente / em_atraso)
+    const now = currentMonthRef();
+    p.estado = (p.mesReferencia && p.mesReferencia < now) ? 'em_atraso' : 'pendente';
+    p.pagoEm = null;
+  }
+  await store.setDoc('prestacoes', p);
+  return { aplicado: aplicar };
+}
+
+/** Reverte `valor` do valor pago (usado ao cancelar um recibo). */
+export async function reverterPagamento(prestacaoId, valor) {
+  const p = await store.getDoc('prestacoes', prestacaoId);
+  if (!p) return null;
+  const jaPago = p.valorPago_centimos || 0;
+  p.valorPago_centimos = Math.max(0, jaPago - (valor || 0));
+  const now = currentMonthRef();
+  const total = p.valor_centimos || 0;
+  if (p.valorPago_centimos <= 0) {
+    p.reciboId = null;
+    p.pagoEm = null;
+    p.estado = (p.mesReferencia && p.mesReferencia < now) ? 'em_atraso' : 'pendente';
+  } else if (p.valorPago_centimos < total) {
+    p.pagoEm = null;
+    if (p.estado === 'paga') p.estado = (p.mesReferencia && p.mesReferencia < now) ? 'em_atraso' : 'pendente';
+  }
+  await store.setDoc('prestacoes', p);
+  return p;
+}
