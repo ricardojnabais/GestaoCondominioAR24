@@ -92,12 +92,16 @@ function buildHTML(plano, prog, porTenant) {
 
   const bodyRows = tenantsOrdered.map(t => {
     const cells = t.prests.map(p => {
-      const cls = `ppt-cell ppt-${p.estado}`;
-      const tooltip = `${ESTADO_LABEL[p.estado]} · ${formatMoney(p.valor_centimos)}`;
+      const jaPago = p.valorPago_centimos || 0;
+      const parcial = p.estado !== 'paga' && jaPago > 0;
+      const cls = `ppt-cell ppt-${p.estado}${parcial ? ' ppt-parcial' : ''}`;
+      const tooltip = parcial
+        ? `Parcial · pago ${formatMoney(jaPago)} de ${formatMoney(p.valor_centimos)} · falta ${formatMoney(p.valor_centimos - jaPago)}`
+        : `${ESTADO_LABEL[p.estado]} · ${formatMoney(p.valor_centimos)}`;
       return `<td class="${cls}" title="${tooltip}">${formatMoney(p.valor_centimos, false)}</td>`;
     }).join('');
     const totalDevido = t.prests.reduce((s, p) => s + p.valor_centimos, 0);
-    const totalPago = t.prests.filter(p => p.estado === 'paga').reduce((s, p) => s + p.valor_centimos, 0);
+    const totalPago = t.prests.reduce((s, p) => s + (p.estado === 'paga' ? (p.valor_centimos || 0) : (p.valorPago_centimos || 0)), 0);
     return `
       <tr>
         <td class="ppt-tenant">

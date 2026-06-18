@@ -119,10 +119,12 @@ export async function prestacoesAtraso() {
     // Agrupar por tenant
     const porTenant = {};
     prestPlano.forEach(p => {
-      if (!porTenant[p.tenantId]) porTenant[p.tenantId] = { pendentes: [], totalPendente: 0 };
-      if (p.estado !== 'paga' && (p.valor_centimos || 0) > 0) {
+      if (!porTenant[p.tenantId]) porTenant[p.tenantId] = { pendentes: [], totalPendente: 0, jaPago: 0 };
+      const falta = (p.valor_centimos || 0) - (p.valorPago_centimos || 0);
+      if (p.estado !== 'paga' && falta > 0) {
         porTenant[p.tenantId].pendentes.push(p);
-        porTenant[p.tenantId].totalPendente += p.valor_centimos;
+        porTenant[p.tenantId].totalPendente += falta;
+        porTenant[p.tenantId].jaPago += (p.valorPago_centimos || 0);
       }
     });
 
@@ -136,6 +138,7 @@ export async function prestacoesAtraso() {
         tenantName: t?.name || '?',
         fraction: t?.fraction || '',
         totalPendente: info.totalPendente,
+        jaPago: info.jaPago,
         nPrestacoes: info.pendentes.length,
       });
     }

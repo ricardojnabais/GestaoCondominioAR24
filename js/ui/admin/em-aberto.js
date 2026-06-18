@@ -166,7 +166,7 @@ async function renderAll() {
                 <span class="ea-total-val neg">${formatMoney(p.totalPendente)}</span>
               </div>
             </div>
-            <div class="ea-card-detail">${p.nPrestacoes} prestação(ões) por liquidar</div>
+            <div class="ea-card-detail">${p.nPrestacoes} prestação(ões) por liquidar${p.jaPago > 0 ? ` · já pago ${formatMoney(p.jaPago)}` : ''}</div>
           </div>
         `).join('')}
       </div>

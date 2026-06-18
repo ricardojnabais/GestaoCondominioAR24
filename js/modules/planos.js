@@ -239,9 +239,10 @@ export async function progresso(planoId) {
   const canceladas = prestacoes.filter(p => p.estado === 'cancelada').length;
 
   const valorTotalEsperado = prestacoes.reduce((s, p) => s + (p.valor_centimos || 0), 0);
-  const valorPago = prestacoes
-    .filter(p => p.estado === 'paga')
-    .reduce((s, p) => s + (p.valor_centimos || 0), 0);
+  const valorPago = prestacoes.reduce((s, p) => {
+    if (p.estado === 'paga') return s + (p.valor_centimos || 0);
+    return s + (p.valorPago_centimos || 0); // pagamentos parciais de prestações ainda em dívida
+  }, 0);
 
   return {
     total, pagas, pendentes, emAtraso, canceladas,
