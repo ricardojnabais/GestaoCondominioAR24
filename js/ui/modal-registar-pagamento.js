@@ -164,7 +164,7 @@ function buildHTML(opts) {
 
       <div class="modal-foot">
         <button class="btn ghost" id="rp-cancel">Cancelar</button>
-        <button class="btn primary" id="rp-submit" disabled>Emitir Recibo</button>
+        <button class="btn primary" id="rp-submit">Emitir Recibo</button>
       </div>
     </div>
   `;
@@ -188,7 +188,7 @@ function bindEvents() {
       ? 'Prestações Pendentes · Clica para selecionar'
       : 'Mês(es) Abrangidos · Clica para selecionar';
     modalEl.querySelector('#rp-chips-hint').textContent = isPrest
-      ? 'Cada chip é uma prestação. Podes selecionar várias para pagar de uma vez.'
+      ? 'Toca na prestação para a selecionar (fica azul). Podes selecionar várias.'
       : 'Selecciona vários para pagamentos semestrais ou anuais';
     await refreshChips();
     refreshComputation();
@@ -327,7 +327,7 @@ async function refreshComputation() {
 
   if (!tenantId || selectedChips.length === 0) {
     panel.style.display = 'none';
-    submit.disabled = true;
+    submit.disabled = false;
     usarWrap.style.display = 'none';
     return;
   }
@@ -441,7 +441,7 @@ async function refreshComputation() {
   }
 
   panel.style.display = 'block';
-  submit.disabled = !(tenantId && selectedChips.length > 0 && valor > 0);
+  submit.disabled = false;
 
   modalEl.dataset.excesso = excesso;
   modalEl.dataset.saldoUsado = saldoUsado;
@@ -458,6 +458,14 @@ async function submit() {
   const saldoUsado = parseInt(modalEl.dataset.saldoUsado || '0', 10);
 
   const chips = getSelectedChips();
+
+  // Validação com mensagem clara (em vez de botão inativo silencioso)
+  if (!tenantId) return alert('Falta escolher o condómino.');
+  if (chips.length === 0) {
+    return alert('Toca na prestação (ou mês) que queres pagar para a selecionar — fica azul quando selecionada. Só depois "Emitir Recibo".');
+  }
+  if (!valor || valor <= 0) return alert('Indica o valor recebido.');
+
   let payload;
 
   if (tipo === 'quota') {
