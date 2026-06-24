@@ -12,7 +12,7 @@ import * as exportPdf from '../../modules/export-pdf.js';
 import { icon } from '../icons.js';
 import { formatMoney, formatDate } from '../../utils/format.js';
 
-let state = { ano: new Date().getFullYear().toString() };
+let state = { ano: 'todos' };
 let containerRef = null;
 
 export async function render(container) {
@@ -48,6 +48,7 @@ export async function render(container) {
             </div>
             <div style="margin-left:auto">
               <select id="f-ano" class="ano-select">
+                <option value="todos" ${state.ano === 'todos' ? 'selected' : ''}>Todos</option>
                 <option value="2024" ${state.ano === '2024' ? 'selected' : ''}>2024</option>
                 <option value="2025" ${state.ano === '2025' ? 'selected' : ''}>2025</option>
                 <option value="2026" ${state.ano === '2026' ? 'selected' : ''}>2026</option>
@@ -74,15 +75,26 @@ export async function render(container) {
 
 async function renderLista(tenantId) {
   const listEl = containerRef.querySelector('#lista');
-  const recs = (await receipts.listar({ tenantId, ano: state.ano }))
-    .filter(r => !r.cancelado || r.estornoDe)  // mostra estornos, esconde recibos puramente cancelados
-    .sort((a, b) => (b.data || '').localeCompare(a.data || ''));
+  // Buscar TODOS os recibos do condómino (sem filtrar por ano no módulo, que
+  // compara com === e falha quando o campo 'ano' está como número nuns recibos
+  // e como string noutros). Filtramos aqui, de forma robusta.
+  let recs = (await receipts.listar({ tenantId }))
+    .filter(r => !r.cancelado || r.estornoDe);  // mostra estornos, esconde cancelados puros
+
+  // Filtro por ano · "todos" mostra tudo; caso contrário compara como STRING
+  // (resolve 2026 número vs '2026' string nos recibos antigos).
+  if (state.ano && state.ano !== 'todos') {
+    recs = recs.filter(r => String(r.ano) === String(state.ano));
+  }
+
+  recs.sort((a, b) => (b.data || '').localeCompare(a.data || '') ||
+                      (b.recibo_seq || 0) - (a.recibo_seq || 0));
 
   if (recs.length === 0) {
     listEl.innerHTML = `
       <div class="placeholder" style="text-align:center;padding:40px 20px">
         <div style="font-size:32px;margin-bottom:8px">📄</div>
-        <p style="color:var(--text-muted)">Sem recibos em ${state.ano}.</p>
+        <p style="color:var(--text-muted)">${state.ano === 'todos' ? 'Ainda não há recibos seus.' : `Sem recibos em ${state.ano}.`}</p>
       </div>
     `;
     return;
