@@ -142,21 +142,57 @@ export async function render(container) {
     });
   }
 
-  // Condómino login
+  // Condómino login · Bloco 1 · Firebase Auth (email/password)
   container.querySelector('#btn-login-condomino').addEventListener('click', async () => {
     clearError();
+    const btn = container.querySelector('#btn-login-condomino');
     const email = container.querySelector('#cond-email').value;
     const password = container.querySelector('#cond-password').value;
+    btn.disabled = true;
+    const txtOriginal = btn.textContent;
+    btn.textContent = 'A entrar…';
     try {
-      await auth.loginCondomino(email, password);
-      router.navigate('condomino/home');
+      if (firebaseReady) {
+        // Via nova · Firebase Auth valida a password e devolve o tenantId do claim
+        const fb = await firebaseAuth.signInCondomino(email, password);
+        await auth.loginCondominoFirebase(fb);
+      } else {
+        // Fallback · via antiga (sem Firebase configurado · ex.: modo local)
+        await auth.loginCondomino(email, password);
+      }
+      // Bloco 3 · reload para o store re-subscrever JÁ filtrado pelo tenantId.
+      // (No 2.º arranque a sessão existe, e o firestore-store lê só o que é do condómino.)
+      // O destino fica no hash · routeByAuthState/hash leva à home após o reload.
+      window.location.hash = 'condomino/home';
+      window.location.reload();
     } catch (e) {
       showError(e.message);
+      btn.disabled = false;
+      btn.textContent = txtOriginal;
     }
   });
 
-  container.querySelector('#link-forgot').addEventListener('click', () => {
-    alert('Pede ao administrador para fazer reset à tua password.');
+  container.querySelector('#link-forgot').addEventListener('click', async () => {
+    clearError();
+    const email = container.querySelector('#cond-email').value;
+    if (firebaseReady) {
+      if (!email || !email.trim()) {
+        showError('Escreve o teu email no campo acima e volta a clicar para receberes o link de recuperação.');
+        return;
+      }
+      try {
+        await firebaseAuth.sendCondominoPasswordReset(email);
+        showError(''); // limpar
+        const el = container.querySelector('#login-error');
+        el.style.color = 'var(--text-muted)';
+        el.textContent = 'Se o email estiver registado, vais receber um link para definir nova password.';
+        el.style.display = 'block';
+      } catch (e) {
+        showError(e.message);
+      }
+    } else {
+      alert('Pede ao administrador para fazer reset à tua password.');
+    }
   });
 
   function showError(msg) {

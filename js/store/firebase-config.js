@@ -80,7 +80,13 @@ async function bootstrapFirebase() {
       signInWithRedirect: authMod.signInWithRedirect,
       getRedirectResult: authMod.getRedirectResult,
       signOut: authMod.signOut,
-      onAuthStateChanged: authMod.onAuthStateChanged
+      onAuthStateChanged: authMod.onAuthStateChanged,
+      // ── Via B · login do condómino por email/password ──
+      signInWithEmailAndPassword: authMod.signInWithEmailAndPassword,
+      updatePassword: authMod.updatePassword,
+      sendPasswordResetEmail: authMod.sendPasswordResetEmail,
+      reauthenticateWithCredential: authMod.reauthenticateWithCredential,
+      EmailAuthProvider: authMod.EmailAuthProvider
     }
   };
 

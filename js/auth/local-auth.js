@@ -154,6 +154,52 @@ export async function loginCondomino(email, password) {
   });
 }
 
+// ─── Bloco 1 · login do condómino via Firebase Auth ───────
+/**
+ * Cria a sessão de condómino a partir do resultado do Firebase Auth.
+ * Chamada pelo login.js DEPOIS de firebaseAuth.signInCondomino() ter
+ * validado a password e devolvido o tenantId (vindo do custom claim).
+ *
+ * A password JÁ foi validada pelo Firebase · aqui só montamos a sessão
+ * (idêntica à da via antiga, para que os 60+ ficheiros da app não notem
+ * diferença) e tratamos o mustChangePassword.
+ *
+ * O mustChangePassword é lido do tenant (campo opcional). Mantemos o
+ * comportamento: password inicial = NIF, condómino muda no 1.º acesso.
+ *
+ * @param {{uid, email, tenantId, role}} fb - resultado de signInCondomino
+ */
+export async function loginCondominoFirebase(fb) {
+  if (!fb || fb.role !== 'condomino' || !fb.tenantId) {
+    throw new Error('Dados de login inválidos.');
+  }
+
+  // Buscar o tenant para nome/fração (e flag de mudança de password)
+  const tenant = await store.getDoc('tenants', fb.tenantId);
+  if (!tenant) {
+    throw new Error('Fração não encontrada para esta conta. Contacta o administrador.');
+  }
+
+  // mustChangePassword: lê do tenant se existir; assume true se nunca mudou.
+  // (No Bloco 2 podemos refinar onde esta flag é guardada.)
+  const mustChange = tenant.mustChangePassword !== undefined
+    ? !!tenant.mustChangePassword
+    : false;
+
+  setSession({
+    role: 'condomino',
+    firebaseUid: fb.uid,
+    tenantId: fb.tenantId,
+    tenantName: tenant.name,
+    fraction: tenant.fraction,
+    email: fb.email,
+    mustChangePassword: mustChange,
+    loginAt: Date.now()
+  });
+
+  return currentSession;
+}
+
 // ─── criação de utilizador (pelo admin) ───────────────────
 
 /**
@@ -277,6 +323,7 @@ export async function changeOwnPassword(currentPassword, newPassword) {
 // ─── logout ───────────────────────────────────────────────
 
 export async function logout() {
+  const eraCondomino = currentSession?.role === 'condomino';
   // Se foi sessão Firebase Admin, fazer signOut do Firebase
   if (currentSession?.role === 'admin' && currentSession?.firebaseUid) {
     try {
@@ -287,6 +334,14 @@ export async function logout() {
   currentSession = null;
   sessionStorage.removeItem(SESSION_KEY);
   notifyListeners();
+
+  // Bloco 3 · o store subscreveu de forma diferente consoante o utilizador
+  // (condómino = filtrado). Para não deixar cache "preso" do utilizador anterior,
+  // recarregamos a página no logout · o próximo login arranca do zero, limpo.
+  try {
+    window.location.hash = 'login';
+    window.location.reload();
+  } catch (e) { /* ambiente sem window · ignora */ }
 }
 
 // ─── sessão atual ─────────────────────────────────────────

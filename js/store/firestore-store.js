@@ -27,6 +27,18 @@ const FIRESTORE_COLLECTIONS = [
   'manutencoes'
 ];
 
+// ─── Bloco 3 · classificação das coleções para o CONDÓMINO ───────────────
+// "próprias"  · contêm um campo tenantId · o condómino só pode ler as suas
+// "coletivas" · dados do condomínio · qualquer autenticado pode ler inteiras
+// "comunicacoes" · caso especial (3 subscrições · Opção B) tratado à parte
+// "ocultas"   · o condómino NÃO subscreve de todo (admin-only)
+const COND_OWN_COLLECTIONS = ['receipts', 'prestacoes'];
+const COND_COLLECTIVE_COLLECTIONS = [
+  'meta', 'tenants', 'rubricas', 'planos', 'pagamentosDespesa',
+  'outrosRecebimentos', 'movimentosBPI', 'orcamentos', 'manutencoes'
+];
+const COND_HIDDEN_COLLECTIONS = ['users'];  // admin-only · condómino nem subscreve
+
 // Cache em memória · espelha Firestore em tempo real via onSnapshot
 const cache = new Map();
 const listeners = new Map();
@@ -34,8 +46,58 @@ const unsubs = new Map();
 let bootstrapPromise = null;
 
 /**
- * Inicializa as subscrições Firestore.
- * Tem de ser chamada antes de qualquer outra operação.
+ * Lê a sessão guardada (sessionStorage) para saber quem está autenticado.
+ * Com a Abordagem 2 (reload após login), no arranque a sessão já existe.
+ * Devolve o objeto de sessão ou null.
+ */
+function readSession() {
+  try {
+    const raw = sessionStorage.getItem('ar24:session');
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * Cria uma subscrição onSnapshot a uma referência (coleção ou query) e
+ * popula o cache da coleção `col`. Resolve a promise no primeiro snapshot.
+ * Com merge=true, vários onSnapshot escrevem na mesma coleção combinando por id
+ * (necessário para as comunicações, que têm 3 subscrições).
+ */
+function subscribe(col, ref, onSnapshotFn, resolve, { merge = false } = {}) {
+  const unsub = onSnapshotFn(ref,
+    (snap) => {
+      if (merge) {
+        const current = cache.get(col) || [];
+        const byId = new Map(current.map(d => [d.id, d]));
+        snap.forEach(d => byId.set(d.id, { id: d.id, ...d.data() }));
+        cache.set(col, [...byId.values()]);
+      } else {
+        const items = [];
+        snap.forEach(d => items.push({ id: d.id, ...d.data() }));
+        cache.set(col, items);
+      }
+      const lst = listeners.get(col);
+      if (lst) lst.forEach(cb => cb([...cache.get(col)]));
+      resolve();
+    },
+    (err) => {
+      console.error(`Firestore subscribe ${col} falhou:`, err);
+      if (!cache.has(col)) cache.set(col, []);
+      resolve();
+    }
+  );
+  const key = unsubs.has(col) ? `${col}#${unsubs.size}` : col;
+  unsubs.set(key, unsub);
+}
+
+/**
+ * Inicializa as subscrições Firestore consoante o utilizador autenticado.
+ *  - ADMIN (ou sem sessão · ex.: ecrã de login) → subscreve TUDO, como sempre.
+ *  - CONDÓMINO → coletivas inteiras + próprias filtradas por tenantId
+ *    + comunicações (3 subscrições · Opção B). Coleções admin-only não são subscritas.
  */
 export async function bootstrap() {
   if (bootstrapPromise) return bootstrapPromise;
@@ -43,30 +105,59 @@ export async function bootstrap() {
     if (!window.__firebase?.db) {
       throw new Error('Firebase não inicializado · adiciona firebase-config.js ao index.html');
     }
-    const { collection, onSnapshot } = window.__firebase.firestoreFns;
+    const { collection, onSnapshot, query, where } = window.__firebase.firestoreFns;
     const db = window.__firebase.db;
 
-    // Subscrever todas as coleções · primeiro snapshot popula cache
-    const promises = FIRESTORE_COLLECTIONS.map(col => new Promise((resolve) => {
-      const ref = collection(db, col);
-      const unsub = onSnapshot(ref,
-        (snap) => {
-          const items = [];
-          snap.forEach(d => items.push({ id: d.id, ...d.data() }));
-          cache.set(col, items);
-          // Notificar listeners locais
-          const lst = listeners.get(col);
-          if (lst) lst.forEach(cb => cb(items));
-          resolve();
-        },
-        (err) => {
-          console.error(`Firestore subscribe ${col} falhou:`, err);
-          cache.set(col, []);
-          resolve();
-        }
-      );
-      unsubs.set(col, unsub);
-    }));
+    const session = readSession();
+    const isCondomino = session?.role === 'condomino' && !!session?.tenantId;
+
+    const promises = [];
+
+    if (!isCondomino) {
+      // ── ADMIN ou sem sessão · comportamento original (subscreve tudo) ──
+      for (const col of FIRESTORE_COLLECTIONS) {
+        promises.push(new Promise((resolve) => {
+          subscribe(col, collection(db, col), onSnapshot, resolve);
+        }));
+      }
+      console.log('[Firestore] Bootstrap · modo ADMIN/total');
+    } else {
+      // ── CONDÓMINO · subscrição filtrada ──
+      const tid = session.tenantId;
+
+      for (const col of COND_COLLECTIVE_COLLECTIONS) {
+        promises.push(new Promise((resolve) => {
+          subscribe(col, collection(db, col), onSnapshot, resolve);
+        }));
+      }
+
+      for (const col of COND_OWN_COLLECTIONS) {
+        promises.push(new Promise((resolve) => {
+          const q = query(collection(db, col), where('tenantId', '==', tid));
+          subscribe(col, q, onSnapshot, resolve);
+        }));
+      }
+
+      for (const col of COND_HIDDEN_COLLECTIONS) {
+        cache.set(col, []);
+      }
+
+      // Comunicações · Opção B · 3 subscrições combinadas (merge por id)
+      cache.set('comunicacoes', []);
+      const comCol = collection(db, 'comunicacoes');
+      const comQueries = [
+        query(comCol, where('destinatarios', 'array-contains', 'todos')),
+        query(comCol, where('destinatarios', 'array-contains', tid)),
+        query(comCol, where('remetenteId', '==', tid))
+      ];
+      for (const q of comQueries) {
+        promises.push(new Promise((resolve) => {
+          subscribe('comunicacoes', q, onSnapshot, resolve, { merge: true });
+        }));
+      }
+
+      console.log(`[Firestore] Bootstrap · modo CONDÓMINO (${tid}) · leitura filtrada`);
+    }
 
     await Promise.all(promises);
     console.log('[Firestore] Bootstrap completo · cache populado');
