@@ -15,7 +15,7 @@ import { icon } from '../icons.js';
 import { formatMoney, formatDate, formatMonth } from '../../utils/format.js';
 
 let state = {
-  ano: new Date().getFullYear().toString(),
+  ano: 'todos',
   tenantId: '',
   tipo: '',
   incluirCancelados: false
@@ -88,9 +88,10 @@ async function renderFilters() {
     `<option value="${t.id}" ${state.tenantId === t.id ? 'selected' : ''}>${t.fraction} · ${t.name}</option>`
   ).join('');
 
-  const yearOpts = ['2024', '2025', '2026'].map(y =>
-    `<option value="${y}" ${state.ano === y ? 'selected' : ''}>${y}</option>`
-  ).join('');
+  const yearOpts = '<option value="todos"' + (state.ano === 'todos' ? ' selected' : '') + '>Todos</option>' +
+    ['2024', '2025', '2026'].map(y =>
+      `<option value="${y}" ${state.ano === y ? 'selected' : ''}>${y}</option>`
+    ).join('');
 
   const html = `
     <div class="filter-group">
@@ -130,11 +131,18 @@ async function renderFilters() {
 }
 
 async function renderList() {
-  const filters = { ano: state.ano };
+  // Não passamos 'ano' ao módulo (ele compara com === e falha quando 'ano'
+  // está como número nuns recibos e string noutros). Filtramos aqui.
+  const filters = {};
   if (state.tenantId) filters.tenantId = state.tenantId;
   if (state.tipo) filters.tipo = state.tipo;
 
   let list = await receipts.listar(filters);
+
+  // Filtro por ano · "todos" mostra tudo; senão compara como STRING
+  if (state.ano && state.ano !== 'todos') {
+    list = list.filter(r => String(r.ano) === String(state.ano));
+  }
   if (!state.incluirCancelados) {
     list = list.filter(r => !r.cancelado && r.tipo !== 'estorno');
   }
