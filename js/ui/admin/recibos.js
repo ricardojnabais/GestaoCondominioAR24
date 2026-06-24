@@ -11,6 +11,7 @@ import * as router from '../router.js';
 import * as modalRP from '../modal-registar-pagamento.js';
 import * as modalNR from '../modal-novo-recebimento.js';
 import * as modalDR from '../modal-detalhe-recibo.js';
+import * as exportRecibos from '../../modules/export-recibos-lista.js';
 import { icon } from '../icons.js';
 import { formatMoney, formatDate, formatMonth } from '../../utils/format.js';
 
@@ -22,6 +23,7 @@ let state = {
 };
 
 let containerRef = null;
+let ultimaLista = [];  // última lista filtrada (para exportar)
 
 export async function render(container) {
   containerRef = container;
@@ -56,6 +58,10 @@ export async function render(container) {
               ${icon('ic-receipt', 'btn-icon-sm')}
               <span>Recibo de Recebimento</span>
             </button>
+            <button class="btn ghost" id="btn-export-recibos" style="margin-left:8px">
+              ${icon('ic-receipt', 'btn-icon-sm')}
+              <span>Exportar Excel</span>
+            </button>
           </div>
         </div>
 
@@ -77,6 +83,31 @@ export async function render(container) {
   });
   container.querySelector('#btn-new-receb').addEventListener('click', () => {
     modalNR.open({ onSuccess: () => renderList() });
+  });
+
+  container.querySelector('#btn-export-recibos').addEventListener('click', async () => {
+    const btn = container.querySelector('#btn-export-recibos');
+    const original = btn.innerHTML;
+    btn.disabled = true;
+    btn.querySelector('span').textContent = 'A exportar…';
+    try {
+      // Nome do condómino selecionado (se houver) para o nome do ficheiro
+      let tenantNome = '';
+      if (state.tenantId) {
+        const t = await store.getDoc('tenants', state.tenantId);
+        tenantNome = t?.name || '';
+      }
+      await exportRecibos.exportarRecibos(ultimaLista, {
+        ano: state.ano,
+        tenantNome,
+        tipo: state.tipo
+      });
+    } catch (e) {
+      alert(e.message || 'Erro ao exportar.');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = original;
+    }
   });
 }
 
@@ -146,6 +177,8 @@ async function renderList() {
   if (!state.incluirCancelados) {
     list = list.filter(r => !r.cancelado && r.tipo !== 'estorno');
   }
+
+  ultimaLista = list;  // guardar para exportação
 
   const totalEntradas = list.filter(r => r.valor_centimos > 0).reduce((s, r) => s + r.valor_centimos, 0);
   const totalSaidas = list.filter(r => r.valor_centimos < 0).reduce((s, r) => s + r.valor_centimos, 0);
