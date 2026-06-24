@@ -34,10 +34,12 @@ const FIRESTORE_COLLECTIONS = [
 // "ocultas"   · o condómino NÃO subscreve de todo (admin-only)
 const COND_OWN_COLLECTIONS = ['receipts', 'prestacoes'];
 const COND_COLLECTIVE_COLLECTIONS = [
-  'meta', 'tenants', 'rubricas', 'planos', 'pagamentosDespesa',
+  'meta', 'rubricas', 'planos', 'pagamentosDespesa',
   'outrosRecebimentos', 'movimentosBPI', 'orcamentos', 'manutencoes'
 ];
 const COND_HIDDEN_COLLECTIONS = ['users'];  // admin-only · condómino nem subscreve
+// 'tenants' é tratado à parte para o condómino: subscreve SÓ o seu documento
+// (as regras só permitem ler o próprio tenant, não a coleção inteira).
 
 // Cache em memória · espelha Firestore em tempo real via onSnapshot
 const cache = new Map();
@@ -137,6 +139,14 @@ export async function bootstrap() {
           subscribe(col, q, onSnapshot, resolve);
         }));
       }
+
+      // tenants · o condómino só pode ler o SEU documento (não a coleção toda).
+      // Subscrição filtrada pelo ID do documento (== tenantId do claim).
+      promises.push(new Promise((resolve) => {
+        const { documentId } = window.__firebase.firestoreFns;
+        const q = query(collection(db, 'tenants'), where(documentId(), '==', tid));
+        subscribe('tenants', q, onSnapshot, resolve);
+      }));
 
       for (const col of COND_HIDDEN_COLLECTIONS) {
         cache.set(col, []);

@@ -72,7 +72,8 @@ async function bootstrapFirebase() {
       getDocsFromServer: firestore.getDocsFromServer,
       setDoc: firestore.setDoc, deleteDoc: firestore.deleteDoc,
       writeBatch: firestore.writeBatch, onSnapshot: firestore.onSnapshot,
-      query: firestore.query, where: firestore.where
+      query: firestore.query, where: firestore.where,
+      documentId: firestore.documentId
     },
     authFns: {
       GoogleAuthProvider: authMod.GoogleAuthProvider,
