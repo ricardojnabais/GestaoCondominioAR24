@@ -286,9 +286,20 @@ export async function changeOwnPassword(currentPassword, newPassword) {
   if (currentSession?.role !== 'condomino') {
     throw new Error('Acessível apenas a condóminos autenticados.');
   }
-  if (!newPassword || newPassword.length < 4) {
-    throw new Error('A nova password tem de ter pelo menos 4 caracteres.');
+  if (!newPassword || newPassword.length < 6) {
+    throw new Error('A nova password tem de ter pelo menos 6 caracteres.');
   }
+
+  // ── Via B · se a sessão é Firebase (login novo), muda a password no Firebase Auth ──
+  if (currentSession?.firebaseUid) {
+    const { changeCondominoPassword } = await import('./firebase-auth.js');
+    await changeCondominoPassword(currentPassword, newPassword);
+    currentSession.mustChangePassword = false;
+    saveSession();
+    return;
+  }
+
+  // ── Fallback · sessão antiga (coleção users) · mantém comportamento legacy ──
   const user = await store.getDoc('users', currentSession.userId);
   if (!user) throw new Error('Utilizador não encontrado.');
 
