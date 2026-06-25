@@ -117,6 +117,9 @@ async function renderLista() {
   listEl.querySelectorAll('[data-action="toggle-ativo"]').forEach(btn => {
     btn.addEventListener('click', () => toggleAtivo(btn.dataset.id));
   });
+  listEl.querySelectorAll('[data-action="toggle-conjuge"]').forEach(btn => {
+    btn.addEventListener('click', () => toggleConjuge(btn.dataset.id));
+  });
 }
 
 function buildCondCard(t, user) {
@@ -131,16 +134,36 @@ function buildCondCard(t, user) {
   const adminTag = t.isAdmin ? '<span class="cc-tag tag-primary">Admin</span>' : '';
   const inativoTag = t.inativoEm ? '<span class="cc-tag tag-red">INATIVO</span>' : '';
 
+  // Cônjuge / 2.º acesso
+  const temConjuge = !!(t.emailConjuge);
+  const conjugeInativo = !!t.conjugeInativoEm;
+  const conjugeTag = temConjuge
+    ? (conjugeInativo
+        ? '<span class="cc-tag tag-amber">Cônjuge desativado</span>'
+        : '<span class="cc-tag tag-green">Cônjuge ativo</span>')
+    : '';
+
   const telefone = t.telefone || '—';
   const telefoneEditedTag = t.telefoneAtualizadoEm && t.telefone
     ? `<span class="tel-edited-tag" title="Editado pelo próprio em ${new Date(t.telefoneAtualizadoEm).toLocaleString('pt-PT')}">●</span>`
+    : '';
+
+  const conjugeRow = temConjuge
+    ? `<div style="grid-column:1 / -1"><span class="cc-lbl">Cônjuge / 2.º acesso</span><span class="cc-val">${escapeHtml(t.emailConjuge)}${conjugeInativo ? ' (desativado)' : ''}</span></div>`
+    : '';
+
+  // Botão de desativar/reativar só o cônjuge (só aparece se houver cônjuge e a fração estiver ativa)
+  const conjugeBtn = (temConjuge && !t.inativoEm)
+    ? (conjugeInativo
+        ? `<button class="btn ghost" data-action="toggle-conjuge" data-id="${t.id}">Reactivar cônjuge</button>`
+        : `<button class="btn ghost btn-danger" data-action="toggle-conjuge" data-id="${t.id}">Desativar só cônjuge</button>`)
     : '';
 
   return `
     <div class="${cls}">
       <div class="cc-head">
         <div class="cc-frac">${escapeHtml(t.fraction || '—')}</div>
-        <div class="cc-tags">${adminTag} ${userTag} ${inativoTag}</div>
+        <div class="cc-tags">${adminTag} ${userTag} ${conjugeTag} ${inativoTag}</div>
       </div>
       <div class="cc-name">${escapeHtml(t.name)}</div>
       <div class="cc-grid">
@@ -149,9 +172,12 @@ function buildCondCard(t, user) {
         <div><span class="cc-lbl">NIF</span><span class="cc-val">${escapeHtml(t.nif || '—')}</span></div>
         <div><span class="cc-lbl">Telefone ${telefoneEditedTag}</span><span class="cc-val">${escapeHtml(telefone)}</span></div>
         <div style="grid-column:1 / -1"><span class="cc-lbl">Email</span><span class="cc-val">${escapeHtml(t.email || '—')}</span></div>
+        <div style="grid-column:1 / -1"><span class="cc-lbl">Último acesso ao portal</span><span class="cc-val">${t.ultimoLoginEm ? new Date(t.ultimoLoginEm).toLocaleString('pt-PT') : '—'}</span></div>
+        ${conjugeRow}
       </div>
       <div class="cc-actions">
         <button class="btn ghost" data-action="edit" data-id="${t.id}">Editar</button>
+        ${conjugeBtn}
         ${t.inativoEm
           ? `<button class="btn" data-action="toggle-ativo" data-id="${t.id}">Reactivar</button>`
           : `<button class="btn ghost btn-danger" data-action="toggle-ativo" data-id="${t.id}">Desativar</button>`}
@@ -238,6 +264,14 @@ async function abrirModal(t) {
         </div>
 
         <div class="field" style="margin-top:6px">
+          <label>Email do cônjuge / 2.º acesso <span style="font-weight:400;color:var(--text-muted)">(opcional)</span></label>
+          <input type="email" id="f-email-conjuge" value="${escapeAttr(t.emailConjuge || '')}" maxlength="80" placeholder="dá acesso à MESMA fração · password inicial = NIF">
+          <small style="display:block;font-size:11px;color:var(--text-muted);margin-top:3px">
+            Cria um segundo login para a mesma fração (cônjuge), com acesso à mesma informação. Depois de preencher, corre o script gerir-contas.js para criar o acesso.
+          </small>
+        </div>
+
+        <div class="field" style="margin-top:6px">
           <label style="display:flex;align-items:center;gap:8px;font-weight:600">
             <input type="checkbox" id="f-isAdmin" ${t.isAdmin ? 'checked' : ''}>
             Marcar como administrador (pode aceder ao painel admin)
@@ -292,6 +326,7 @@ async function abrirModal(t) {
     const permilage = parseInt(modal.querySelector('#f-permilage').value, 10) || 0;
     const nif = modal.querySelector('#f-nif').value.trim();
     const email = modal.querySelector('#f-email').value.trim().toLowerCase();
+    const emailConjuge = modal.querySelector('#f-email-conjuge').value.trim().toLowerCase();
     const telefone = modal.querySelector('#f-telefone').value.trim();
     const isAdmin = modal.querySelector('#f-isAdmin').checked;
     const criarUser = t._novo ? modal.querySelector('#f-criarUser').checked : false;
@@ -312,6 +347,14 @@ async function abrirModal(t) {
       showModalMsg(modal, 'Email com formato inválido.', 'error');
       return;
     }
+    if (emailConjuge && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailConjuge)) {
+      showModalMsg(modal, 'Email do cônjuge com formato inválido.', 'error');
+      return;
+    }
+    if (emailConjuge && emailConjuge === email) {
+      showModalMsg(modal, 'O email do cônjuge tem de ser diferente do email do titular.', 'error');
+      return;
+    }
     if (criarUser && !email) {
       showModalMsg(modal, 'Email é obrigatório para criar acesso ao portal.', 'error');
       return;
@@ -323,7 +366,7 @@ async function abrirModal(t) {
     // Atualizar / criar tenant
     const novoTenant = {
       ...t,
-      name, fraction, permilage, nif, email, telefone, isAdmin,
+      name, fraction, permilage, nif, email, emailConjuge, telefone, isAdmin,
       rentByYear: { ...(t.rentByYear || {}) }
     };
     delete novoTenant._novo;
@@ -407,7 +450,36 @@ async function toggleAtivo(tenantId) {
   renderLista();
 }
 
-// ───────────────────────── HELPERS ─────────────────────────
+// ───────── DESATIVAR / REACTIVAR SÓ O CÔNJUGE (2.º acesso) ─────────
+async function toggleConjuge(tenantId) {
+  const t = await store.getDoc('tenants', tenantId);
+  if (!t || !t.emailConjuge) return;
+
+  if (t.conjugeInativoEm) {
+    // Reactivar cônjuge
+    if (!confirm(`Reactivar o acesso do cônjuge (${t.emailConjuge})?`)) return;
+    delete t.conjugeInativoEm;
+    delete t.conjugeInativoPor;
+    await store.setDoc('tenants', t);
+    alert('Cônjuge reativado nos dados.\n\nPara aplicar o acesso, corre no PC:\n  node gerir-contas.js');
+    renderLista();
+    return;
+  }
+
+  // Desativar só o cônjuge
+  const msg = `Desativar APENAS o acesso do cônjuge (${t.emailConjuge})?\n\n` +
+              `• O titular (${t.email}) mantém o acesso.\n` +
+              `• Usar em caso de separação, falecimento, etc.\n` +
+              `• O histórico da fração mantém-se intacto.\n\n` +
+              `Depois, corre no PC: node gerir-contas.js`;
+  if (!confirm(msg)) return;
+
+  t.conjugeInativoEm = Date.now();
+  t.conjugeInativoPor = auth.getSession()?.operatorName || null;
+  await store.setDoc('tenants', t);
+  alert('Cônjuge desativado nos dados.\n\nPara aplicar (desativar o login), corre no PC:\n  node gerir-contas.js');
+  renderLista();
+}
 
 function showModalMsg(modal, text, kind) {
   const el = modal.querySelector('#cm-msg');

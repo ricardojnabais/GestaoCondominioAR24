@@ -197,6 +197,16 @@ export async function loginCondominoFirebase(fb) {
     loginAt: Date.now()
   });
 
+  // Registar o último acesso no próprio tenant (campo não-sensível · as regras
+  // deixam o condómino atualizar o seu doc desde que não mexa em nif/email/etc).
+  // Best-effort: se falhar, não bloqueia o login.
+  try {
+    tenant.ultimoLoginEm = Date.now();
+    await store.setDoc('tenants', tenant);
+  } catch (e) {
+    console.warn('[login] não foi possível registar ultimoLoginEm:', e?.message || e);
+  }
+
   return currentSession;
 }
 

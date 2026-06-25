@@ -103,7 +103,9 @@ async function buildAdminItems() {
     { route: 'admin/manutencao',     icon: 'ic-calendar',     label: 'Agenda' },
     { sep: true, label: 'Definições' },
     { route: 'admin/condominos',     icon: 'ic-settings',     label: 'Condóminos' },
-    { route: 'admin/utilizadores',   icon: 'ic-settings',     label: 'Acessos ao Portal' },
+    // 'Acessos ao Portal' (admin/utilizadores) APOSENTADO na v2.2 ·
+    // a gestão de contas faz-se agora em "Condóminos" + script gerir-contas.js.
+    // A rota continua registada mas sem entrada no menu (sistema 'users' legado).
     { route: 'admin/rubricas',       icon: 'ic-settings',     label: 'Rúbricas' },
     { route: 'admin/definicoes-dados', icon: 'ic-settings',   label: 'Dados do Condomínio' },
     // { route: 'admin/notificacoes',     icon: 'ic-settings',   label: 'Notificações Push' },  // v2.0
