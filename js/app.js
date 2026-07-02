@@ -46,7 +46,7 @@ import * as authMod from './auth/local-auth.js';
 // ─── Bootstrap ────────────────────────────────────────────
 
 async function main() {
-  console.log('[app] Gestão do Condomínio AR24 · v2.2 · produção');
+  console.log('[app] Gestão do Condomínio AR24 · v2.3 · produção');
   console.log('[app] Backend: Firestore (Via B · login seguro + RGPD)');
 
   // 1. Montar SVG sprite (ícones disponíveis para toda a app)

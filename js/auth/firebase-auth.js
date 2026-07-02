@@ -200,6 +200,8 @@ export async function sendCondominoPasswordReset(email) {
   const { auth, authFns } = window.__firebase;
   const e = (email || '').trim().toLowerCase();
   if (!e) throw new Error('Indica o teu email.');
+  // Email de reposição em português (Firebase envia o template traduzido).
+  try { auth.languageCode = 'pt'; } catch {}
   await authFns.sendPasswordResetEmail(auth, e);
 }
 

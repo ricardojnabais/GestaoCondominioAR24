@@ -9,6 +9,7 @@
  */
 
 import * as store from '../../store/local-store.js';
+import * as firebaseAuth from '../../auth/firebase-auth.js';
 import * as utilizadores from '../../modules/utilizadores.js';
 import * as auth from '../../auth/local-auth.js';
 import * as orcamento from '../../modules/orcamento.js';
@@ -120,6 +121,22 @@ async function renderLista() {
   listEl.querySelectorAll('[data-action="toggle-conjuge"]').forEach(btn => {
     btn.addEventListener('click', () => toggleConjuge(btn.dataset.id));
   });
+  listEl.querySelectorAll('[data-action="reset-pw"]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const email = btn.dataset.email;
+      if (!confirm(`Enviar email de reposição de password para ${email}?\n\nO condómino recebe um link para definir uma nova password.`)) return;
+      const original = btn.textContent;
+      btn.disabled = true; btn.textContent = 'A enviar…';
+      try {
+        await firebaseAuth.sendCondominoPasswordReset(email);
+        alert(`Email de reposição enviado para ${email}.\n\nAvisa o condómino para verificar a caixa de entrada (e o spam).`);
+      } catch (e) {
+        alert('Não foi possível enviar: ' + (e?.message || e));
+      } finally {
+        btn.disabled = false; btn.textContent = original;
+      }
+    });
+  });
 }
 
 function buildCondCard(t, user) {
@@ -177,6 +194,7 @@ function buildCondCard(t, user) {
       </div>
       <div class="cc-actions">
         <button class="btn ghost" data-action="edit" data-id="${t.id}">Editar</button>
+        ${t.email && !t.inativoEm ? `<button class="btn ghost" data-action="reset-pw" data-id="${t.id}" data-email="${escapeAttr(t.email)}">Enviar reposição de password</button>` : ''}
         ${conjugeBtn}
         ${t.inativoEm
           ? `<button class="btn" data-action="toggle-ativo" data-id="${t.id}">Reactivar</button>`
