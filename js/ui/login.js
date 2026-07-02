@@ -148,7 +148,11 @@ export async function render(container) {
     const email = container.querySelector('#cond-email').value;
     const password = container.querySelector('#cond-password').value;
     try {
-      await auth.loginCondomino(email, password);
+      // Via B · autenticação pelo Firebase Auth (não a coleção 'users' antiga).
+      // signInCondomino valida a password no Firebase e devolve o tenantId (do claim);
+      // loginCondominoFirebase monta a sessão da app.
+      const fb = await firebaseAuth.signInCondomino(email, password);
+      await auth.loginCondominoFirebase(fb);
       router.navigate('condomino/home');
     } catch (e) {
       showError(e.message);
