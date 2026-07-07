@@ -201,6 +201,35 @@ export async function topAtrasos(ano, limit = 5) {
 }
 
 /**
+ * KPIs do MÊS CORRENTE (para o dashboard):
+ *  - despesasMes_centimos: total de despesas com data no mês atual.
+ *  - quotasRecebidasMTD_centimos: total de recibos do tipo 'quota' com data
+ *    entre o dia 1 do mês e hoje (month-to-date).
+ * Ambos usam o campo `data` (ISO YYYY-MM-DD) e comparam o prefixo do mês.
+ */
+export async function kpisMes() {
+  const mesAtual = currentMonthRef();  // 'YYYY-MM'
+
+  // Despesas pagas no mês corrente (todas as rubricas)
+  const todasDespesas = await despesas.listar({});
+  const despesasMes = todasDespesas
+    .filter(d => (d.data || '').startsWith(mesAtual))
+    .reduce((s, d) => s + (d.valor_centimos || 0), 0);
+
+  // Quotas recebidas MTD (recibos tipo 'quota', não cancelados, data neste mês)
+  const todosRecibos = await receipts.listar({});
+  const quotasMTD = todosRecibos
+    .filter(r => r.tipo === 'quota' && !r.cancelado && (r.data || '').startsWith(mesAtual))
+    .reduce((s, r) => s + (r.valor_centimos || 0), 0);
+
+  return {
+    mes: mesAtual,
+    despesasMes_centimos: despesasMes,
+    quotasRecebidasMTD_centimos: quotasMTD,
+  };
+}
+
+/**
  * Estado dos planos ativos.
  */
 export async function estadoPlanos() {

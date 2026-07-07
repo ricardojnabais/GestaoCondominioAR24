@@ -144,6 +144,7 @@ export async function render(container) {
 async function refreshSaldo(container) {
   const year = new Date().getFullYear().toString();
   const kpis = await analise.kpisYTD(year);
+  const kpisMes = await analise.kpisMes();
   const el = container.querySelector('#home-kpis');
   if (!el) return;
 
@@ -151,6 +152,12 @@ async function refreshSaldo(container) {
                 : kpis.taxaCobrancaYTD >= 70 ? 'kpi-amber'
                 : 'kpi-red';
   const atrasoCls = kpis.condominosEmAtraso > 0 ? 'kpi-red' : 'kpi-green';
+
+  // Nome do mês corrente para o subtítulo do card do mês
+  const nomesMes = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
+                    'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const mesNum = parseInt((kpisMes.mes || '').split('-')[1], 10) || 1;
+  const nomeMes = nomesMes[mesNum - 1] || '';
 
   el.innerHTML = `
     <a class="kpi-card kpi-primary" data-route="admin/banco">
@@ -167,6 +174,11 @@ async function refreshSaldo(container) {
       <div class="kpi-lbl">Em Atraso</div>
       <div class="kpi-val">${kpis.condominosEmAtraso}<span class="kpi-of">/${kpis.totalCondominos}</span></div>
       <div class="kpi-sub">${formatMoney(kpis.totalEmAtraso_centimos)} em falta</div>
+    </a>
+    <a class="kpi-card" data-route="admin/quotas">
+      <div class="kpi-lbl">Quotas recebidas · ${nomeMes}</div>
+      <div class="kpi-val">${formatMoney(kpisMes.quotasRecebidasMTD_centimos)}</div>
+      <div class="kpi-sub">Despesas do mês: ${formatMoney(kpisMes.despesasMes_centimos)}</div>
     </a>
   `;
 
