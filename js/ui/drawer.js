@@ -95,6 +95,7 @@ async function buildAdminItems() {
     { route: 'admin/despesas',       icon: 'ic-payment-out',  label: 'Despesas' },
     { route: 'admin/planos',         icon: 'ic-quota-in',     label: 'Planos de Pagamento' },
     { route: 'admin/em-aberto',      icon: 'ic-payment-out',  label: 'Em Aberto' },
+    { route: 'admin/avisos',         icon: 'ic-receipt',      label: 'Avisos de Atraso' },
     { sep: true, label: 'Visão e Gestão' },
     { route: 'admin/analise',        icon: 'ic-dashboard',    label: 'Análise' },
     { route: 'admin/despesas-mensal',icon: 'ic-dashboard',    label: 'Mapa Mensal de Despesas' },

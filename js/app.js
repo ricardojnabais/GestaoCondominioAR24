@@ -21,6 +21,7 @@ import * as adminQuotas from './ui/admin/quotas.js';
 import * as adminBanco from './ui/admin/banco.js';
 import * as adminDespesas from './ui/admin/despesas.js';
 import * as adminRubricas from './ui/admin/rubricas.js';
+import * as adminAvisos from './ui/admin/avisos.js';
 import * as adminPlanos from './ui/admin/planos.js';
 import * as adminAnalise from './ui/admin/analise.js';
 import * as adminOrcamento from './ui/admin/orcamento.js';
@@ -46,7 +47,7 @@ import * as authMod from './auth/local-auth.js';
 // ─── Bootstrap ────────────────────────────────────────────
 
 async function main() {
-  console.log('[app] Gestão do Condomínio AR24 · v2.5 · produção');
+  console.log('[app] Gestão do Condomínio AR24 · v2.6 · produção');
   console.log('[app] Backend: Firestore (Via B · login seguro + RGPD)');
 
   // 1. Montar SVG sprite (ícones disponíveis para toda a app)
@@ -95,6 +96,7 @@ async function main() {
   router.register('admin/banco',           adminBanco,           { requiresAuth: 'admin' });
   router.register('admin/despesas',        adminDespesas,        { requiresAuth: 'admin' });
   router.register('admin/rubricas',        adminRubricas,        { requiresAuth: 'admin' });
+  router.register('admin/avisos',          adminAvisos,          { requiresAuth: 'admin' });
   router.register('admin/planos',          adminPlanos,          { requiresAuth: 'admin' });
   router.register('admin/analise',         adminAnalise,         { requiresAuth: 'admin' });
   router.register('admin/orcamento',       adminOrcamento,       { requiresAuth: 'admin' });
