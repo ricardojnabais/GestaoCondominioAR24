@@ -1,15 +1,15 @@
 /**
  * Avisos de Atraso · envio por email via EmailJS + registo de prova
  * ------------------------------------------------------------------
- * Semi-automático: o admin abre a página, revê a lista de condóminos em atraso
- * (com email), e clica para enviar. Os avisos saem via EmailJS. Cada envio é
- * registado no Firestore (coleção 'avisosAtraso') como prova de que foi avisado.
+ * Semi-automático: o admin abre a página, seleciona os condóminos em atraso
+ * (com email) e envia. Os avisos saem via EmailJS. Cada envio é registado no
+ * Firestore (coleção 'avisosAtraso') como prova de que foi avisado.
  *
  * Só envia para condóminos:
  *   - com quotas em atraso (via em-aberto.quotasAtrasoAnoCorrente)
  *   - COM email (quem não tem email é excluído · ex.: Sr. João Vaz)
  *
- * EmailJS · configuração (chaves públicas do lado do cliente, por design):
+ * EmailJS · chaves públicas do lado do cliente (por design):
  */
 const EMAILJS_PUBLIC_KEY = 'jl5l6-RDNB8FWHpWc';
 const EMAILJS_SERVICE_ID = 'service_nvaamhr';
@@ -21,9 +21,6 @@ import { formatMoney, currentMonthRef } from '../utils/format.js';
 
 let emailjsPronto = false;
 
-/**
- * Carrega a biblioteca EmailJS (uma vez) a partir do CDN e inicializa.
- */
 async function garantirEmailJS() {
   if (emailjsPronto && window.emailjs) return;
   if (!window.emailjs) {
@@ -40,8 +37,8 @@ async function garantirEmailJS() {
 }
 
 /**
- * Devolve a lista de condóminos em atraso, já cruzada com o email do tenant.
- * @returns {Promise<Array>} [{ tenantId, nome, fracao, email, totalEmFalta, temEmail }]
+ * Lista de condóminos em atraso, cruzada com o email do tenant.
+ * @returns {Promise<Array>} [{ tenantId, nome, fracao, email, temEmail, totalEmFalta, valorFormatado }]
  */
 export async function listarParaAviso() {
   const atrasos = await emAberto.quotasAtrasoAnoCorrente();
@@ -65,8 +62,7 @@ export async function listarParaAviso() {
 }
 
 /**
- * Verifica quem já foi avisado no mês corrente (para evitar duplicados).
- * @returns {Promise<Set<string>>} conjunto de tenantIds já avisados este mês
+ * Conjunto de tenantIds já avisados no mês corrente (evita duplicados).
  */
 export async function jaAvisadosEsteMes() {
   const mes = currentMonthRef();
@@ -78,8 +74,6 @@ export async function jaAvisadosEsteMes() {
 
 /**
  * Envia o aviso a UM condómino e regista a prova.
- * @param {Object} item - elemento de listarParaAviso()
- * @param {string} operatorName - quem despoletou o envio
  */
 export async function enviarAviso(item, operatorName) {
   if (!item.temEmail) throw new Error('Condómino sem email.');
@@ -91,10 +85,8 @@ export async function enviarAviso(item, operatorName) {
     fracao: item.fracao || '',
     valor_atraso: item.valorFormatado,
   };
-
   await window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params);
 
-  // Registo de prova (coleção avisosAtraso)
   const mes = currentMonthRef();
   const registo = {
     id: `aviso_${item.tenantId}_${mes}`,

@@ -1,19 +1,22 @@
 /**
  * Página: Avisos de Atraso · Admin
- * Mostra os condóminos com quotas em atraso, permite enviar avisos por email
- * (EmailJS) só a quem tem email, e regista a prova de cada envio.
+ * Lista os condóminos com quotas em atraso. Permite SELECIONAR (checkbox) os
+ * que se querem avisar e enviar aos selecionados. "Selecionar todos" marca só
+ * os elegíveis (com email e não avisados este mês). Cada envio grava prova.
  */
 
 import * as avisos from '../../modules/avisos-atraso.js';
 import * as auth from '../../auth/local-auth.js';
 import * as router from '../router.js';
 import { icon } from '../icons.js';
-import { formatMoney } from '../../utils/format.js';
 
 let containerRef = null;
+let selecionados = new Set();
 
 export async function render(container) {
   containerRef = container;
+  selecionados = new Set();
+
   container.innerHTML = `
     <div class="app">
       <header class="header">
@@ -40,9 +43,8 @@ export async function render(container) {
         </div>
 
         <div style="background:#eef2fb;border-left:4px solid #2E54A7;border-radius:8px;padding:12px 16px;margin:8px 0 16px;font-size:14px">
-          Envia um email a cada condómino com quotas em atraso <strong>que tenha email</strong>.
-          Revê a lista antes de enviar. Quem não tem email fica assinalado para contacto direto.
-          Cada envio fica registado como prova.
+          Seleciona os condóminos a avisar (só quem tem email pode ser selecionado) e envia.
+          Quem não tem email fica assinalado para contacto direto. Cada envio fica registado como prova.
         </div>
 
         <div id="avisos-conteudo"><div style="padding:20px;color:#888">A calcular atrasos…</div></div>
@@ -71,67 +73,102 @@ async function renderConteudo() {
     return;
   }
 
-  const comEmail = lista.filter(x => x.temEmail);
-  const semEmail = lista.filter(x => !x.temEmail);
-  const porEnviar = comEmail.filter(x => !jaAvisados.has(x.tenantId));
+  // Elegíveis = com email E não avisado este mês
+  const elegiveis = lista.filter(x => x.temEmail && !jaAvisados.has(x.tenantId));
+  const idsElegiveis = new Set(elegiveis.map(x => x.tenantId));
+  // Limpar da seleção quem já não é elegível
+  selecionados.forEach(id => { if (!idsElegiveis.has(id)) selecionados.delete(id); });
+
+  const todosSel = elegiveis.length > 0 && elegiveis.every(x => selecionados.has(x.tenantId));
 
   const linhas = lista.map(x => {
     const avisado = jaAvisados.has(x.tenantId);
-    let estado, cor;
-    if (!x.temEmail) { estado = 'Sem email · avisar à parte'; cor = '#b3402f'; }
-    else if (avisado) { estado = 'Já avisado este mês'; cor = '#2f7d4f'; }
-    else { estado = 'Por avisar'; cor = '#8a6a1a'; }
+    const elegivel = x.temEmail && !avisado;
+    const sel = selecionados.has(x.tenantId);
+
+    let badge = '';
+    if (!x.temEmail) badge = '<span style="font-size:11px;background:#fbe6e2;color:#b3402f;padding:2px 8px;border-radius:10px;margin-left:6px">sem email</span>';
+    else if (avisado) badge = '<span style="font-size:11px;background:#e3f0e7;color:#2f7d4f;padding:2px 8px;border-radius:10px;margin-left:6px">já avisado</span>';
+
+    const check = elegivel
+      ? `<div style="width:22px;height:22px;border-radius:6px;border:2px solid ${sel ? '#1E54C7' : '#cbd5e1'};background:${sel ? '#1E54C7' : '#fff'};display:flex;align-items:center;justify-content:center;flex-shrink:0">${sel ? '<span style="color:#fff;font-size:14px;line-height:1">✓</span>' : ''}</div>`
+      : `<div style="width:22px;height:22px;flex-shrink:0;display:flex;align-items:center;justify-content:center;opacity:.3">⊘</div>`;
 
     return `
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #eee;gap:12px">
+      <div class="av-row" data-id="${x.tenantId}" data-elegivel="${elegivel}"
+           style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid #eee;${elegivel ? 'cursor:pointer' : 'opacity:.7'};${sel ? 'background:#f0f5ff' : ''}">
+        ${check}
         <div style="flex:1;min-width:0">
           <div style="font-weight:600">${escapeHtml(x.nome)} <span style="color:#888;font-weight:400">· ${escapeHtml(x.fracao || '')}</span></div>
-          <div style="font-size:13px;color:#666">${x.temEmail ? escapeHtml(x.email) : '— sem email —'}</div>
+          <div style="font-size:13px;color:#666">${x.temEmail ? escapeHtml(x.email) : '— sem email —'}${badge}</div>
         </div>
-        <div style="text-align:right;white-space:nowrap">
-          <div style="font-weight:700;color:#b3402f">${x.valorFormatado}</div>
-          <div style="font-size:12px;color:${cor}">${estado}</div>
-        </div>
+        <div style="font-weight:700;color:#b3402f;white-space:nowrap">${x.valorFormatado}</div>
       </div>`;
   }).join('');
 
   el.innerHTML = `
+    ${elegiveis.length > 0 ? `
+    <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;font-weight:600;user-select:none">
+      <input type="checkbox" id="sel-todos" ${todosSel ? 'checked' : ''} style="width:18px;height:18px;cursor:pointer">
+      Selecionar todos <span style="font-weight:400;color:#888">(${elegiveis.length} por avisar)</span>
+    </label>` : ''}
+
     <div style="background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden">
       ${linhas}
     </div>
 
     <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px">
-      <button class="btn primary" id="btn-enviar" ${porEnviar.length === 0 ? 'disabled' : ''}>
-        Enviar avisos por email (${porEnviar.length} ${porEnviar.length === 1 ? 'condómino' : 'condóminos'})
+      <button class="btn primary" id="btn-enviar" ${selecionados.size === 0 ? 'disabled' : ''}>
+        Enviar aviso aos selecionados (${selecionados.size})
       </button>
-      <div style="font-size:13px;color:#666">
-        ${comEmail.length} com email · ${semEmail.length} sem email ·
-        ${jaAvisados.size} já avisados este mês
-      </div>
       <div id="envio-progresso" style="font-size:14px;margin-top:6px"></div>
     </div>
   `;
 
+  // Clicar numa linha elegível → alterna seleção
+  el.querySelectorAll('.av-row[data-elegivel="true"]').forEach(row => {
+    row.addEventListener('click', () => {
+      const id = row.dataset.id;
+      if (selecionados.has(id)) selecionados.delete(id);
+      else selecionados.add(id);
+      renderConteudo();
+    });
+  });
+
+  // Selecionar todos
+  const selTodos = el.querySelector('#sel-todos');
+  if (selTodos) {
+    selTodos.addEventListener('change', (e) => {
+      if (e.target.checked) elegiveis.forEach(x => selecionados.add(x.tenantId));
+      else selecionados.clear();
+      renderConteudo();
+    });
+  }
+
+  // Enviar aos selecionados
   const btn = el.querySelector('#btn-enviar');
-  if (btn && porEnviar.length > 0) {
-    btn.addEventListener('click', () => enviar(porEnviar));
+  if (btn && selecionados.size > 0) {
+    btn.addEventListener('click', () => {
+      const escolhidos = elegiveis.filter(x => selecionados.has(x.tenantId));
+      enviar(escolhidos);
+    });
   }
 }
 
-async function enviar(porEnviar) {
+async function enviar(escolhidos) {
   const prog = containerRef.querySelector('#envio-progresso');
   const btn = containerRef.querySelector('#btn-enviar');
 
-  const nomes = porEnviar.map(x => `• ${x.nome} (${x.valorFormatado})`).join('\n');
-  if (!confirm(`Enviar aviso de atraso a ${porEnviar.length} condómino(s)?\n\n${nomes}\n\nOs emails saem de imediato.`)) return;
+  const nomes = escolhidos.map(x => `• ${x.nome} (${x.valorFormatado})`).join('\n');
+  if (!confirm(`Enviar aviso de atraso a ${escolhidos.length} condómino(s)?\n\n${nomes}\n\nOs emails saem de imediato.`)) return;
 
   btn.disabled = true;
   const operatorName = auth.getSession()?.operatorName || null;
   let ok = 0, falhou = 0;
   const erros = [];
 
-  for (const item of porEnviar) {
-    prog.innerHTML = `A enviar… ${ok + falhou + 1}/${porEnviar.length} (${escapeHtml(item.nome)})`;
+  for (const item of escolhidos) {
+    prog.innerHTML = `A enviar… ${ok + falhou + 1}/${escolhidos.length} (${escapeHtml(item.nome)})`;
     try {
       await avisos.enviarAviso(item, operatorName);
       ok++;
@@ -141,12 +178,11 @@ async function enviar(porEnviar) {
     }
   }
 
+  selecionados.clear();
   prog.innerHTML = `
     <div style="color:#2f7d4f;font-weight:600">✓ ${ok} aviso(s) enviado(s) com sucesso.</div>
     ${falhou > 0 ? `<div style="color:#b3402f;margin-top:6px">${falhou} falhou(aram):<br>${erros.map(escapeHtml).join('<br>')}</div>` : ''}
   `;
-
-  // Recarregar a lista (para refletir "já avisado")
   setTimeout(() => renderConteudo(), 2500);
 }
 
