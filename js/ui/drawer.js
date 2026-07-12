@@ -91,6 +91,7 @@ async function buildAdminItems() {
     { sep: true, label: 'Operações' },
     { route: 'admin/quotas',         icon: 'ic-quota-in',     label: 'Quotas' },
     { route: 'admin/recibos',        icon: 'ic-receipt',      label: 'Recibos' },
+    { route: 'admin/declaracoes',    icon: 'ic-receipt',      label: 'Declarações' },
     { route: 'admin/banco',          icon: 'ic-bank',         label: 'Situação Bancária' },
     { route: 'admin/despesas',       icon: 'ic-payment-out',  label: 'Despesas' },
     { route: 'admin/planos',         icon: 'ic-quota-in',     label: 'Planos de Pagamento' },
