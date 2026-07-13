@@ -253,6 +253,13 @@ async function gerar(formEl) {
   // Número sequencial próprio das declarações
   const numero = await proximoNumeroDeclaracao(ano);
 
+  // Nomes dos administradores (para as duas assinaturas) · fonte dinâmica
+  let administradores = [];
+  try {
+    const metaCfg = await store.getDoc('meta', 'config');
+    administradores = metaCfg?.administracao?.nomes || [];
+  } catch (e) { administradores = []; }
+
   const payload = {
     numero, ano,
     fracao: tenant.fraction || '',
@@ -264,6 +271,7 @@ async function gerar(formEl) {
     dividasTexto,
     extraordinariaTexto: (extraOn && extraTxt) ? extraTxt : '',
     operatorName: auth.getSession()?.operatorName || null,
+    administradores,
     dataEmissaoTxt: dataPorExtensoSimples(),
   };
 

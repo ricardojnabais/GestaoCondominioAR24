@@ -130,24 +130,34 @@ function desenharDeclaracao(doc, d, cond) {
 
   y += 8;
   doc.text('Por ser verdade, passo a presente declaração.', margemX, y);
-  y += 16;
+  y += 18;
 
-  // ── Assinatura + operador ──
+  // ── Assinaturas · uma por cada administrador, lado a lado ──
+  const admins = (d.administradores && d.administradores.length)
+    ? d.administradores
+    : ['A Administração'];
+  // Usar no máximo 2 colunas lado a lado (os dois administradores)
+  const nCols = Math.min(admins.length, 2);
+  const larguraCol = 70;
+  const gap = (larguraUtil - larguraCol * nCols) / Math.max(1, nCols - 1 || 1);
   doc.setLineWidth(0.3);
   doc.setDrawColor(...COR_PRETA);
-  doc.line(margemX, y, margemX + 70, y);
-  y += 5;
-  doc.setFontSize(9.5);
-  doc.text('A Administração do Condomínio', margemX, y);
-  if (d.operatorName) {
-    y += 4.5;
-    doc.setTextColor(90, 94, 114);
-    doc.text(d.operatorName, margemX, y);
-    doc.setTextColor(...COR_PRETA);
-  }
+  doc.setFontSize(9);
 
-  // ── Carimbo (canto inferior direito) · mesmo dos recibos ──
-  desenharCarimbo(doc, cond, 150, y - 2);
+  admins.slice(0, 2).forEach((nome, i) => {
+    const x = margemX + i * (larguraCol + gap);
+    doc.line(x, y, x + larguraCol, y);
+    doc.setTextColor(...COR_PRETA);
+    doc.text(nome, x, y + 5);
+    doc.setTextColor(90, 94, 114);
+    doc.setFontSize(8);
+    doc.text('A Administração do Condomínio', x, y + 9);
+    doc.setFontSize(9);
+  });
+  doc.setTextColor(...COR_PRETA);
+
+  // ── Carimbo · abaixo das assinaturas, ao centro-direita ──
+  desenharCarimbo(doc, cond, 150, y + 22);
 }
 
 // ── helpers de texto ──
