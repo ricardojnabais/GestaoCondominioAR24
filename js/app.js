@@ -48,7 +48,7 @@ import * as adminDeclaracoes from './ui/admin/declaracoes.js';
 // ─── Bootstrap ────────────────────────────────────────────
 
 async function main() {
-  console.log('[app] Gestão do Condomínio AR24 · v2.10 · produção');
+  console.log('[app] Gestão do Condomínio AR24 · v2.11 · produção');
   console.log('[app] Backend: Firestore (Via B · login seguro + RGPD)');
 
   // 1. Montar SVG sprite (ícones disponíveis para toda a app)
