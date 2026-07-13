@@ -43,6 +43,7 @@ import * as condominoComunicacoes from './ui/condomino/comunicacoes.js';
 import * as condominoDados from './ui/condomino/dados.js';
 import * as drawer from './ui/drawer.js';
 import * as authMod from './auth/local-auth.js';
+import * as adminDeclaracoes from './ui/admin/declaracoes.js';
 
 // ─── Bootstrap ────────────────────────────────────────────
 
