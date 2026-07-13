@@ -98,6 +98,7 @@ async function main() {
   router.register('admin/despesas',        adminDespesas,        { requiresAuth: 'admin' });
   router.register('admin/rubricas',        adminRubricas,        { requiresAuth: 'admin' });
   router.register('admin/avisos',          adminAvisos,          { requiresAuth: 'admin' });
+  router.register('admin/declaracoes',     adminDeclaracoes,     { requiresAuth: 'admin' });
   router.register('admin/planos',          adminPlanos,          { requiresAuth: 'admin' });
   router.register('admin/analise',         adminAnalise,         { requiresAuth: 'admin' });
   router.register('admin/orcamento',       adminOrcamento,       { requiresAuth: 'admin' });
