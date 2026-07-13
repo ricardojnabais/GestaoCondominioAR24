@@ -12,6 +12,7 @@ import * as receipts from '../../modules/receipts.js';
 import * as comunicacoes from '../../modules/comunicacoes.js';
 import { icon } from '../icons.js';
 import { formatMoney, currentMonthRef, monthsOfYear } from '../../utils/format.js';
+import * as adminDeclaracoes from './ui/admin/declaracoes.js';
 
 export async function render(container) {
   const session = auth.getSession();
