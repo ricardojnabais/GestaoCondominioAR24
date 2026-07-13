@@ -285,11 +285,16 @@ async function gerar(formEl) {
       tenantId: tenant.id,
       tenantNome: tenant.name || '',
       fracao: tenant.fraction || '',
+      andar: dados.andar || '',
       nif: tenant.nif || '',
       semDividas,
       dividasTexto,
       quotaMensal_centimos: dados.quotaCent,
+      quotaMensalTxt: dados.quotaTxt,
       pagasAte,
+      extraordinariaTexto: (extraOn && extraTxt) ? extraTxt : '',
+      administradores,
+      dataEmissaoTxt: payload.dataEmissaoTxt,
       ficheiro: filename,
       emitidoEm: Date.now(),
       emitidoPor: payload.operatorName,
@@ -327,16 +332,54 @@ async function renderHistorico() {
   const linhas = regs.map(r => {
     const dt = r.emitidoEm ? new Date(r.emitidoEm).toLocaleString('pt-PT', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
     return `
-      <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid #f0f0f0">
+      <div class="dc-hist-row" data-id="${r.id}" style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid #f0f0f0;cursor:pointer">
         <div style="flex:1;min-width:0">
           <div style="font-weight:600">Decl. ${String(r.numero).padStart(3,'0')}/${r.ano} · ${escapeHtml(r.tenantNome || '')} <span style="color:#888;font-weight:400">· ${escapeHtml(r.fracao || '')}</span></div>
           <div style="font-size:12px;color:#666">${dt}${r.emitidoPor ? ' · por ' + escapeHtml(r.emitidoPor) : ''} · ${r.semDividas ? 'sem dívidas' : 'com dívidas'}</div>
-          <div style="font-size:12px;color:#999">${escapeHtml(r.ficheiro || '')}</div>
         </div>
+        <div style="color:#1E54C7;font-size:13px;white-space:nowrap">📄 Abrir</div>
       </div>`;
   }).join('');
 
-  el.innerHTML = `<div style="background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden">${linhas}</div>`;
+  el.innerHTML = `
+    <div style="font-size:13px;color:#888;margin-bottom:8px">Toca numa declaração para voltar a descarregar o PDF.</div>
+    <div style="background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden">${linhas}</div>
+    <div id="dc-hist-msg" style="margin-top:10px;font-size:14px"></div>
+  `;
+
+  const mapa = {};
+  regs.forEach(r => { mapa[r.id] = r; });
+  el.querySelectorAll('.dc-hist-row').forEach(row => {
+    row.addEventListener('click', () => reabrir(mapa[row.dataset.id]));
+  });
+}
+
+/** Regenera e descarrega o PDF de uma declaração já emitida (mantém nº e data originais). */
+async function reabrir(registo) {
+  const msg = containerRef.querySelector('#dc-hist-msg');
+  if (!registo) return;
+  msg.innerHTML = `<span style="color:#888">A gerar PDF…</span>`;
+  try {
+    const payload = {
+      numero: registo.numero,
+      ano: registo.ano,
+      fracao: registo.fracao || '',
+      andar: registo.andar || '',
+      nomeCondomino: registo.tenantNome || '',
+      quotaMensalTxt: registo.quotaMensalTxt || formatMoney(registo.quotaMensal_centimos || 0),
+      pagasAte: registo.pagasAte || '',
+      semDividas: registo.semDividas,
+      dividasTexto: registo.dividasTexto || '',
+      extraordinariaTexto: registo.extraordinariaTexto || '',
+      administradores: registo.administradores || [],
+      operatorName: registo.emitidoPor || null,
+      dataEmissaoTxt: registo.dataEmissaoTxt || '',
+    };
+    const filename = await declPdf.gerarDeclaracaoPDF(payload);
+    msg.innerHTML = `<span style="color:#2f7d4f;font-weight:600">✓ ${escapeHtml(filename)} descarregado.</span>`;
+  } catch (e) {
+    msg.innerHTML = `<span style="color:#b3402f">Erro ao gerar: ${escapeHtml(e?.message || String(e))}</span>`;
+  }
 }
 
 // ─────────────── helpers ───────────────
