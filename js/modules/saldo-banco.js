@@ -13,8 +13,17 @@
  *   Para anos posteriores ao marco:
  *     saldoCalculado = saldoInicial(year) + Σ(receipts year) + Σ(outros year) − Σ(despesas year)
  *     (todos os movimentos contam · são todos pós-marco)
+ *
+ *   v2.x · ESTORNOS (tipo/estornoDe) NUNCA contam para o saldo · são apenas
+ *   documento de auditoria. Sem isto, cancelar um movimento subtraía a dobrar
+ *   (o cancelado sai + o estorno somava negativo).
  */
 import * as store from '../store/local-store.js';
+
+/** Um movimento é estorno se tem tipo 'estorno' ou aponta estornoDe. */
+function ehEstorno(m) {
+  return m?.tipo === 'estorno' || !!m?.estornoDe;
+}
 
 /**
  * Calcula o saldo bancário previsto para o ano dado.
@@ -36,18 +45,19 @@ export async function calcularSaldo(year) {
   const todasDespesas = await store.listDocs('pagamentosDespesa');
   const despesasAno = todasDespesas.filter(d => d.data && d.data.startsWith(yearStr));
 
-  // Aplicar filtros segundo o ano em relação ao marco
+  // Aplicar filtros segundo o ano em relação ao marco.
+  // Em TODOS os casos, estornos são excluídos (não contam para o saldo).
   let receiptsValidos, outrosValidos, despesasValidas;
   if (ehAnoMarco) {
     // Tudo o que foi importado tem excluirDoSaldo=true · só contam emissões pós-go-live
-    receiptsValidos = allReceipts.filter(r => !r.cancelado && !r.excluirDoSaldo);
-    outrosValidos = allOutros.filter(o => !o.excluirDoSaldo);
-    despesasValidas = despesasAno.filter(d => !d.cancelado && !d.excluirDoSaldo);
+    receiptsValidos = allReceipts.filter(r => !r.cancelado && !r.excluirDoSaldo && !ehEstorno(r));
+    outrosValidos = allOutros.filter(o => !o.excluirDoSaldo && !ehEstorno(o));
+    despesasValidas = despesasAno.filter(d => !d.cancelado && !d.excluirDoSaldo && !ehEstorno(d));
   } else {
     // Ano histórico ou futuro · cálculo tradicional (ignora flag)
-    receiptsValidos = allReceipts.filter(r => !r.cancelado);
-    outrosValidos = allOutros;
-    despesasValidas = despesasAno.filter(d => !d.cancelado);
+    receiptsValidos = allReceipts.filter(r => !r.cancelado && !ehEstorno(r));
+    outrosValidos = allOutros.filter(o => !ehEstorno(o));
+    despesasValidas = despesasAno.filter(d => !d.cancelado && !ehEstorno(d));
   }
 
   const totReceipts = receiptsValidos.reduce((s, r) => s + (r.valor_centimos || 0), 0);
@@ -127,6 +137,4 @@ export async function marcarInicioGestao(dataISO, saldoInicial_centimos) {
       await store.setDoc('outrosRecebimentos', o);
     }
   }
-
-  return { dataInicioGestao: dataISO, saldoInicial: saldoInicial_centimos };
 }
