@@ -185,6 +185,20 @@ export async function cancelar(receiptId, motivo) {
   original.motivoCancelamento = motivo || 'Cancelado pelo administrador';
   await store.setDoc('receipts', original);
 
+  // v2.x · CORREÇÃO: cancelar um recibo de QUOTA tem de reverter o ledger 2026,
+  // senão o mês continua a contar como pago (bug: estorno criado mas ledger intacto).
+  // Reverte exatamente a quota que este recibo cobriu.
+  if (original.tipo === 'quota' && !original.excluirDeContagem && !original.auditoria) {
+    try {
+      const quotaCoberta = (original.valor_centimos || 0)
+        + (original.saldoUsado_centimos || 0)
+        - (original.excesso_centimos || 0);
+      await quotasLedger.reverterPagamento(original.tenantId, original.mesReferencia, quotaCoberta);
+    } catch (e) {
+      console.warn('[receipts] Falhou reverter ledger de quotas no cancelamento:', e);
+    }
+  }
+
   // Se era recibo de prestações, reverter o que foi aplicado a cada prestação
   if (original.tipo === 'prestacao' && original.prestacoesIds) {
     if (original.prestacoesAlloc && original.prestacoesAlloc.length) {

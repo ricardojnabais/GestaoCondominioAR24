@@ -1,3 +1,4 @@
+
 /**
  * Quotas Ledger · v1.0.34
  *
@@ -128,6 +129,47 @@ export async function registarPagamento(tenantId, meses, valorTotal_centimos) {
   for (const mref of meses2026.sort()) {
     const atual = ledger.pagamentos[tenantId][mref] || 0;
     ledger.pagamentos[tenantId][mref] = atual + porMes;
+  }
+  ledger.atualizadoEm = new Date().toISOString();
+  return store.setDoc('meta', ledger);
+}
+
+/**
+ * REVERTE (remove) do ledger o pagamento de quotas de um ou mais meses.
+ * Usado ao cancelar um recibo de quota ou ao eliminar um pagamento na matriz.
+ *
+ * @param {string} tenantId
+ * @param {Array<string>} meses - ['2026-09', ...] (só meses de 2026 são aplicados)
+ * @param {number} [valorTotal_centimos] - valor a remover, distribuído pelos meses.
+ *        Se omitido, remove a entrada INTEIRA de cada mês (zera o mês).
+ *
+ * Nunca deixa valores negativos. Se um mês ficar a 0, remove a chave do mês.
+ */
+export async function reverterPagamento(tenantId, meses, valorTotal_centimos = null) {
+  const meses2026 = (meses || []).filter(m => m && m.startsWith(ANO));
+  if (meses2026.length === 0) return null;
+
+  const ledger = await getLedger();
+  if (!ledger || !ledger.pagamentos || !ledger.pagamentos[tenantId]) return null;
+
+  const porMes = (valorTotal_centimos != null)
+    ? Math.round(valorTotal_centimos / meses2026.length)
+    : null;
+
+  for (const mref of meses2026) {
+    if (!(mref in ledger.pagamentos[tenantId])) continue;
+    if (porMes == null) {
+      // remover a entrada inteira do mês
+      delete ledger.pagamentos[tenantId][mref];
+    } else {
+      const novo = (ledger.pagamentos[tenantId][mref] || 0) - porMes;
+      if (novo > 0) ledger.pagamentos[tenantId][mref] = novo;
+      else delete ledger.pagamentos[tenantId][mref];
+    }
+  }
+  // Se o condómino ficou sem meses, limpar o objeto
+  if (Object.keys(ledger.pagamentos[tenantId]).length === 0) {
+    delete ledger.pagamentos[tenantId];
   }
   ledger.atualizadoEm = new Date().toISOString();
   return store.setDoc('meta', ledger);

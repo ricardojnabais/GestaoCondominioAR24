@@ -77,6 +77,9 @@ export async function render(container) {
           <style>
             .q-cell.due { background: rgba(59,130,246,.12); color: #1d4ed8; }
             .legend-item .dot.due { background: rgba(59,130,246,.25); border: 1px solid #1d4ed8; }
+            .q-clickable { position: relative; }
+            .q-clickable:hover { outline: 2px solid #b3402f; outline-offset: -2px; }
+            .q-clickable:hover::after { content: '✕'; position: absolute; top: 1px; right: 2px; font-size: 9px; color: #b3402f; }
           </style>
         </div>
 
@@ -172,7 +175,8 @@ async function renderTable() {
         </div>
       </td>
       ${r.cells.map(c => `
-        <td class="${c.cls}" title="${formatMoney(c.pago)} de ${formatMoney(c.quotaMensal)}">
+        <td class="${c.cls}${c.pago > 0 ? ' q-clickable' : ''}" title="${c.pago > 0 ? 'Clicar para eliminar este pagamento' : formatMoney(c.pago) + ' de ' + formatMoney(c.quotaMensal)}"
+            ${c.pago > 0 ? `data-elim-tenant="${r.tenant.id}" data-elim-mes="${c.m}" data-elim-nome="${escapeAttr(r.tenant.name)}" data-elim-pago="${c.pago}"` : ''}>
           ${c.pago > 0 ? `<span class="cell-val">${formatMoney(c.pago, false)}</span>` : ''}
         </td>
       `).join('')}
@@ -230,6 +234,80 @@ async function renderTable() {
     </div>
   `;
   containerRef.querySelector('#quotas-table').innerHTML = html;
+
+  // Ligar clique nas células com pagamento → eliminar
+  containerRef.querySelectorAll('.q-clickable').forEach(cell => {
+    cell.style.cursor = 'pointer';
+    cell.addEventListener('click', () => eliminarPagamento({
+      tenantId: cell.dataset.elimTenant,
+      mes: cell.dataset.elimMes,
+      nome: cell.dataset.elimNome,
+      pago: parseInt(cell.dataset.elimPago, 10) || 0,
+    }));
+  });
+}
+
+/**
+ * Elimina um pagamento de quota da matriz: remove do ledger (mês volta a em
+ * aberto) e, se houver um recibo simples de 1 mês a cobrir, oferece cancelá-lo.
+ */
+async function eliminarPagamento({ tenantId, mes, nome, pago }) {
+  const [ano, mm] = mes.split('-');
+  const nomesMes = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const mesNome = `${nomesMes[parseInt(mm,10)-1]} ${ano}`;
+
+  if (!confirm(`Eliminar o pagamento de ${formatMoney(pago)} de ${nome} em ${mesNome}?\n\nO mês volta a ficar EM ABERTO na conta corrente.`)) return;
+
+  // Só 2026 tem ledger explícito · outros anos são derivados dos recibos
+  if (ano !== quotasLedger.ANO) {
+    alert('Só é possível eliminar pagamentos de 2026 por aqui.\nPara outros anos, cancela o recibo correspondente na página Recibos.');
+    return;
+  }
+
+  // 1. Remover do ledger (zera o mês)
+  try {
+    await quotasLedger.reverterPagamento(tenantId, [mes], null);
+  } catch (e) {
+    alert('Erro ao remover do ledger: ' + (e?.message || e));
+    return;
+  }
+
+  // 2. Procurar recibo(s) de quota que cobrem SÓ este mês (simples)
+  let recibosSimples = [];
+  try {
+    const doTenant = await receipts.listar({ tenantId, tipo: 'quota' });
+    recibosSimples = doTenant.filter(r =>
+      !r.cancelado &&
+      Array.isArray(r.mesReferencia) &&
+      r.mesReferencia.length === 1 &&
+      r.mesReferencia[0] === mes
+    );
+  } catch (e) { recibosSimples = []; }
+
+  // 3. Perguntar se quer cancelar o recibo
+  if (recibosSimples.length === 1) {
+    const r = recibosSimples[0];
+    if (confirm(`Ledger limpo · ${mesNome} está agora em aberto.\n\nQueres também CANCELAR o recibo ${r.recibo_numero} (${formatMoney(r.valor_centimos)})?\n\n(Cria um estorno · o recibo fica registado como cancelado.)`)) {
+      try {
+        await receipts.cancelar(r.id, `Pagamento eliminado · ${mesNome}`);
+        alert(`✓ Pagamento eliminado e recibo ${r.recibo_numero} cancelado.`);
+      } catch (e) {
+        alert('Ledger limpo, mas falhou cancelar o recibo: ' + (e?.message || e));
+      }
+    } else {
+      alert(`✓ Pagamento eliminado do ledger. O recibo ${r.recibo_numero} NÃO foi cancelado (trata-o manualmente se necessário).`);
+    }
+  } else if (recibosSimples.length === 0) {
+    alert('✓ Pagamento eliminado do ledger. Não encontrei um recibo simples deste mês para oferecer cancelar (verifica os Recibos se necessário).');
+  } else {
+    alert(`✓ Pagamento eliminado do ledger. Há ${recibosSimples.length} recibos deste mês · trata-os manualmente na página Recibos (não cancelo automaticamente para evitar enganos).`);
+  }
+
+  renderTable();
+}
+
+function escapeAttr(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 async function renderDividasArrastadas(ano) {
@@ -259,3 +337,4 @@ async function renderDividasArrastadas(ano) {
     </div>
   `;
 }
+
